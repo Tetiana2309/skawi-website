@@ -7,7 +7,7 @@ export default function Hero() {
     <section className="hero" id="home" aria-labelledby="hero-heading">
       <div className="hero__media" aria-hidden="true">
         <video className="hero__video" autoPlay muted loop playsInline preload="metadata">
-          <source src="/videos/video-hero.mp4" type="video/mp4" />
+          <source src={`${import.meta.env.BASE_URL}videos/video-hero.mp4`} type="video/mp4" />
         </video>
         <div className="hero__gradient" />
       </div>
