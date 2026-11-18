@@ -33,8 +33,8 @@ export default function Preloader() {
     >
       <div className="skawi-preloader__scene" aria-hidden="true">
         <div className="skawi-preloader__coin">
-          <img className="skawi-preloader__face skawi-preloader__face--front" src={logoPath} alt="" width="200" height="200" />
-          <img className="skawi-preloader__face skawi-preloader__face--back" src={logoPath} alt="" width="200" height="200" />
+          <img className="skawi-preloader__face skawi-preloader__face--front" src={logoPath} alt="" width="400" height="400" />
+          <img className="skawi-preloader__face skawi-preloader__face--back" src={logoPath} alt="" width="400" height="400" />
         </div>
       </div>
     </div>
