@@ -1,6 +1,6 @@
 .language-switcher { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .language-switcher__item { display: inline-flex; gap: 10px; align-items: center; }
-.language-switcher__divider { display: block; width: 1px; height: 28px; background: #023536; opacity: .55; }
+.language-switcher__divider { display: block; width: 1.4px; height: 28px; background: #023536; opacity: .55; }
 .language-switcher__button {
   display: inline-block;
   padding: 2px 0;
