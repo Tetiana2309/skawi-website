@@ -1,7 +1,28 @@
 .language-switcher { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .language-switcher__item { display: inline-flex; gap: 10px; align-items: center; }
 .language-switcher__divider { display: block; width: 1px; height: 28px; background: #023536; opacity: .55; }
-.language-switcher__button { padding: 2px 0; border: 0; background: none; color: #023536; font-size: 18px; font-weight: 500; cursor: pointer; }
-.language-switcher__button:hover, .language-switcher__button:focus-visible { opacity: .6; }
-.language-switcher__button.is-active { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.language-switcher__button { position: relative; padding: 2px 0; border: 0; background: none; color: #023536; font-size: 18px; font-weight: 500; cursor: pointer; }
+.language-switcher__button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #DABE73;
+  opacity: 0;
+  transform: translate(-50%, 5px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.language-switcher__button:hover::after,
+.language-switcher__button:focus-visible::after,
+.language-switcher__button.is-active::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.language-switcher__button.is-active { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  .language-switcher__button::after { transition: none; }
+}
 @media (max-width: 767px) { .language-switcher { gap: 6px; }.language-switcher__item { gap: 6px; }.language-switcher__button { font-size: 14px; }.language-switcher__divider { height: 19px; } }
