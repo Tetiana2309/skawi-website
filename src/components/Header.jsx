@@ -34,7 +34,10 @@ export default function Header() {
       <LanguageSwitcher />
       <a className="hero-header__cta" href="#contacts">
         <span>ПОЧАТИ НАВЧАННЯ</span>
-        <img className="hero-header__arrow" src={`${import.meta.env.BASE_URL}icons/cta-arrow.svg`} width="36" height="36" alt="" aria-hidden="true" />
+        <span className="hero-header__arrow" aria-hidden="true">
+          <img className="hero-header__arrow-default" src={`${import.meta.env.BASE_URL}icons/cta-arrow.svg`} width="36" height="36" alt="" />
+          <img className="hero-header__arrow-active" src={`${import.meta.env.BASE_URL}icons/cta-arrow-active.svg`} width="36" height="36" alt="" />
+        </span>
       </a>
     </header>
   );
