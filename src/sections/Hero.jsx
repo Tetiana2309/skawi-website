@@ -2,9 +2,9 @@ import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
 
-export default function Hero() {
+export default function Hero({ revealing = false }) {
   return (
-    <section className="hero" id="home" aria-labelledby="hero-heading">
+    <section className={revealing ? "hero hero--revealing" : "hero hero--waiting"} id="home" aria-labelledby="hero-heading">
       <div className="hero__media" aria-hidden="true">
         <video className="hero__video" autoPlay muted loop playsInline preload="metadata">
           <source src={`${import.meta.env.BASE_URL}videos/video-hero.mp4`} type="video/mp4" />

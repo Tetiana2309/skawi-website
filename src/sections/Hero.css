@@ -29,3 +29,50 @@
 @media (prefers-reduced-motion: reduce) {
   .hero__video { display: none; }
 }
+
+/* Entrance sequence runs as the preloader lifts off the page. */
+.hero .brand-logo,
+.hero .hero-header {
+  opacity: 0;
+  transform: translateY(-24px);
+  transition: opacity .75s cubic-bezier(.22, 1, .36, 1), transform .9s cubic-bezier(.22, 1, .36, 1);
+}
+.hero--revealing .brand-logo {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: .18s;
+}
+.hero--revealing .hero-header {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: .33s;
+}
+.hero .hero__pretitle,
+.hero .hero__heading h1 {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(40px);
+  transition: opacity .75s ease, clip-path 1s cubic-bezier(.22, 1, .36, 1), transform 1s cubic-bezier(.22, 1, .36, 1);
+}
+.hero--revealing .hero__pretitle {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transform: translateY(0);
+  transition-delay: .62s;
+}
+.hero--revealing .hero__heading h1 {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transform: translateY(0);
+  transition-delay: .82s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .brand-logo,
+  .hero .hero-header,
+  .hero .hero__pretitle,
+  .hero .hero__heading h1 {
+    transition: none;
+    transform: none;
+    clip-path: none;
+  }
+}

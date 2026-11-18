@@ -4,7 +4,7 @@ import './Preloader.css';
 const SPIN_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 850;
 
-export default function Preloader() {
+export default function Preloader({ onReveal }) {
   const [phase, setPhase] = useState('loading');
 
   useEffect(() => {
@@ -12,14 +12,17 @@ export default function Preloader() {
     const spinTime = prefersReducedMotion ? 150 : SPIN_DURATION_MS;
     const revealTime = prefersReducedMotion ? 150 : REVEAL_DURATION_MS;
 
-    const reveal = window.setTimeout(() => setPhase('revealing'), spinTime);
+    const reveal = window.setTimeout(() => {
+      setPhase('revealing');
+      onReveal?.();
+    }, spinTime);
     const finish = window.setTimeout(() => setPhase('hidden'), spinTime + revealTime);
 
     return () => {
       window.clearTimeout(reveal);
       window.clearTimeout(finish);
     };
-  }, []);
+  }, [onReveal]);
 
   if (phase === 'hidden') return null;
 
