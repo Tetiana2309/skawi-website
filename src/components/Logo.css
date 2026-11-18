@@ -1,0 +1,35 @@
+.brand-logo {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex: 0 0 103px;
+  width: 103px;
+  height: 148px;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 32px;
+  color: #f1f1f1;
+  text-decoration: none;
+  background: #023536;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 3px 4px rgb(0 0 0 / 25%);
+}
+.brand-logo__word { font-size: 14px; line-height: 1; font-weight: 800; }
+.brand-logo__emblem {
+  display: grid;
+  place-items: center;
+  width: 67px;
+  height: 67px;
+  margin-top: 27px;
+  border: 1px solid #dabe73;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.brand-logo__symbol { font-size: 28px; font-weight: 300; color: #dabe73; }
+/* Временное обозначение эмблемы: заменим оригинальным экспортом из Figma. */
+@media (max-width: 767px) {
+  .brand-logo { flex-basis: 72px; width: 72px; height: 112px; padding-top: 23px; border-radius: 0 0 14px 14px; }
+  .brand-logo__word { font-size: 11px; }
+  .brand-logo__emblem { width: 46px; height: 46px; margin-top: 18px; }
+  .brand-logo__symbol { font-size: 22px; }
+}
