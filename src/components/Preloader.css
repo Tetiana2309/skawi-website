@@ -16,8 +16,8 @@
 }
 
 .skawi-preloader__scene {
-  width: 400px;
-  height: 400px;
+  width: 280px;
+  height: 280px;
   perspective: 900px;
 }
 
@@ -58,8 +58,8 @@
 
 @media (max-width: 600px) {
   .skawi-preloader__scene {
-    width: 160px;
-    height: 160px;
+    width: 180px;
+    height: 180px;
   }
 }
 
