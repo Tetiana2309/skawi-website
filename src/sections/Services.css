@@ -19,7 +19,7 @@
 
 .services__eyebrow {
   position: absolute;
-  top: 60px;
+  top: 40px;
   left: 40px;
   z-index: 7;
   color: #a2e1cd;
@@ -32,7 +32,7 @@
 
 .services__quote {
   position: absolute;
-  top: 60px;
+  top: 40px;
   right: 40px;
   z-index: 7;
   margin: 0;
@@ -199,7 +199,7 @@
 
 .services__pagination {
   position: absolute;
-  bottom: 11%;
+  bottom: 40px;
   left: 50%;
   z-index: 7;
   transform: translateX(-50%);
