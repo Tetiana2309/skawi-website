@@ -52,103 +52,98 @@ const services = [
   },
 ];
 
-const TRANSITION_MS = 760;
-const pad = (value) => String(value).padStart(2, '0');
 
-function ServiceContent({ service, leaving = false, direction = 'forward' }) {
-  return (
-    <div
-      className={`services__content ${leaving ? 'services__content--exit' : 'services__content--enter'} ${direction === 'backward' ? 'services__content--backward' : ''}`}
-      aria-hidden={leaving || undefined}
-    >
-      <div className="services__text-mask">
-        <h2 className="services__title">{service.title}</h2>
-      </div>
-      <div className="services__text-mask services__description-mask">
-        <p className="services__description">{service.description}</p>
-      </div>
-      <ul className="services__benefits">
-        {service.benefits.map((benefit, i) => (
-          <li key={benefit} style={{ '--benefit-index': i }}>{benefit}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const pad = (v) => String(v).padStart(2, '0');
+const ease = (t) => t * t * (3 - 2 * t);
 
 export default function Services() {
-  const [active, setActive] = useState(0);
-  const [previous, setPrevious] = useState(null);
-  const [direction, setDirection] = useState('forward');
-  const timer = useRef(null);
-  const current = useRef(0);
-  const busy = useRef(false);
+  const wrapper = useRef(null);
+  const viewport = useRef(null);
+  const raf = useRef(0);
+  const last = useRef(0);
+  const [progress, setProgress] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const active = Math.round(progress);
 
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => {
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    const motionChange = () => setReduceMotion(media.matches);
+    motionChange();
+    media.addEventListener('change', motionChange);
 
-  function choose(index) {
-    if (busy.current || index === current.current || index < 0 || index >= services.length) return;
-    const from = current.current;
-    busy.current = true;
-    current.current = index;
-    setDirection(index > from ? 'forward' : 'backward');
-    setPrevious(from);
-    setActive(index);
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => {
-      setPrevious(null);
-      busy.current = false;
-    }, TRANSITION_MS);
-  }
+    const measure = () => {
+      raf.current = 0;
+      if (!wrapper.current || !viewport.current) return;
+      const maxScroll = Math.max(1, wrapper.current.offsetHeight - viewport.current.offsetHeight);
+      const raw = clamp(-wrapper.current.getBoundingClientRect().top / maxScroll, 0, 1) * 3;
+      const segment = Math.min(2, Math.floor(raw));
+      const eased = segment + ease(clamp(raw - segment, 0, 1));
+      if (Math.abs(eased - last.current) > .0002) {
+        last.current = eased;
+        setProgress(eased);
+      }
+    };
+    const schedule = () => { if (!raf.current) raf.current = requestAnimationFrame(measure); };
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      media.removeEventListener('change', motionChange);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
+  const choose = (index) => {
+    if (!wrapper.current || !viewport.current) return;
+    const start = window.scrollY + wrapper.current.getBoundingClientRect().top;
+    const range = Math.max(0, wrapper.current.offsetHeight - viewport.current.offsetHeight);
+    window.scrollTo({ top: start + index * range / 3, behavior: reduceMotion ? 'instant' : 'smooth' });
+  };
 
   return (
-    <section className="services" id="services" aria-label="Напрями навчання">
-      <div className="services__eyebrow">напрями навчання</div>
-      <p className="services__quote">“межі моєї мови — це межі мого світу” <span>— Людвіг Вітгенштайн</span></p>
-
-      <nav className="services__nav services__nav--left" aria-label="Оберіть напрям навчання">
-        {services.map((service, index) => (
-          <button
-            key={service.left}
-            type="button"
-            className={`services__nav-item ${active === index ? 'is-active' : ''}`}
-            onClick={() => choose(index)}
-            aria-current={active === index ? 'true' : undefined}
-            aria-label={`${service.left}. ${service.right}`}
-          >
-            <span className="services__indicator" aria-hidden="true" />
-            <span>{service.left}</span>
-          </button>
-        ))}
-      </nav>
-
-      <div className="services__center" aria-live="polite" aria-atomic="true">
-        {previous !== null && <ServiceContent key={`old-${previous}`} service={services[previous]} leaving direction={direction} />}
-        <ServiceContent key={active} service={services[active]} direction={direction} />
-      </div>
-
-      <nav className="services__nav services__nav--right" aria-label="Інші назви напрямів">
-        {services.map((service, index) => (
-          <button
-            key={service.right}
-            type="button"
-            className={`services__nav-item ${active === index ? 'is-active' : ''}`}
-            onClick={() => choose(index)}
-            aria-current={active === index ? 'true' : undefined}
-            aria-label={`${service.left}. ${service.right}`}
-          >
-            <span>{service.right}</span>
-            <span className="services__indicator" aria-hidden="true" />
-          </button>
-        ))}
-      </nav>
-
-      <div className="services__pagination" aria-label={`Напрям ${active + 1} із ${services.length}`}>
-        <span className="services__page-number">{pad(active + 1)}</span>
-        <div className="services__progress" aria-hidden="true">
-          <span style={{ width: `${((active + 1) / services.length) * 100}%` }} />
+    <section className="services-scroll" id="services" ref={wrapper} aria-label="Напрями навчання">
+      <div className="services" ref={viewport}>
+        <div className="services__eyebrow">напрями навчання</div>
+        <p className="services__quote">“межі моєї мови — це межі мого світу” <span>— Людвіг Вітгенштайн</span></p>
+        <nav className="services__nav services__nav--left" aria-label="Оберіть напрям навчання">
+          {services.map((service, i) => (
+            <button key={service.left} type="button" className={`services__nav-item ${active === i ? 'is-active' : ''}`} onClick={() => choose(i)} aria-current={active === i ? 'true' : undefined} aria-label={`${service.left}. ${service.right}`}>
+              <span className="services__indicator" aria-hidden="true" /><span>{service.left}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="services__center">
+          {services.map((service, i) => {
+            const diff = i - progress;
+            const opacity = clamp(1 - Math.abs(diff), 0, 1);
+            return (
+              <div key={service.left} className="services__content services__content--scroll" aria-hidden={active !== i} inert={active !== i} style={{
+                opacity,
+                visibility: opacity < .001 ? 'hidden' : 'visible',
+                transform: `translate3d(0, ${reduceMotion ? 0 : clamp(diff, -1, 1) * 70}px, 0)`,
+              }}>
+                <div className="services__text-mask"><h2 className="services__title">{service.title}</h2></div>
+                <div className="services__text-mask services__description-mask"><p className="services__description">{service.description}</p></div>
+                <ul className="services__benefits">{service.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}</ul>
+              </div>
+            );
+          })}
         </div>
-        <span className="services__page-number">{pad(services.length)}</span>
+        <nav className="services__nav services__nav--right" aria-label="Інші назви напрямів">
+          {services.map((service, i) => (
+            <button key={service.right} type="button" className={`services__nav-item ${active === i ? 'is-active' : ''}`} onClick={() => choose(i)} aria-current={active === i ? 'true' : undefined} aria-label={`${service.left}. ${service.right}`}>
+              <span>{service.right}</span><span className="services__indicator" aria-hidden="true" />
+            </button>
+          ))}
+        </nav>
+        <div className="services__pagination" aria-label={`Напрям ${active + 1} із 4`}>
+          <span className="services__page-number">{pad(active + 1)}</span>
+          <div className="services__progress" aria-hidden="true"><span style={{ width: `${(progress + 1) * 25}%` }} /></div>
+          <span className="services__page-number">04</span>
+        </div>
       </div>
     </section>
   );
