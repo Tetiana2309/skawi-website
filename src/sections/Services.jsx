@@ -68,31 +68,26 @@ export default function Services() {
   const last = services.length - 1;
 
   const paint = (progress, noMotion) => {
+    // A soft typography crossfade between full-screen slide states.
+    const from = Math.min(last, Math.floor(progress));
+    const to = Math.min(last, from + 1);
+    const fractional = clamp(progress - from, 0, 1);
+    const blend = noMotion ? (fractional >= .5 ? 1 : 0) : ease(fractional);
+
     for (let i = 0; i < services.length; i++) {
       const card = cards.current[i];
       if (!card) continue;
-      const relative = progress - i;
-      let clip = 'inset(0 0 0 0)';
-      let transform = '';
-      let visibility = 'visible';
 
-      if (relative <= -1) {
-        visibility = 'hidden';
-      } else if (relative < 0) {
-        const t = noMotion ? (relative >= -.5 ? 1 : 0) : ease(relative + 1);
-        clip = noMotion ? 'inset(0 0 0 0)' : 'inset(' + (100 * (1 - t)).toFixed(2) + '% 0 0 0)';
-        transform = noMotion ? '' : 'translate3d(0,' + ((1 - t) * 8).toFixed(2) + '%,0)';
-        if (noMotion && t === 0) visibility = 'hidden';
-      } else {
-        const depth = Math.min(relative, 2);
-        transform = noMotion ? '' : 'perspective(1300px) translate3d(0,' + (-18 * depth).toFixed(2) + 'px,0) rotateX(' + (7 * depth).toFixed(2) + 'deg) scale(' + (1 - .055 * depth).toFixed(4) + ')';
-        if (relative > 2.5) visibility = 'hidden';
-      }
+      const visibility = i === from ? 1 - blend : i === to ? blend : 0;
+      const outgoing = i === from;
+      const shift = noMotion ? 0 : outgoing ? -24 * blend : 32 * (1 - blend);
+      const scale = noMotion ? 1 : outgoing ? 1 - .012 * blend : .988 + .012 * blend;
 
-      card.style.visibility = visibility;
-      card.style.clipPath = clip;
-      card.style.transform = transform || 'translate3d(0,0,0)';
+      card.style.opacity = String(visibility);
+      card.style.visibility = visibility < .001 ? 'hidden' : 'visible';
+      card.style.transform = 'translate3d(0,' + shift.toFixed(2) + 'px,0) scale(' + scale.toFixed(4) + ')';
     }
+
     if (progressBar.current) progressBar.current.style.width = ((progress + 1) / services.length * 100).toFixed(2) + '%';
     const nextActive = clamp(Math.round(progress), 0, last);
     if (nextActive !== activeRef.current) {
@@ -125,7 +120,7 @@ export default function Services() {
       const dt = previousTime ? Math.min(.1, (now - previousTime) / 1000) : 1 / 60;
       previousTime = now;
       const goal = target();
-      const rate = 7.5;
+      const rate = 4.5;
       const factor = reduced ? 1 : 1 - Math.exp(-dt * rate);
       const value = progressRef.current + (goal - progressRef.current) * factor;
       progressRef.current = Math.abs(goal - value) < .0005 ? goal : value;
@@ -167,7 +162,7 @@ export default function Services() {
 
         <div className="services__deck" aria-label="Програми навчання">
           {services.map((service, i) => (
-            <article key={service.left} ref={node => { cards.current[i] = node; }} className="services__card" style={{ zIndex: i + 1, visibility: i === 0 ? 'visible' : 'hidden' }} aria-hidden={active !== i} inert={active !== i}>
+            <article key={service.left} ref={node => { cards.current[i] = node; }} className="services__card" style={{ zIndex: i + 1, visibility: i === 0 ? 'visible' : 'hidden', opacity: i === 0 ? 1 : 0 }} aria-hidden={active !== i} inert={active !== i}>
               <div className="services__card-inner">
                 <h2 className="services__title">{service.title}</h2>
                 <p className="services__description">{service.description}</p>
