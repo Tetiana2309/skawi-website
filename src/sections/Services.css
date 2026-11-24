@@ -103,8 +103,8 @@
   overflow: hidden;
   border: none;
   border-radius: 18px;
-  background: #064344;
-  box-shadow: 0 16px 48px rgb(0 24 25 / 20%);
+  background: transparent;
+  box-shadow: none;
   transform-origin: 50% 100%;
   will-change: transform, clip-path;
   backface-visibility: hidden;
