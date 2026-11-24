@@ -123,7 +123,7 @@
   background: transparent;
   box-shadow: none;
   transform-origin: 50% 50%;
-  will-change: opacity, transform;
+  will-change: opacity;
   backface-visibility: hidden;
 }
 .services__card-inner {
@@ -154,7 +154,7 @@
   color: #eaf4f0;
   text-align: center;
   font-family: Inter, sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: 110%;
@@ -175,7 +175,7 @@
   padding-left: 20px;
   color: #eaf4f0;
   font-family: Inter, sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: 110%;
@@ -212,7 +212,7 @@
   .services__nav--left { width: 265px; }
   .services__nav--right { width: 265px; }
   .services__nav-item { font-size: 14px; }
-  .services__benefits li { font-size: clamp(17px, 1.4vw, 22px); }
+  .services__benefits li { font-size: 20px; }
 }
 
 @media (max-width: 1100px) {
