@@ -58,7 +58,8 @@
 
 .services__nav {
   position: absolute;
-  top: 43.51%;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -223,7 +224,7 @@
 @media (max-width: 1100px) {
   .services__deck { width: min(1107px, calc(100% - 80px)); }
   .services__card-inner { top: 48px; width: 100%; }
-  .services__nav { top: auto; bottom: 170px; gap: 12px; }
+  .services__nav { top: auto; bottom: 170px; transform: none; gap: 12px; }
   .services__nav--left { left: 40px; width: 44%; }
   .services__nav--right { right: 40px; width: 44%; }
   .services__benefits { margin-top: 48px; }
@@ -242,7 +243,7 @@
   .services__benefits { width: 100%; margin-top: 42px; gap: 16px; }
   .services__benefits li { font-size: 14px; line-height: 1.35; white-space: normal; }
   .services__benefits li::before { top: 5px; width: 6px; height: 6px; }
-  .services__nav { bottom: 95px; gap: 8px; }
+  .services__nav { top: auto; bottom: 95px; transform: none; gap: 8px; }
   .services__nav--left { left: 20px; width: calc(50% - 26px); }
   .services__nav--right { right: 20px; width: calc(50% - 26px); }
   .services__nav-item { white-space: normal; font-size: 10px; min-height: 24px; line-height: 1.2; }
