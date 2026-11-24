@@ -110,7 +110,11 @@
 /* Each slide is a complete full-screen state, not a bordered inset card. */
 .services__deck {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  width: 1107px;
+  height: 553px;
+  transform: translate(-50%, -50%);
   isolation: isolate;
   pointer-events: none;
 }
@@ -128,10 +132,10 @@
 }
 .services__card-inner {
   position: absolute;
-  top: 32.4%;
+  top: 48px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(900px, calc(100% - 720px));
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -207,7 +211,8 @@
 .services__progress span { display: block; height: 100%; width: 25%; background: #a2e1cd; }
 
 @media (max-width: 1550px) {
-  .services__card-inner { width: min(850px, calc(100% - 615px)); }
+  .services__deck { width: min(1107px, calc(100% - 560px)); }
+  .services__card-inner { width: 100%; }
   .services__title { font-size: clamp(40px, 4.1vw, 64px); white-space: normal; }
   .services__nav--left { width: 265px; }
   .services__nav--right { width: 265px; }
@@ -216,7 +221,8 @@
 }
 
 @media (max-width: 1100px) {
-  .services__card-inner { top: 26%; width: min(740px, calc(100% - 80px)); }
+  .services__deck { width: min(1107px, calc(100% - 80px)); }
+  .services__card-inner { top: 48px; width: 100%; }
   .services__nav { top: auto; bottom: 170px; gap: 12px; }
   .services__nav--left { left: 40px; width: 44%; }
   .services__nav--right { right: 40px; width: 44%; }
@@ -229,7 +235,8 @@
   .services__eyebrow { top: 24px; left: 20px; font-size: 11px; }
   .services__quote { top: 55px; left: 20px; right: 20px; font-size: 10px; white-space: normal; }
   .services__quote span { display: block; margin: 6px 0 0; font-size: 10px; }
-  .services__card-inner { top: 160px; width: calc(100% - 40px); }
+  .services__deck { top: 42%; width: calc(100% - 40px); height: min(553px, 58svh); }
+  .services__card-inner { top: 20px; width: 100%; }
   .services__title { font-size: clamp(28px, 7vw, 40px); white-space: normal; }
   .services__description { margin-top: 18px; font-size: 16px; }
   .services__benefits { width: 100%; margin-top: 42px; gap: 16px; }
