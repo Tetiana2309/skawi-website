@@ -1,7 +1,8 @@
+.services-scroll { height: calc(4 * max(100svh, 800px)); background: #023536; }
 .services {
-  position: relative;
-  min-height: 1002px;
-  height: max(1002px, 100vh);
+  position: sticky;
+  top: 0;
+  height: max(100svh, 800px);
   overflow: hidden;
   background: #023536;
   color: #eaf4f0;
@@ -84,7 +85,7 @@
 .services__center {
   position: absolute;
   left: 50%;
-  top: 325px;
+  top: 32.4%;
   transform: translateX(-50%);
   width: min(650px, calc(100% - 720px));
   min-height: 390px;
@@ -181,7 +182,7 @@
 
 .services__pagination {
   position: absolute;
-  bottom: 110px;
+  bottom: 11%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -213,7 +214,8 @@
 }
 
 @media (max-width: 1100px) {
-  .services { min-height: 820px; height: 100svh; }
+  .services-scroll { height: calc(4 * max(100svh, 820px)); }
+  .services { height: max(100svh, 820px); }
   .services__center { top: 31%; width: min(600px, calc(100% - 80px)); }
   .services__nav { top: auto; bottom: 185px; gap: 12px; }
   .services__nav--left { left: 40px; width: 45%; }
@@ -223,7 +225,8 @@
 }
 
 @media (max-width: 650px) {
-  .services { min-height: 840px; height: auto; }
+  .services-scroll { height: calc(4 * max(100svh, 840px)); }
+  .services { height: max(100svh, 840px); }
   .services__eyebrow { top: 30px; left: 20px; }
   .services__quote { top: 63px; left: 20px; right: 20px; font-size: 11px; white-space: normal; }
   .services__quote span { display: block; margin: 7px 0 0; }
@@ -254,4 +257,14 @@
   .services__content--exit .services__description,
   .services__content--exit .services__benefits li { animation: none; }
   .services__content--exit { display: none; }
+}
+
+/* Native-scroll-driven crossfade: sticky scene stays in place for all four steps. */
+.services__content--scroll {
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.services__progress span { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .services__content--scroll { will-change: auto; }
 }
