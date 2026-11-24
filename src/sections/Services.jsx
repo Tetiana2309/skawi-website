@@ -54,7 +54,6 @@ const services = [
 
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const pad = (n) => String(n).padStart(2, '0');
-const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 export default function Services() {
   const root = useRef(null);
@@ -72,20 +71,15 @@ export default function Services() {
     const from = Math.min(last, Math.floor(progress));
     const to = Math.min(last, from + 1);
     const fractional = clamp(progress - from, 0, 1);
-    const blend = noMotion ? (fractional >= .5 ? 1 : 0) : ease(fractional);
+    const blend = noMotion ? (fractional >= .5 ? 1 : 0) : fractional;
 
     for (let i = 0; i < services.length; i++) {
       const card = cards.current[i];
       if (!card) continue;
 
       const visibility = i === from ? 1 - blend : i === to ? blend : 0;
-      const outgoing = i === from;
-      const shift = noMotion ? 0 : outgoing ? -24 * blend : 32 * (1 - blend);
-      const scale = noMotion ? 1 : outgoing ? 1 - .012 * blend : .988 + .012 * blend;
-
       card.style.opacity = String(visibility);
       card.style.visibility = visibility < .001 ? 'hidden' : 'visible';
-      card.style.transform = 'translate3d(0,' + shift.toFixed(2) + 'px,0) scale(' + scale.toFixed(4) + ')';
     }
 
     if (progressBar.current) progressBar.current.style.width = ((progress + 1) / services.length * 100).toFixed(2) + '%';
@@ -120,7 +114,7 @@ export default function Services() {
       const dt = previousTime ? Math.min(.1, (now - previousTime) / 1000) : 1 / 60;
       previousTime = now;
       const goal = target();
-      const rate = 4.5;
+      const rate = 3.6;
       const factor = reduced ? 1 : 1 - Math.exp(-dt * rate);
       const value = progressRef.current + (goal - progressRef.current) * factor;
       progressRef.current = Math.abs(goal - value) < .0005 ? goal : value;
