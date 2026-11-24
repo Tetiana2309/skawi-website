@@ -17,42 +17,40 @@ const services = [
   {
     left: 'Слова стають розмовами',
     right: 'А розмови відкривають можливості',
-    title: 'Говори вільніше.',
-    description: 'Польська для життя та роботи.',
+    title: 'Польська для життя та роботи',
+    description: 'Розумієш польську, але складно говорити?',
     benefits: [
-      'Практика живого спілкування польською.',
-      'Мова для повсякденних ситуацій.',
-      'Підготовка до розмов і співбесід.',
-      'Більше впевненості у спілкуванні.',
+      'Комплексне навчання для життя в Польщі.',
+      'Підготовка до співбесід і переговорів.',
+      'Практика щоденного спілкування.',
+      'Польська для роботи та командної взаємодії.',
     ],
   },
   {
     left: 'Чим ближче знайомишся з Польщею',
     right: 'Тим швидше почуваєшся своїм',
-    title: 'Відчуй себе своїм.',
-    description: 'Мова, знайомства та адаптація.',
+    title: 'Мова та адаптація',
+    description: 'Адаптуйся до нового життя разом зі SKAWI.',
     benefits: [
-      'Знайомство з мовою і культурою Польщі.',
-      'Спілкування у щоденних ситуаціях.',
-      'Підтримка на шляху до адаптації.',
-      'Нові знайомства та відчуття спільноти.',
+      'Знайомство з мовою та культурою Польщі.',
+      'Програми під індивідуальні потреби.',
+      'Підготовка до іспитів із підтримкою.',
+      'Допомога в мовній адаптації.',
     ],
   },
   {
     left: 'Тут усе починається з навчання',
     right: 'А продовжується спілкуванням',
-    title: 'Зростай разом з нами.',
-    description: 'Навчання, яке об’єднує.',
+    title: 'Більше ніж навчання',
+    description: 'Відкривай більше можливостей зі SKAWI.',
     benefits: [
-      'Навчання через практику та діалог.',
-      'Зрозумілі пояснення й живі приклади.',
-      'Комфортна атмосфера на заняттях.',
-      'Можливість практикувати мову разом.',
+      'Клуб «Кайзерка» — розмовна практика без доплати для учнів.',
+      'Бібліотечка SKAWI — книжки різними мовами.',
+      'Нейробіка — розвиток уваги, реакції та мислення.',
+      'Дитячі заняття — вивчення мови через гру.',
     ],
   },
 ];
-
-
 
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const pad = (n) => String(n).padStart(2, '0');
@@ -74,29 +72,26 @@ export default function Services() {
       const card = cards.current[i];
       if (!card) continue;
       const relative = progress - i;
-      let clip = 'inset(0 0 0 0 round 18px)';
+      let clip = 'inset(0 0 0 0)';
       let transform = '';
-      let dim = 0;
       let visibility = 'visible';
 
       if (relative <= -1) {
         visibility = 'hidden';
       } else if (relative < 0) {
         const t = noMotion ? (relative >= -.5 ? 1 : 0) : ease(relative + 1);
-        clip = noMotion ? 'inset(0 0 0 0 round 18px)' : 'inset(' + (100 * (1 - t)).toFixed(2) + '% 0 0 0 round 18px)';
+        clip = noMotion ? 'inset(0 0 0 0)' : 'inset(' + (100 * (1 - t)).toFixed(2) + '% 0 0 0)';
         transform = noMotion ? '' : 'translate3d(0,' + ((1 - t) * 8).toFixed(2) + '%,0)';
         if (noMotion && t === 0) visibility = 'hidden';
       } else {
         const depth = Math.min(relative, 2);
         transform = noMotion ? '' : 'perspective(1300px) translate3d(0,' + (-18 * depth).toFixed(2) + 'px,0) rotateX(' + (7 * depth).toFixed(2) + 'deg) scale(' + (1 - .055 * depth).toFixed(4) + ')';
-        dim = noMotion ? 0 : Math.min(.4, depth * .21);
         if (relative > 2.5) visibility = 'hidden';
       }
 
       card.style.visibility = visibility;
       card.style.clipPath = clip;
       card.style.transform = transform || 'translate3d(0,0,0)';
-      card.style.setProperty('--services-dim', dim.toFixed(3));
     }
     if (progressBar.current) progressBar.current.style.width = ((progress + 1) / services.length * 100).toFixed(2) + '%';
     const nextActive = clamp(Math.round(progress), 0, last);
@@ -173,7 +168,6 @@ export default function Services() {
         <div className="services__deck" aria-label="Програми навчання">
           {services.map((service, i) => (
             <article key={service.left} ref={node => { cards.current[i] = node; }} className="services__card" style={{ zIndex: i + 1, visibility: i === 0 ? 'visible' : 'hidden' }} aria-hidden={active !== i} inert={active !== i}>
-              <div className="services__card-shade" aria-hidden="true" />
               <div className="services__card-inner">
                 <h2 className="services__title">{service.title}</h2>
                 <p className="services__description">{service.description}</p>
