@@ -67,19 +67,28 @@ export default function Services() {
   const last = services.length - 1;
 
   const paint = (progress, noMotion) => {
-    // A soft typography crossfade between full-screen slide states.
+    // Sequential fades keep different slide copy from ever overlapping.
+    // The old slide fades away before the new slide fades in.
     const from = Math.min(last, Math.floor(progress));
     const to = Math.min(last, from + 1);
     const fractional = clamp(progress - from, 0, 1);
-    const blend = noMotion ? (fractional >= .5 ? 1 : 0) : fractional;
+    const smooth = (t) => t * t * (3 - 2 * t);
+    const outgoing = noMotion
+      ? (fractional < .5 ? 1 : 0)
+      : 1 - smooth(clamp(fractional / .5, 0, 1));
+    const incoming = noMotion
+      ? (fractional >= .5 ? 1 : 0)
+      : smooth(clamp((fractional - .5) / .5, 0, 1));
 
     for (let i = 0; i < services.length; i++) {
       const card = cards.current[i];
       if (!card) continue;
 
-      const visibility = i === from ? 1 - blend : i === to ? blend : 0;
-      card.style.opacity = String(visibility);
-      card.style.visibility = visibility < .001 ? 'hidden' : 'visible';
+      const opacity = from === to
+        ? (i === from ? 1 : 0)
+        : i === from ? outgoing : i === to ? incoming : 0;
+      card.style.opacity = String(opacity);
+      card.style.visibility = opacity <= 0 ? 'hidden' : 'visible';
     }
 
     if (progressBar.current) progressBar.current.style.width = ((progress + 1) / services.length * 100).toFixed(2) + '%';
