@@ -9,12 +9,14 @@ export default function LanguageSwitcher() {
       {languages.map((language, index) => (
         <span className="language-switcher__item" key={language}>
           {index > 0 && <span className="language-switcher__divider" aria-hidden="true" />}
-          <span
+          <button
+            type="button"
             className={language === 'UA' ? 'language-switcher__button is-active' : 'language-switcher__button'}
-            aria-current={language === 'UA' ? 'true' : undefined}
+            aria-pressed={language === 'UA'}
+            title="Мова сайту: українська"
           >
             {language}
-          </span>
+          </button>
         </span>
       ))}
     </div>
