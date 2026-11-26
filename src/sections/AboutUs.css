@@ -2,7 +2,7 @@
   position: relative;
   height: 200svh;
   margin-top: 220px;
-  background: #023536;
+  background: #f6fffc;
 }
 
 .about-us {
@@ -20,7 +20,7 @@
   overflow: hidden;
   isolation: isolate;
   color: #023536;
-  background: #023536;
+  background: #f6fffc;
 }
 
 .about-us__photo {
