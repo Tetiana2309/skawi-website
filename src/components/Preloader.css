@@ -67,3 +67,10 @@
   .skawi-preloader { transition-duration: 150ms; }
   .skawi-preloader__coin { animation: none; }
 }
+
+/* In-page section transitions reuse the opening splash without rotating its logo. */
+.skawi-preloader--static .skawi-preloader__coin {
+  animation: none;
+  transform: none;
+  will-change: auto;
+}
