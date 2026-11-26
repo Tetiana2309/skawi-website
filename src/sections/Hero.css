@@ -12,8 +12,8 @@
 .hero__gradient { position: absolute; inset: -1px; background: linear-gradient(to bottom, rgb(246 255 252 / 0%) 54.89%, #f6fffc 96.407%); }
 .hero__top { display: flex; align-items: flex-start; width: calc(100% - 80px); margin: 0 auto; }
 .hero__heading { position: absolute; left: 50%; bottom: 14%; width: max-content; max-width: calc(100% - 40px); transform: translateX(-50%); }
-.hero__pretitle { margin: 0 0 12px; font-size: clamp(36px, 3.65vw, 70px); font-style: italic; font-weight: 400; line-height: 1.05; }
-.hero__heading h1 { margin: 0; font-size: clamp(62px, 7.3vw, 140px); font-weight: 500; line-height: .9; letter-spacing: -.055em; white-space: nowrap; }
+.hero__pretitle { margin: 0 0 12px; font-size: clamp(36px, 3.65vw, 70px); font-style: italic; font-weight: 400; line-height: 1.1; }
+.hero__heading h1 { margin: 0; font-size: clamp(62px, 7.3vw, 140px); font-weight: 500; line-height: 1.1; letter-spacing: -.055em; white-space: nowrap; }
 @media (max-width: 1320px) {
   .hero__heading { bottom: 17%; }
 }
