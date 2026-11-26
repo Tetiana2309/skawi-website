@@ -9,6 +9,12 @@
 .team {
   --team-light: #F6FFFC;
   --team-dark: #023536;
+  /* Center the photo + 40px gap + text as one 864px composition. */
+  --team-photo-width: 382px;
+  --team-copy-width: 442px;
+  --team-copy-gap: 40px;
+  --team-group-left: calc(50% - (var(--team-photo-width) + var(--team-copy-gap) + var(--team-copy-width)) / 2);
+  --team-text-left: calc(var(--team-group-left) + var(--team-photo-width) + var(--team-copy-gap));
   position: sticky;
   top: 0;
   width: 100%;
@@ -59,11 +65,10 @@
 }
 .team__photo {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 382px;
+  left: var(--team-group-left);
+  top: 16.27%;
+  width: var(--team-photo-width);
   height: 546px;
-  transform: translate(-50%, -50%);
   overflow: hidden;
   pointer-events: none;
 }
@@ -76,9 +81,9 @@
 }
 .team__details {
   position: absolute;
-  left: calc(50% + 191px + 40px);
+  left: var(--team-text-left);
   top: 21.16%;
-  width: calc(50% - 191px - 80px);
+  width: var(--team-copy-width);
   pointer-events: none;
 }
 .team__details h2 {
@@ -96,9 +101,9 @@
 }
 .team__quotation {
   position: absolute;
-  left: calc(50% + 191px + 40px);
+  left: var(--team-text-left);
   top: 62.2%;
-  width: calc(50% - 191px - 80px);
+  width: var(--team-copy-width);
   margin: 0;
   color: #EAF4F0;
   pointer-events: none;
@@ -169,6 +174,7 @@
   .team__controls { bottom: 8%; }
 }
 @media (max-width: 1100px) {
+  .team { --team-photo-width: clamp(220px, 34vw, 340px); --team-copy-width: clamp(280px, 38vw, 420px); }
   .team__topline { top: 30px; left: 25px; right: 25px; font-size: 12px; }
   .team__details { top: 140px; }
   .team__details h2 { font-size: 42px; }
@@ -187,7 +193,7 @@
   }
   .team__topline { top: 24px; left: 20px; right: 20px; font-size: 10px; line-height: 1.4; }
   .team__topline span:last-child { max-width: 48%; }
-  .team__photo { left: 50%; top: 50%; width: min(382px, 55vw); height: auto; aspect-ratio: 382 / 546; }
+  .team__photo { left: 50%; top: 18%; width: min(382px, 55vw); height: auto; aspect-ratio: 382 / 546; transform: translateX(-50%); }
   .team__details { left: 65%; top: 115px; width: 32%; }
   .team__details h2 { font-size: clamp(22px, 6vw, 34px); letter-spacing: -.5px; overflow-wrap: anywhere; }
   .team__role { font-size: 10px; line-height: 1.45; }
