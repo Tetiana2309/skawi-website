@@ -2,16 +2,33 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import './Header.css';
 
-const links = [
-  ['Головна', '#home'],
-  ['Наші послуги', '#services'],
-  ['Про нас', '#about'],
-  ['Переваги', '#benefits'],
-  ['Галерея', '#gallery'],
-  ['Контакти', '#contacts'],
-];
+const navigationTargets = ['#home', '#services', '#about', '#benefits', '#gallery', '#contacts'];
+
+const headerTranslations = {
+  UA: {
+    nav: ['Головна', 'Наші послуги', 'Про нас', 'Переваги', 'Галерея', 'Контакти'],
+    cta: 'ПОЧАТИ НАВЧАННЯ',
+  },
+  PL: {
+    nav: ['Strona główna', 'Nasze usługi', 'O nas', 'Zalety', 'Galeria', 'Kontakt'],
+    cta: 'ROZPOCZNIJ NAUKĘ',
+  },
+  EN: {
+    nav: ['Home', 'Our Services', 'About Us', 'Benefits', 'Gallery', 'Contact'],
+    cta: 'START LEARNING',
+  },
+  SP: {
+    nav: ['Inicio', 'Nuestros servicios', 'Sobre nosotros', 'Ventajas', 'Galería', 'Contacto'],
+    cta: 'EMPEZAR A APRENDER',
+  },
+  RU: {
+    nav: ['Главная', 'Наши услуги', 'О нас', 'Преимущества', 'Галерея', 'Контакты'],
+    cta: 'НАЧАТЬ ОБУЧЕНИЕ',
+  },
+};
 
 export default function Header({ language = 'UA', onLanguageChange }) {
+  const copy = headerTranslations[language] ?? headerTranslations.UA;
   const [menuOpen, setMenuOpen] = useState(false);
   const ctaRef = useRef(null);
   const labelRef = useRef(null);
@@ -51,13 +68,13 @@ export default function Header({ language = 'UA', onLanguageChange }) {
         <span /><span /><span />
       </button>
       <nav id="skawi-navigation" className={menuOpen ? 'hero-header__nav is-open' : 'hero-header__nav'} aria-label="Основная навигация">
-        {links.map(([label, href]) => (
-          <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>
+        {navigationTargets.map((href, index) => (
+          <a key={href} href={href} onClick={() => setMenuOpen(false)}>{copy.nav[index]}</a>
         ))}
       </nav>
       <LanguageSwitcher active={language} onChange={onLanguageChange} />
       <a className="hero-header__cta" href="#contacts" ref={ctaRef}>
-        <span className="hero-header__cta-label" ref={labelRef}>ПОЧАТИ НАВЧАННЯ</span>
+        <span className="hero-header__cta-label" ref={labelRef}>{copy.cta}</span>
         <span className="hero-header__arrow" aria-hidden="true" ref={arrowRef}>
           <img className="hero-header__arrow-default" src={`${import.meta.env.BASE_URL}icons/cta-arrow.svg`} width="36" height="36" alt="" />
           <img className="hero-header__arrow-active" src={`${import.meta.env.BASE_URL}icons/cta-arrow-active.svg`} width="36" height="36" alt="" />
