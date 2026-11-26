@@ -39,7 +39,7 @@ export default function App() {
       <main>
         <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} />
         <Services language={language} />
-        <AboutUs />
+        <AboutUs language={language} />
       </main>
     </>
   );
