@@ -2,7 +2,7 @@ import './AboutUs.css';
 
 export default function AboutUs() {
   return (
-    <section className="about-us" id="about" aria-labelledby="about-us-title">
+    <section className="about-us" id="about" aria-labelledby="about-us-title" style={{ '--about-us-image': `url("${import.meta.env.BASE_URL}images/About-Us-Section.webp")` }}>
       <div className="about-us__panel">
         <p className="about-us__eyebrow">Про нас</p>
         <h2 className="about-us__title" id="about-us-title">Мова — це більше,<br />ніж слова.</h2>
