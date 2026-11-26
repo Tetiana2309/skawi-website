@@ -1,0 +1,106 @@
+.about-us {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 1002px;
+  padding: 80px 24px;
+  background: #023536 url('/skawi-website/images/About-Us-Section.webp') center / cover no-repeat;
+  color: #023536;
+}
+
+.about-us__panel {
+  position: relative;
+  flex: 0 1 910px;
+  width: 910px;
+  height: 629px;
+  border-radius: 20px;
+  background: rgba(246, 255, 252, .6);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  text-align: center;
+  overflow: hidden;
+}
+
+.about-us__eyebrow {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+}
+
+.about-us__title {
+  position: absolute;
+  top: 121px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 556px;
+  max-width: calc(100% - 48px);
+  margin: 0;
+  font-family: "Roboto Serif", Georgia, serif;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 110%;
+  text-align: center;
+}
+
+.about-us__signature {
+  position: absolute;
+  top: 231px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 110%;
+  letter-spacing: .6px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.about-us__body {
+  position: absolute;
+  top: 304px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 738px;
+  max-width: calc(100% - 60px);
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 160%;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .about-us { min-height: 760px; padding: 72px 20px; }
+  .about-us__panel { width: 100%; height: auto; min-height: 629px; padding: 75px 28px 72px; overflow: visible; }
+  .about-us__eyebrow, .about-us__title, .about-us__signature, .about-us__body {
+    position: static;
+    transform: none;
+    width: auto;
+    max-width: 100%;
+  }
+  .about-us__eyebrow { margin-bottom: 24px; }
+  .about-us__title { font-size: clamp(30px, 5vw, 38px); }
+  .about-us__signature { margin-top: 22px; }
+  .about-us__body { margin-top: 48px; font-size: clamp(16px, 2.7vw, 22px); }
+}
+
+@media (max-width: 480px) {
+  .about-us { min-height: 0; padding: 60px 14px; }
+  .about-us__panel { padding: 50px 20px; min-height: 0; }
+  .about-us__title { font-size: 29px; }
+  .about-us__body { margin-top: 35px; font-size: 16px; line-height: 1.6; }
+}
