@@ -124,7 +124,10 @@ export default function Services() {
       previousTime = now;
       const goal = target();
       const rate = 3.6;
-      const factor = reduced ? 1 : 1 - Math.exp(-dt * rate);
+      // Lenis already eases the document scroll. Do not apply a second lag
+      // on narrower desktops: it makes pinned content appear to judder.
+      const desktop1440 = window.matchMedia('(min-width: 1101px) and (max-width: 1550px)').matches;
+      const factor = (reduced || desktop1440) ? 1 : 1 - Math.exp(-dt * rate);
       const value = progressRef.current + (goal - progressRef.current) * factor;
       progressRef.current = Math.abs(goal - value) < .0005 ? goal : value;
       painter.current(progressRef.current, reduced);
