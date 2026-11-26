@@ -68,29 +68,71 @@
   .skawi-preloader__coin { animation: none; }
 }
 
-/* In-page section transitions reuse the opening splash without rotating its logo. */
-.skawi-preloader--static .skawi-preloader__coin {
-  animation: none;
-  transform: none;
-  will-change: auto;
+/* Bali-inspired section navigation transition, separate from the opening preloader. */
+.skawi-section-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #F6FFFC;
+  pointer-events: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1050ms cubic-bezier(.65, 0, .35, 1);
+  will-change: clip-path;
 }
 
-/* Section navigation only: the curtain enters from below and exits down. */
-.skawi-preloader--static {
-  background: #F6FFFC;
-  animation: skawi-section-splash-in 950ms cubic-bezier(.65, 0, .2, 1) backwards;
-  transition: transform 1700ms cubic-bezier(.65, 0, .2, 1);
+.skawi-section-transition--enter,
+.skawi-section-transition--logo-in,
+.skawi-section-transition--logo-out {
+  clip-path: inset(0 0 0 0);
 }
-.skawi-preloader--static.skawi-preloader--revealing {
-  transform: translateY(100%);
+
+.skawi-section-transition--exit,
+.skawi-section-transition--idle {
+  clip-path: inset(100% 0 0 0);
 }
-@keyframes skawi-section-splash-in {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+
+.skawi-section-transition__logo {
+  width: 220px;
+  height: 220px;
+  opacity: 0;
+  clip-path: inset(0 50% 0 50%);
+  transition:
+    clip-path 1180ms cubic-bezier(.65, 0, .35, 1),
+    opacity 1180ms cubic-bezier(.65, 0, .35, 1);
+  will-change: clip-path, opacity;
 }
+
+.skawi-section-transition__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: .4px solid #DABE73;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.skawi-section-transition--logo-in .skawi-section-transition__logo {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+
+.skawi-section-transition--logo-out .skawi-section-transition__logo {
+  transition-duration: 780ms;
+}
+
+@media (max-width: 600px) {
+  .skawi-section-transition__logo {
+    width: 180px;
+    height: 180px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .skawi-preloader--static {
-    animation-duration: 150ms;
+  .skawi-section-transition,
+  .skawi-section-transition__logo {
     transition-duration: 150ms;
   }
 }
