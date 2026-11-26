@@ -9,11 +9,18 @@
   color: #023536;
   font-size: 18px;
   font-weight: 500;
-  cursor: default;
+  cursor: pointer;
   transition: transform .25s ease, opacity .25s ease;
+}
+.language-switcher__button:hover,
+.language-switcher__button:focus-visible {
+  transform: translateY(-3px);
+  opacity: .58;
 }
 .language-switcher__button.is-active { font-weight: 700; }
 @media (prefers-reduced-motion: reduce) {
   .language-switcher__button { transition: none; }
+  .language-switcher__button:hover,
+  .language-switcher__button:focus-visible { transform: none; }
 }
 @media (max-width: 767px) { .language-switcher { gap: 6px; }.language-switcher__item { gap: 6px; }.language-switcher__button { font-size: 14px; }.language-switcher__divider { height: 19px; } }
