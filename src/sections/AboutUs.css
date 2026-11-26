@@ -30,7 +30,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: var(--about-photo-radius);
-  transform: scale(var(--about-photo-scale));
+  transform: translate3d(0, 0, 0) scale(var(--about-photo-scale));
   transform-origin: center;
   will-change: transform;
 }
