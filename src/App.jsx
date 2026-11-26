@@ -31,8 +31,8 @@ export default function App() {
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       }
       setSectionTransition({ href, phase: 'revealing' });
-    }, 600);
-    const finish = window.setTimeout(() => setSectionTransition(null), 1800);
+    }, 1000);
+    const finish = window.setTimeout(() => setSectionTransition(null), 2200);
     transitionTimers.current = [navigate, finish];
   }, []);
 
