@@ -30,8 +30,8 @@ export default function AboutUs() {
       const photo = ease(progress / 0.73);
       const copy = ease((progress - 0.65) / 0.3);
 
-      stage.style.setProperty('--about-photo-scale', (0.58 + photo * 0.42).toFixed(4));
-      stage.style.setProperty('--about-photo-radius', `${Math.round((1 - photo) * 30)}px`);
+      stage.style.setProperty('--about-photo-scale', (0.58 + photo * 0.42).toFixed(6));
+      stage.style.setProperty('--about-photo-radius', `${((1 - photo) * 30).toFixed(2)}px`);
       stage.style.setProperty('--about-copy-opacity', copy.toFixed(4));
       stage.style.setProperty('--about-copy-shift', `${((1 - copy) * 22).toFixed(2)}px`);
     };
