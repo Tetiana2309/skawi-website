@@ -12,7 +12,7 @@
 .hero__gradient { position: absolute; inset: -1px; background: linear-gradient(to bottom, rgb(246 255 252 / 0%) 54.89%, #f6fffc 96.407%); }
 .hero__top { display: flex; align-items: flex-start; width: calc(100% - 80px); margin: 0 auto; }
 .hero__heading { position: absolute; left: 50%; bottom: 14%; width: max-content; max-width: calc(100% - 40px); transform: translateX(-50%); }
-.hero__pretitle { margin: 0 0 -4px; font-size: clamp(36px, 3.65vw, 70px); font-style: italic; font-weight: 400; line-height: 1.14; letter-spacing: -1px; }
+.hero__pretitle { margin: 0 0 -8px; font-size: clamp(36px, 3.65vw, 70px); font-style: italic; font-weight: 400; line-height: 1.14; letter-spacing: -1px; }
 .hero__heading h1 { margin: 0; font-size: clamp(62px, 7.3vw, 140px); font-weight: 500; line-height: 1.14; white-space: nowrap; letter-spacing: -1px; }
 @media (max-width: 1320px) {
   .hero__heading { bottom: 17%; }
@@ -20,7 +20,7 @@
 @media (max-width: 767px) {
   .hero { min-height: 650px; height: 100svh; }
   .hero__heading { bottom: 18%; }
-  .hero__pretitle { margin-bottom: -4px; font-size: clamp(32px, 8vw, 52px); letter-spacing: -1px; }
+  .hero__pretitle { margin-bottom: -8px; font-size: clamp(32px, 8vw, 52px); letter-spacing: -1px; }
   .hero__heading h1 { font-size: clamp(48px, 10vw, 78px); letter-spacing: -1px; }
 }
 @media (max-width: 380px) {
