@@ -79,7 +79,7 @@
   background: #F6FFFC;
   pointer-events: none;
   clip-path: inset(100% 0 0 0);
-  transition: clip-path 1050ms cubic-bezier(.65, 0, .35, 1);
+  transition: clip-path 900ms cubic-bezier(.65, 0, .35, 1);
   will-change: clip-path;
 }
 
@@ -100,8 +100,8 @@
   opacity: 0;
   clip-path: inset(0 50% 0 50%);
   transition:
-    clip-path 1180ms cubic-bezier(.65, 0, .35, 1),
-    opacity 1180ms cubic-bezier(.65, 0, .35, 1);
+    clip-path 1000ms cubic-bezier(.65, 0, .35, 1),
+    opacity 1000ms cubic-bezier(.65, 0, .35, 1);
   will-change: clip-path, opacity;
 }
 
@@ -119,7 +119,7 @@
 }
 
 .skawi-section-transition--logo-out .skawi-section-transition__logo {
-  transition-duration: 780ms;
+  transition-duration: 650ms;
 }
 
 @media (max-width: 600px) {
