@@ -4,6 +4,7 @@ import 'lenis/dist/lenis.css';
 import Hero from './sections/Hero.jsx';
 import Services from './sections/Services.jsx';
 import AboutUs from './sections/AboutUs.jsx';
+import Team from './sections/Team.jsx';
 import Preloader from './components/Preloader.jsx';
 import './components/Preloader.css';
 
@@ -96,6 +97,7 @@ export default function App() {
         <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
         <Services language={language} />
         <AboutUs language={language} />
+        <Team language={language} />
       </main>
     </>
   );
