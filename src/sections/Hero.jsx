@@ -1,10 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
 
+const heroTitles = {
+  UA: ['Твоя Мова.', 'Твоя Свобода.'],
+  PL: ['Twój Język.', 'Twoja Wolność.'],
+  EN: ['Your Language.', 'Your Freedom.'],
+  SP: ['Tu Idioma.', 'Tu Libertad.'],
+  RU: ['Твой Язык.', 'Твоя Свобода.'],
+};
+
 export default function Hero({ revealing = false }) {
   const videoRef = useRef(null);
+  const [language, setLanguage] = useState('UA');
 
   useEffect(() => {
     const video = videoRef.current;
@@ -32,12 +41,12 @@ export default function Hero({ revealing = false }) {
 
       <div className="hero__top">
         <Logo />
-        <Header />
+        <Header language={language} onLanguageChange={setLanguage} />
       </div>
 
       <div className="hero__heading" id="hero-heading">
-        <p className="hero__pretitle">Twój Język.</p>
-        <h1>Twoja Wolność.</h1>
+        <p className="hero__pretitle">{heroTitles[language][0]}</p>
+        <h1>{heroTitles[language][1]}</h1>
       </div>
     </section>
   );
