@@ -8,7 +8,8 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: auto; }
-body { margin: 0; min-width: 320px; }
+body { margin: 0; min-width: 320px; background: #f6fffc; }
+#root, main { background: #f6fffc; }
 button, input, textarea { font: inherit; }
 button:focus-visible, a:focus-visible { outline: 2px solid #dabe73; outline-offset: 4px; }
 img, video { display: block; max-width: 100%; }
