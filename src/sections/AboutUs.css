@@ -60,7 +60,7 @@
   left: 0;
   width: 100%;
   margin: 0;
-  font-family: Inter, sans-serif;
+  font-family: "Inter";
   font-size: 14px;
   font-weight: 400;
   line-height: normal;
@@ -76,7 +76,7 @@
   width: 556px;
   max-width: calc(100% - 48px);
   margin: 0;
-  font-family: "Roboto Serif", Georgia, serif;
+  font-family: "Inter";
   font-size: 38px;
   font-weight: 500;
   line-height: 110%;
@@ -89,7 +89,7 @@
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-family: Inter, sans-serif;
+  font-family: "Inter";
   font-size: 12px;
   font-style: italic;
   font-weight: 400;
@@ -107,7 +107,7 @@
   width: 738px;
   max-width: calc(100% - 60px);
   margin: 0;
-  font-family: Inter, sans-serif;
+  font-family: "Inter";
   font-size: 22px;
   font-weight: 500;
   line-height: 160%;
