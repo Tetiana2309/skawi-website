@@ -6,7 +6,7 @@
   width: 100%;
   min-height: 1002px;
   padding: 80px 24px;
-  background: #023536 url('/skawi-website/images/About-Us-Section.webp') center / cover no-repeat;
+  background: #023536 var(--about-us-image) center / cover no-repeat;
   color: #023536;
 }
 
