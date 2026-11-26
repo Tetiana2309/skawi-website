@@ -7,7 +7,7 @@ const ease = (value) => {
   return t * t * (3 - 2 * t);
 };
 
-export default function AboutUs() {
+export default function AboutUs({ copy, language }) {
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
 
@@ -75,7 +75,7 @@ export default function AboutUs() {
   }, []);
 
   return (
-    <section className="about-us-scroll" id="about" ref={sectionRef} aria-labelledby="about-us-title">
+    <section className="about-us-scroll" id="about" ref={sectionRef} aria-labelledby="about-us-title" lang={language === "UA" ? "uk" : language.toLowerCase() === "sp" ? "es" : language.toLowerCase()}>
       <div className="about-us" ref={stageRef}>
         <div
           className="about-us__photo"
@@ -83,12 +83,10 @@ export default function AboutUs() {
           style={{ backgroundImage: `url("${import.meta.env.BASE_URL}images/About-Us-Section.webp")` }}
         />
         <div className="about-us__panel">
-          <p className="about-us__eyebrow">Про нас</p>
-          <h2 className="about-us__title" id="about-us-title">Мова — це більше,<br />ніж слова.</h2>
-          <p className="about-us__signature">Філософія SKAWI</p>
-          <p className="about-us__body">
-            Skawi — мовна школа в Лодзі. Ми допомагаємо не просто вивчати іноземні мови, а впевнено спілкуватися ними в житті. Навчаємо стаціонарно й онлайн на усіх рівнях складності. На заняттях тренуємо вимову, відпрацьовуємо живі діалоги й підбираємо завдання під твої цілі, щоб тобі було легше зробити те, заради чого ти вчиш мову: заговорити з колегами, пояснити що турбує, чи впевненіше піти на співбесіду.
-          </p>
+          <p className="about-us__eyebrow">{copy.about.eyebrow}</p>
+          <h2 className="about-us__title" id="about-us-title">{copy.about.title[0]}<br />{copy.about.title[1]}</h2>
+          <p className="about-us__signature">{copy.about.signature}</p>
+          <p className="about-us__body">{copy.about.body}</p>
         </div>
       </div>
     </section>
