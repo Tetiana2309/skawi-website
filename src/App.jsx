@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 import Hero from './sections/Hero.jsx';
 import Services from './sections/Services.jsx';
 import AboutUs from './sections/AboutUs.jsx';
@@ -13,7 +14,13 @@ export default function App() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     // Same smooth-wheel scrolling setup used on the Bali Villa website.
-    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
+    const lenis = new Lenis({
+      lerp: 0.045,
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      syncTouch: false,
+      autoResize: true,
+    });
     let frame;
     const animate = (time) => {
       lenis.raf(time);
