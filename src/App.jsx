@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import Hero from './sections/Hero.jsx';
 import Services from './sections/Services.jsx';
+import AboutUs from './sections/AboutUs.jsx';
 import Preloader from './components/Preloader.jsx';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
       <main>
         <Hero revealing={heroRevealing} />
         <Services />
+        <AboutUs />
       </main>
     </>
   );
