@@ -76,104 +76,111 @@ const pad = (number) => String(number).padStart(2, '0');
 
 export default function Team({ language = 'UA' }) {
   const copy = translations[language] ?? translations.UA;
+  const rootRef = useRef(null);
+  const stageRef = useRef(null);
+  const trackRef = useRef(null);
+  const activeRef = useRef(0);
   const [active, setActive] = useState(0);
-  const [offset, setOffset] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const viewportRef = useRef(null);
-  const dragRef = useRef(null);
-  const wheelLock = useRef(false);
-
-  const show = (index) => {
-    setActive(Math.max(0, Math.min(teachers.length - 1, index)));
-    setOffset(0);
-  };
-  const move = (direction) => show(active + direction);
-
-  const onPointerDown = (event) => {
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-    dragRef.current = { id: event.pointerId, start: event.clientX };
-    setDragging(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const onPointerMove = (event) => {
-    if (!dragRef.current || dragRef.current.id !== event.pointerId) return;
-    const delta = event.clientX - dragRef.current.start;
-    const edge = (active === 0 && delta > 0) || (active === teachers.length - 1 && delta < 0);
-    setOffset(edge ? delta * 0.22 : delta);
-  };
-  const finishDrag = (event) => {
-    if (!dragRef.current || dragRef.current.id !== event.pointerId) return;
-    const delta = event.clientX - dragRef.current.start;
-    const threshold = Math.min(140, (viewportRef.current?.clientWidth ?? 700) * 0.14);
-    dragRef.current = null;
-    setDragging(false);
-    if (Math.abs(delta) > threshold) move(delta < 0 ? 1 : -1);
-    else setOffset(0);
-  };
 
   useEffect(() => {
-    const onKeyDown = (event) => {
-      if (!viewportRef.current?.contains(document.activeElement)) return;
-      if (event.key === 'ArrowLeft') { event.preventDefault(); show(active - 1); }
-      if (event.key === 'ArrowRight') { event.preventDefault(); show(active + 1); }
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const root = rootRef.current;
+      const stage = stageRef.current;
+      const track = trackRef.current;
+      if (!root || !stage || !track) return;
+
+      const scrollDistance = Math.max(1, root.offsetHeight - stage.offsetHeight);
+      const progress = Math.max(0, Math.min(1, -root.getBoundingClientRect().top / scrollDistance));
+      const slidePosition = progress * (teachers.length - 1);
+
+      // Each full screen of vertical scrolling moves exactly one teacher left.
+      // No snapping or click-dependent motion: the carousel follows the scroll.
+      track.style.transform = 'translate3d(' + (-slidePosition * 100) + '%, 0, 0)';
+
+      const nextActive = Math.round(slidePosition);
+      if (nextActive !== activeRef.current) {
+        activeRef.current = nextActive;
+        setActive(nextActive);
+      }
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [active]);
+
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
+  }, []);
+
+  const goToTeacher = (index) => {
+    const root = rootRef.current;
+    const stage = stageRef.current;
+    if (!root || !stage) return;
+    const destination = Math.max(0, Math.min(teachers.length - 1, index));
+    const start = window.scrollY + root.getBoundingClientRect().top;
+    const distance = Math.max(0, root.offsetHeight - stage.offsetHeight);
+    window.scrollTo({
+      top: start + distance * destination / (teachers.length - 1),
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    });
+  };
 
   return (
-    <section className="team" id="team" aria-label={copy.heading}>
-      <div className="team__topline">
-        <span>{copy.heading}</span>
-        <span>{copy.slogan}</span>
-      </div>
-      <div
-        className="team__viewport"
-        ref={viewportRef}
-        tabIndex={0}
-        role="region"
-        aria-roledescription="carousel"
-        aria-label={copy.heading}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={finishDrag}
-        onPointerCancel={finishDrag}
-      >
-        <div className="team__track" style={{ transform: `translate3d(calc(${-active * 100}% + ${offset}px), 0, 0)`, transition: dragging ? 'none' : undefined }}>
-          {teachers.map((teacher, i) => {
-            const localized = copy.teachers[i];
-            return (
-              <article className="team__slide" key={teacher.image} aria-hidden={i !== active} inert={i !== active}>
-                <div className="team__photo">
-                  <img src={`${import.meta.env.BASE_URL}images/${teacher.image}`} alt={localized.name} draggable="false" />
-                </div>
-                <div className="team__details">
-                  <h2>{localized.name}</h2>
-                  <p className="team__role">{localized.role}</p>
-                  <p className="team__description">{localized.description}</p>
-                </div>
-                <figure className="team__quotation">
-                  <blockquote>{localized.quote}</blockquote>
-                  <figcaption>{localized.author}</figcaption>
-                </figure>
-              </article>
-            );
-          })}
+    <section className="team-scroll" id="team" ref={rootRef} aria-label={copy.heading}>
+      <div className="team" ref={stageRef}>
+        <div className="team__topline">
+          <span>{copy.heading}</span>
+          <span>{copy.slogan}</span>
         </div>
-      </div>
-      <div className="team__controls">
-        <div className="team__arrows">
-          <button type="button" onClick={() => move(-1)} disabled={active === 0} aria-label="Previous teacher">←</button>
-          <button type="button" onClick={() => move(1)} disabled={active === teachers.length - 1} aria-label="Next teacher">→</button>
-        </div>
-        <div className="team__pagination" aria-label={`${pad(active + 1)} / ${pad(teachers.length)}`}>
-          <span>{pad(active + 1)}</span>
-          <div className="team__progress">
-            {teachers.map((teacher, i) => (
-              <button key={teacher.image} type="button" aria-label={`Slide ${i + 1}`} aria-current={i === active ? 'true' : undefined} onClick={() => show(i)} className={i <= active ? 'is-current' : ''} />
-            ))}
+        <div className="team__viewport" role="region" aria-roledescription="carousel" aria-label={copy.heading}>
+          <div className="team__track" ref={trackRef}>
+            {teachers.map((teacher, i) => {
+              const localized = copy.teachers[i];
+              return (
+                <article className="team__slide" key={teacher.image} aria-hidden={i !== active} inert={i !== active}>
+                  <div className="team__photo">
+                    <img src={import.meta.env.BASE_URL + 'images/' + teacher.image} alt={localized.name} draggable="false" />
+                  </div>
+                  <div className="team__details">
+                    <h2>{localized.name}</h2>
+                    <p className="team__role">{localized.role}</p>
+                    <p className="team__description">{localized.description}</p>
+                  </div>
+                  <figure className="team__quotation">
+                    <blockquote>{localized.quote}</blockquote>
+                    <figcaption>{localized.author}</figcaption>
+                  </figure>
+                </article>
+              );
+            })}
           </div>
-          <span>{pad(teachers.length)}</span>
+        </div>
+        <div className="team__controls">
+          <div className="team__pagination" aria-label={pad(active + 1) + ' / ' + pad(teachers.length)}>
+            <span>{pad(active + 1)}</span>
+            <div className="team__progress">
+              {teachers.map((teacher, i) => (
+                <button
+                  key={teacher.image}
+                  type="button"
+                  aria-label={'Slide ' + (i + 1)}
+                  aria-current={i === active ? 'true' : undefined}
+                  onClick={() => goToTeacher(i)}
+                  className={i <= active ? 'is-current' : ''}
+                />
+              ))}
+            </div>
+            <span>{pad(teachers.length)}</span>
+          </div>
         </div>
       </div>
     </section>
