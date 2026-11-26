@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
+
+.team {
+  --team-light: #F6FFFC;
+  --team-dark: #023536;
+  position: relative;
+  width: 100%;
+  height: 1002px;
+  max-height: none;
+  overflow: hidden;
+  color: var(--team-dark);
+  background: linear-gradient(to bottom, var(--team-light) 0 51.896%, var(--team-dark) 51.896% 100%);
+  font-family: "Inter", sans-serif;
+}
+
+.team__topline {
+  position: absolute;
+  top: 60px;
+  left: 40px;
+  right: 40px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  color: var(--team-dark);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 15px;
+  text-transform: uppercase;
+}
+.team__topline span:last-child { text-align: right; }
+
+.team__viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  outline-offset: -6px;
+}
+.team__viewport:active { cursor: grabbing; }
+.team__track {
+  height: 100%;
+  display: flex;
+  transition: transform 820ms cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+}
+.team__slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+  user-select: none;
+}
+.team__photo {
+  position: absolute;
+  left: 49.375%;
+  top: 163px;
+  width: 19.895833%;
+  height: 546px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.team__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.team__details {
+  position: absolute;
+  left: 74.74%;
+  top: 212px;
+  width: 23.02%;
+  pointer-events: none;
+}
+.team__details h2 {
+  margin: 0;
+  font: 500 54px/1.08 "Inter", sans-serif;
+  letter-spacing: -1px;
+}
+.team__role {
+  margin: 22px 0 0;
+  font: 400 14px/1.3 "Inter", sans-serif;
+}
+.team__description {
+  margin: 50px 0 0;
+  font: 500 22px/1.3 "Inter", sans-serif;
+}
+.team__quotation {
+  position: absolute;
+  left: 74.69%;
+  top: 623px;
+  width: 21.46%;
+  margin: 0;
+  color: #EAF4F0;
+  pointer-events: none;
+}
+.team__quotation blockquote {
+  margin: 0;
+  font: 400 24px/1.22 "Prata", Georgia, serif;
+}
+.team__quotation figcaption {
+  margin-top: 10px;
+  text-align: right;
+  font: 400 16px/1.3 "Prata", Georgia, serif;
+}
+.team__controls {
+  position: absolute;
+  z-index: 3;
+  bottom: 100px;
+  left: 40px;
+  right: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #A2E1CD;
+}
+.team__arrows { display: flex; gap: 12px; }
+.team__arrows button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #A2E1CD;
+  border-radius: 50%;
+  color: #A2E1CD;
+  background: transparent;
+  font: 400 23px/1 "Inter", sans-serif;
+  cursor: pointer;
+  transition: color 250ms ease, background-color 250ms ease, opacity 250ms ease;
+}
+.team__arrows button:hover:not(:disabled) { background: #A2E1CD; color: #023536; }
+.team__arrows button:disabled { opacity: .3; cursor: default; }
+.team__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 445px;
+  font: 400 24px/1.1 "Inter", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.team__progress {
+  display: flex;
+  width: 259px;
+  gap: 2px;
+  align-items: center;
+}
+.team__progress button {
+  flex: 1;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+}
+.team__progress button::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #A2E1CD;
+  opacity: .27;
+  transition: opacity 350ms ease;
+}
+.team__progress button.is-current::after { opacity: 1; }
+
+@media (min-width: 1101px) and (max-width: 1550px) {
+  .team { height: 100vh; min-height: 750px; }
+  .team__topline { top: 35px; }
+  .team__photo { top: 16.27%; height: 54.5%; }
+  .team__details { top: 21.16%; }
+  .team__quotation { top: 62.2%; }
+  .team__details h2 { font-size: clamp(38px, 2.8vw, 54px); }
+  .team__description { font-size: clamp(16px, 1.15vw, 22px); margin-top: 34px; }
+  .team__quotation blockquote { font-size: clamp(17px, 1.25vw, 24px); }
+  .team__controls { bottom: 8%; }
+}
+@media (max-width: 1100px) {
+  .team { height: 780px; }
+  .team__topline { top: 30px; left: 25px; right: 25px; font-size: 12px; }
+  .team__photo { left: 35%; width: 30%; top: 125px; height: 420px; }
+  .team__details { left: 69%; top: 140px; width: 28%; }
+  .team__details h2 { font-size: 42px; }
+  .team__role { margin-top: 12px; font-size: 12px; }
+  .team__description { margin-top: 26px; font-size: 17px; }
+  .team__quotation { left: 69%; top: 515px; width: 28%; }
+  .team__quotation blockquote { font-size: 17px; }
+  .team__quotation figcaption { font-size: 12px; }
+  .team__controls { left: 25px; right: 25px; bottom: 45px; }
+  .team__pagination { width: 320px; font-size: 19px; }
+  .team__progress { width: 190px; }
+}
+@media (max-width: 700px) {
+  .team {
+    height: 860px;
+    background: linear-gradient(to bottom, var(--team-light) 0 57%, var(--team-dark) 57% 100%);
+  }
+  .team__topline { top: 24px; left: 20px; right: 20px; font-size: 10px; line-height: 1.4; }
+  .team__topline span:last-child { max-width: 48%; }
+  .team__photo { left: 8%; top: 100px; width: 53%; height: 370px; }
+  .team__details { left: 65%; top: 115px; width: 32%; }
+  .team__details h2 { font-size: clamp(22px, 6vw, 34px); letter-spacing: -.5px; overflow-wrap: anywhere; }
+  .team__role { font-size: 10px; line-height: 1.45; }
+  .team__description { font-size: clamp(11px, 2.8vw, 15px); line-height: 1.35; margin-top: 18px; }
+  .team__quotation { left: 8%; top: 535px; width: 84%; }
+  .team__quotation blockquote { font-size: 19px; }
+  .team__quotation figcaption { font-size: 13px; }
+  .team__controls { left: 20px; right: 20px; bottom: 35px; }
+  .team__arrows button { height: 40px; width: 40px; }
+  .team__pagination { width: min(48%, 225px); font-size: 16px; }
+  .team__progress { width: 53%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team__track { transition-duration: 0ms; }
+  .team__arrows button, .team__progress button::after { transition-duration: 0ms; }
+}
