@@ -76,9 +76,9 @@
 }
 .team__details {
   position: absolute;
-  left: 74.74%;
+  left: calc(50% + 191px + 40px);
   top: 21.16%;
-  width: 23.02%;
+  width: calc(50% - 191px - 80px);
   pointer-events: none;
 }
 .team__details h2 {
@@ -96,9 +96,9 @@
 }
 .team__quotation {
   position: absolute;
-  left: 74.69%;
+  left: calc(50% + 191px + 40px);
   top: 62.2%;
-  width: 21.46%;
+  width: calc(50% - 191px - 80px);
   margin: 0;
   color: #EAF4F0;
   pointer-events: none;
@@ -170,11 +170,11 @@
 }
 @media (max-width: 1100px) {
   .team__topline { top: 30px; left: 25px; right: 25px; font-size: 12px; }
-  .team__details { left: 69%; top: 140px; width: 28%; }
+  .team__details { top: 140px; }
   .team__details h2 { font-size: 42px; }
   .team__role { margin-top: 12px; font-size: 12px; }
   .team__description { margin-top: 26px; font-size: 17px; }
-  .team__quotation { left: 69%; top: 515px; width: 28%; }
+  .team__quotation { top: 515px; }
   .team__quotation blockquote { font-size: 17px; }
   .team__quotation figcaption { font-size: 12px; }
   .team__controls { left: 25px; right: 25px; bottom: 45px; }
