@@ -133,7 +133,7 @@
 }
 .services__card-inner {
   position: absolute;
-  top: calc(50% - 40px);
+  top: calc(50% - 50px);
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
