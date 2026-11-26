@@ -84,40 +84,67 @@ export default function Team({ language = 'UA' }) {
 
   useEffect(() => {
     let frame = 0;
+    let previousTime = 0;
+    let displayedX = null;
+    let startY = 0;
+    let travelY = 1;
+    let slideWidth = 1;
+    let targetX = 0;
 
-    const update = () => {
-      frame = 0;
+    const measure = () => {
       const root = rootRef.current;
       const stage = stageRef.current;
       const track = trackRef.current;
       if (!root || !stage || !track) return;
+      startY = window.scrollY + root.getBoundingClientRect().top;
+      travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
+      slideWidth = track.clientWidth;
+    };
 
-      const scrollDistance = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      const progress = Math.max(0, Math.min(1, -root.getBoundingClientRect().top / scrollDistance));
-      const slidePosition = progress * (teachers.length - 1);
+    const paint = (time) => {
+      frame = 0;
+      const track = trackRef.current;
+      if (!track) return;
+      const delta = previousTime ? Math.min(0.05, (time - previousTime) / 1000) : 1 / 60;
+      previousTime = time;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const factor = reduceMotion ? 1 : 1 - Math.exp(-delta * 12);
+      if (displayedX === null) displayedX = targetX;
+      else displayedX += (targetX - displayedX) * factor;
+      if (Math.abs(targetX - displayedX) < 0.1) displayedX = targetX;
 
-      // Each full screen of vertical scrolling moves exactly one teacher left.
-      // No snapping or click-dependent motion: the carousel follows the scroll.
-      track.style.transform = 'translate3d(' + (-slidePosition * 100) + '%, 0, 0)';
+      // Pixel-based translation avoids layout rounding in percentage transforms.
+      track.style.transform = 'translate3d(' + displayedX.toFixed(2) + 'px, 0, 0)';
 
-      const nextActive = Math.round(slidePosition);
+      if (displayedX !== targetX) frame = window.requestAnimationFrame(paint);
+      else previousTime = 0;
+    };
+
+    const update = () => {
+      const progress = Math.max(0, Math.min(1, (window.scrollY - startY) / travelY));
+      const position = progress * (teachers.length - 1);
+      targetX = -position * slideWidth;
+      const nextActive = Math.round(position);
       if (nextActive !== activeRef.current) {
         activeRef.current = nextActive;
         setActive(nextActive);
       }
+      if (!frame) frame = window.requestAnimationFrame(paint);
     };
 
-    const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(update);
+    const onResize = () => {
+      measure();
+      update();
     };
 
+    measure();
     update();
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', onResize);
     return () => {
       window.cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
