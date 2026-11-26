@@ -10,7 +10,7 @@ const headerTranslations = {
     cta: 'ПОЧАТИ НАВЧАННЯ',
   },
   PL: {
-    nav: ['Strona główna', 'Nasze usługi', 'O nas', 'Zalety', 'Galeria', 'Kontakt'],
+    nav: ['Główna', 'Nasze usługi', 'O nas', 'Zalety', 'Galeria', 'Kontakt'],
     cta: 'ROZPOCZNIJ NAUKĘ',
   },
   EN: {
