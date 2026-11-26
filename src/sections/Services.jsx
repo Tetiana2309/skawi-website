@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './Services.css';
 
-const services = [
+const ukrainianServices = [
   {
     left: 'Знаєш, чого очікувати',
     right: 'Легше впоратися з іспитом',
@@ -52,10 +52,237 @@ const services = [
   },
 ];
 
+
+// Only text changes with the selected language; original CSS and animations are shared.
+const serviceTranslations = {
+  "PL": {
+    "eyebrow": "Kierunki nauki",
+    "quote": "„Granice mojego języka oznaczają granice mojego świata”",
+    "author": "— Ludwig Wittgenstein",
+    "services": [
+      {
+        "left": "Wiesz, czego się spodziewać",
+        "right": "Łatwiej zdać egzamin",
+        "title": "Przygotuj się do B1.",
+        "description": "Podejdź do egzaminu z pewnością siebie.",
+        "benefits": [
+          "Przygotowanie do B1 w małych grupach do 6 osób.",
+          "Omówienie formatu i typowych zadań egzaminacyjnych.",
+          "Wsparcie od pierwszych zajęć aż do egzaminu.",
+          "Nasi uczniowie z powodzeniem zdają B1/B2."
+        ]
+      },
+      {
+        "left": "Słowa stają się rozmowami",
+        "right": "A rozmowy otwierają możliwości",
+        "title": "Polski do życia i pracy",
+        "description": "Rozumiesz polski, ale trudno Ci mówić?",
+        "benefits": [
+          "Kompleksowa nauka do życia w Polsce.",
+          "Przygotowanie do rozmów kwalifikacyjnych i negocjacji.",
+          "Ćwiczenie codziennej komunikacji.",
+          "Polski do pracy i współpracy w zespole."
+        ]
+      },
+      {
+        "left": "Im lepiej poznajesz Polskę",
+        "right": "Tym szybciej czujesz się jak u siebie",
+        "title": "Język i adaptacja",
+        "description": "Odnajdź się w nowym życiu ze SKAWI.",
+        "benefits": [
+          "Poznawanie języka i kultury Polski.",
+          "Programy dopasowane do indywidualnych potrzeb.",
+          "Przygotowanie do egzaminów ze wsparciem.",
+          "Pomoc w adaptacji językowej."
+        ]
+      },
+      {
+        "left": "Tu wszystko zaczyna się od nauki",
+        "right": "A trwa dalej dzięki rozmowom",
+        "title": "Więcej niż nauka",
+        "description": "Odkrywaj więcej możliwości ze SKAWI.",
+        "benefits": [
+          "Klub „Kajzerka” — bezpłatne konwersacje dla uczniów.",
+          "Biblioteczka SKAWI — książki w różnych językach.",
+          "Neurobik — rozwój uwagi, refleksu i myślenia.",
+          "Zajęcia dla dzieci — nauka języka przez zabawę."
+        ]
+      }
+    ]
+  },
+  "EN": {
+    "eyebrow": "Learning paths",
+    "quote": "“The limits of my language mean the limits of my world”",
+    "author": "— Ludwig Wittgenstein",
+    "services": [
+      {
+        "left": "Know what to expect",
+        "right": "Make the exam easier",
+        "title": "Get ready for B1.",
+        "description": "Take your exam with confidence.",
+        "benefits": [
+          "B1 preparation in small groups of up to 6 people.",
+          "A clear look at the exam format and typical tasks.",
+          "Support from your first lesson through exam day.",
+          "Our students successfully pass B1/B2 exams."
+        ]
+      },
+      {
+        "left": "Words become conversations",
+        "right": "And conversations open doors",
+        "title": "Polish for life and work",
+        "description": "Understand Polish but find speaking difficult?",
+        "benefits": [
+          "Practical Polish for everyday life in Poland.",
+          "Preparation for interviews and negotiations.",
+          "Everyday conversation practice.",
+          "Polish for work and team communication."
+        ]
+      },
+      {
+        "left": "The more you discover Poland",
+        "right": "The sooner you feel at home",
+        "title": "Language and adaptation",
+        "description": "Settle into your new life with SKAWI.",
+        "benefits": [
+          "Explore the Polish language and culture.",
+          "Programs tailored to individual needs.",
+          "Supported preparation for language exams.",
+          "Help adapting through language."
+        ]
+      },
+      {
+        "left": "It all begins with learning",
+        "right": "And continues with conversation",
+        "title": "More than learning",
+        "description": "Discover more opportunities with SKAWI.",
+        "benefits": [
+          "Kajzerka Club — free speaking practice for students.",
+          "SKAWI library — books in different languages.",
+          "Neurobics — build focus, reflexes and thinking skills.",
+          "Kids' classes — learning languages through play."
+        ]
+      }
+    ]
+  },
+  "SP": {
+    "eyebrow": "Programas de aprendizaje",
+    "quote": "«Los límites de mi lenguaje son los límites de mi mundo»",
+    "author": "— Ludwig Wittgenstein",
+    "services": [
+      {
+        "left": "Sabes qué esperar",
+        "right": "El examen resulta más fácil",
+        "title": "Prepárate para el B1.",
+        "description": "Haz el examen con confianza.",
+        "benefits": [
+          "Preparación para el B1 en grupos de hasta 6 personas.",
+          "Explicación del formato y las tareas habituales del examen.",
+          "Apoyo desde la primera clase hasta el examen.",
+          "Nuestros alumnos aprueban los exámenes B1/B2."
+        ]
+      },
+      {
+        "left": "Las palabras se vuelven conversaciones",
+        "right": "Y las conversaciones abren oportunidades",
+        "title": "Polaco para la vida y el trabajo",
+        "description": "¿Entiendes polaco, pero te cuesta hablar?",
+        "benefits": [
+          "Aprendizaje práctico para vivir en Polonia.",
+          "Preparación para entrevistas y negociaciones.",
+          "Práctica de la comunicación cotidiana.",
+          "Polaco para el trabajo y la colaboración en equipo."
+        ]
+      },
+      {
+        "left": "Cuanto más conoces Polonia",
+        "right": "Antes te sientes como en casa",
+        "title": "Idioma y adaptación",
+        "description": "Adáptate a tu nueva vida con SKAWI.",
+        "benefits": [
+          "Descubre el idioma y la cultura de Polonia.",
+          "Programas adaptados a tus necesidades.",
+          "Preparación para exámenes con acompañamiento.",
+          "Apoyo para adaptarte a través del idioma."
+        ]
+      },
+      {
+        "left": "Todo empieza con el aprendizaje",
+        "right": "Y continúa con las conversaciones",
+        "title": "Más que aprender",
+        "description": "Descubre más oportunidades con SKAWI.",
+        "benefits": [
+          "Club «Kajzerka»: conversación gratuita para alumnos.",
+          "Biblioteca SKAWI: libros en distintos idiomas.",
+          "Neuróbica: mejora la atención, los reflejos y el pensamiento.",
+          "Clases infantiles: aprender idiomas jugando."
+        ]
+      }
+    ]
+  },
+  "RU": {
+    "eyebrow": "Направления обучения",
+    "quote": "«Границы моего языка означают границы моего мира»",
+    "author": "— Людвиг Витгенштейн",
+    "services": [
+      {
+        "left": "Знаешь, чего ожидать",
+        "right": "Легче справиться с экзаменом",
+        "title": "Подготовься к B1.",
+        "description": "Сдавай экзамен уверенно.",
+        "benefits": [
+          "Подготовка к B1 в мини-группах до 6 человек.",
+          "Разбор формата и типовых заданий экзамена.",
+          "Поддержка от первого занятия до экзамена.",
+          "Наши ученики успешно сдают B1/B2."
+        ]
+      },
+      {
+        "left": "Слова становятся разговорами",
+        "right": "А разговоры открывают возможности",
+        "title": "Польский для жизни и работы",
+        "description": "Понимаешь польский, но сложно говорить?",
+        "benefits": [
+          "Комплексное обучение для жизни в Польше.",
+          "Подготовка к собеседованиям и переговорам.",
+          "Практика повседневного общения.",
+          "Польский для работы и командного взаимодействия."
+        ]
+      },
+      {
+        "left": "Чем ближе знакомишься с Польшей",
+        "right": "Тем быстрее чувствуешь себя своим",
+        "title": "Язык и адаптация",
+        "description": "Адаптируйся к новой жизни со SKAWI.",
+        "benefits": [
+          "Знакомство с языком и культурой Польши.",
+          "Программы под индивидуальные потребности.",
+          "Подготовка к экзаменам с поддержкой.",
+          "Помощь в языковой адаптации."
+        ]
+      },
+      {
+        "left": "Здесь всё начинается с обучения",
+        "right": "А продолжается общением",
+        "title": "Больше чем обучение",
+        "description": "Открывай новые возможности со SKAWI.",
+        "benefits": [
+          "Клуб «Кайзерка» — бесплатная разговорная практика для учеников.",
+          "Библиотека SKAWI — книги на разных языках.",
+          "Нейробика — развитие внимания, реакции и мышления.",
+          "Занятия для детей — изучение языка через игру."
+        ]
+      }
+    ]
+  }
+};
+
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const pad = (n) => String(n).padStart(2, '0');
 
-export default function Services() {
+export default function Services({ language = 'UA' }) {
+  const translation = serviceTranslations[language];
+  const services = translation?.services ?? ukrainianServices;
   const root = useRef(null);
   const stage = useRef(null);
   const cards = useRef([]);
@@ -193,10 +420,10 @@ export default function Services() {
   };
 
   return (
-    <section className="services-scroll" id="services" ref={root} aria-label="Напрями навчання">
+    <section className="services-scroll" id="services" ref={root} aria-label={translation?.eyebrow ?? "Напрями навчання"}>
       <div className="services" ref={stage}>
-        <div className="services__eyebrow">напрями навчання</div>
-        <p className="services__quote">“межі моєї мови — це межі мого світу” <span>— Людвіг Вітгенштайн</span></p>
+        <div className="services__eyebrow">{translation?.eyebrow ?? "напрями навчання"}</div>
+        <p className="services__quote">{translation?.quote ?? "“межі моєї мови — це межі мого світу”"} <span>{translation?.author ?? "— Людвіг Вітгенштайн"}</span></p>
 
         <nav className="services__nav services__nav--left" aria-label="Оберіть напрям навчання">
           {services.map((service, i) => (
