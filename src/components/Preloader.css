@@ -110,8 +110,8 @@
   width: 100%;
   height: 100%;
   border: .4px solid #DABE73;
-  border-radius: 50%;
-  object-fit: cover;
+  border-radius: 0;
+  object-fit: contain;
 }
 
 .skawi-section-transition--logo-in .skawi-section-transition__logo {
