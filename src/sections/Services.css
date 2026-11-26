@@ -142,24 +142,6 @@
   flex-direction: column;
   align-items: center;
 }
-/* Keep the translated copy anchored to the Ukrainian reference, regardless
-   of differences in line wrapping or text length. No alternate layout metrics. */
-.services__copy {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-.services__copy--reference {
-  visibility: hidden;
-  pointer-events: none;
-}
-.services__copy--translated {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 .services__title {
   width: 100%;
   margin: 0;
