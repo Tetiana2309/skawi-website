@@ -11,7 +11,7 @@ const heroTitles = {
   RU: ['Твой Язык.', 'Твоя Свобода.'],
 };
 
-export default function Hero({ revealing = false, language = 'UA', onLanguageChange }) {
+export default function Hero({ revealing = false, language = 'UA', onLanguageChange, onSectionNavigate }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function Hero({ revealing = false, language = 'UA', onLanguageCha
 
       <div className="hero__top">
         <Logo />
-        <Header language={language} onLanguageChange={onLanguageChange} />
+        <Header language={language} onLanguageChange={onLanguageChange} onSectionNavigate={onSectionNavigate} />
       </div>
 
       <div className="hero__heading" id="hero-heading">
