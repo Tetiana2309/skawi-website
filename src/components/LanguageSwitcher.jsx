@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import './LanguageSwitcher.css';
 
 const languages = ['PL', 'UA', 'EN', 'SP', 'RU'];
 
-export default function LanguageSwitcher() {
-  const [active, setActive] = useState('UA');
+export default function LanguageSwitcher({ active = 'UA', onChange }) {
 
   return (
     <div className="language-switcher" role="group" aria-label="Язык сайта">
@@ -15,8 +13,8 @@ export default function LanguageSwitcher() {
             className={active === language ? 'language-switcher__button is-active' : 'language-switcher__button'}
             type="button"
             aria-pressed={active === language}
-            title="Выбор языка интерфейса; переводы добавим позже"
-            onClick={() => setActive(language)}
+            title={language}
+            onClick={() => onChange?.(language)}
           >
             {language}
           </button>
