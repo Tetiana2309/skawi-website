@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
@@ -11,9 +11,8 @@ const heroTitles = {
   RU: ['Твой Язык.', 'Твоя Свобода.'],
 };
 
-export default function Hero({ revealing = false }) {
+export default function Hero({ revealing = false, language = 'UA', onLanguageChange }) {
   const videoRef = useRef(null);
-  const [language, setLanguage] = useState('UA');
 
   useEffect(() => {
     const video = videoRef.current;
@@ -41,7 +40,7 @@ export default function Hero({ revealing = false }) {
 
       <div className="hero__top">
         <Logo />
-        <Header language={language} onLanguageChange={setLanguage} />
+        <Header language={language} onLanguageChange={onLanguageChange} />
       </div>
 
       <div className="hero__heading" id="hero-heading">
