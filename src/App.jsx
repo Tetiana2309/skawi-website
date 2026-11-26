@@ -15,7 +15,7 @@ export default function App() {
 
     // Same smooth-wheel scrolling setup used on the Bali Villa website.
     const lenis = new Lenis({
-      lerp: 0.045,
+      lerp: 0.08,
       smoothWheel: true,
       wheelMultiplier: 0.9,
       syncTouch: false,
