@@ -1,12 +1,61 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './Services.css';
-import { translations } from '../data/translations.js';
+
+const services = [
+  {
+    left: 'Знаєш, чого очікувати',
+    right: 'Легше впоратися з іспитом',
+    title: 'Підготуйся до B1.',
+    description: 'Складай іспит упевнено.',
+    benefits: [
+      'Підготовка до B1 у мінігрупах до 6 осіб.',
+      'Розбір формату і типових завдань іспиту.',
+      'Підтримка від першого заняття до іспиту.',
+      'Наші учні успішно складають B1/B2.',
+    ],
+  },
+  {
+    left: 'Слова стають розмовами',
+    right: 'А розмови відкривають можливості',
+    title: 'Польська для життя та роботи',
+    description: 'Розумієш польську, але складно говорити?',
+    benefits: [
+      'Комплексне навчання для життя в Польщі.',
+      'Підготовка до співбесід і переговорів.',
+      'Практика щоденного спілкування.',
+      'Польська для роботи та командної взаємодії.',
+    ],
+  },
+  {
+    left: 'Чим ближче знайомишся з Польщею',
+    right: 'Тим швидше почуваєшся своїм',
+    title: 'Мова та адаптація',
+    description: 'Адаптуйся до нового життя разом зі SKAWI.',
+    benefits: [
+      'Знайомство з мовою та культурою Польщі.',
+      'Програми під індивідуальні потреби.',
+      'Підготовка до іспитів із підтримкою.',
+      'Допомога в мовній адаптації.',
+    ],
+  },
+  {
+    left: 'Тут усе починається з навчання',
+    right: 'А продовжується спілкуванням',
+    title: 'Більше ніж навчання',
+    description: 'Відкривай більше можливостей зі SKAWI.',
+    benefits: [
+      'Клуб «Кайзерка» — розмовна практика без доплати для учнів.',
+      'Бібліотечка SKAWI — книжки різними мовами.',
+      'Нейробіка — розвиток уваги, реакції та мислення.',
+      'Дитячі заняття — вивчення мови через гру.',
+    ],
+  },
+];
 
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const pad = (n) => String(n).padStart(2, '0');
 
-export default function Services({ copy, language }) {
-  const services = copy.services;
+export default function Services() {
   const root = useRef(null);
   const stage = useRef(null);
   const cards = useRef([]);
@@ -144,10 +193,10 @@ export default function Services({ copy, language }) {
   };
 
   return (
-    <section className="services-scroll" id="services" ref={root} aria-label={copy.eyebrow}>
+    <section className="services-scroll" id="services" ref={root} aria-label="Напрями навчання">
       <div className="services" ref={stage}>
-        <div className="services__eyebrow">{copy.eyebrow}</div>
-        <p className="services__quote">{copy.quote} <span>{copy.quoteAuthor}</span></p>
+        <div className="services__eyebrow">напрями навчання</div>
+        <p className="services__quote">“межі моєї мови — це межі мого світу” <span>— Людвіг Вітгенштайн</span></p>
 
         <nav className="services__nav services__nav--left" aria-label="Оберіть напрям навчання">
           {services.map((service, i) => (
@@ -161,21 +210,11 @@ export default function Services({ copy, language }) {
           {services.map((service, i) => (
             <article key={service.left} ref={node => { cards.current[i] = node; }} className="services__card" style={{ zIndex: i + 1, visibility: i === 0 ? 'visible' : 'hidden', opacity: i === 0 ? 1 : 0 }} aria-hidden={active !== i} inert={active !== i}>
               <div className="services__card-inner">
-                {/* The Ukrainian copy defines the original geometry on every language. */}
-                <div className="services__copy services__copy--reference" aria-hidden="true" inert>
-                  <h2 className="services__title">{translations.UA.services[i].title}</h2>
-                  <p className="services__description">{translations.UA.services[i].description}</p>
-                  <ul className="services__benefits">
-                    {translations.UA.services[i].benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
-                  </ul>
-                </div>
-                <div className="services__copy services__copy--translated">
-                  <h2 className="services__title">{service.title}</h2>
-                  <p className="services__description">{service.description}</p>
-                  <ul className="services__benefits">
-                    {service.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
-                  </ul>
-                </div>
+                <h2 className="services__title">{service.title}</h2>
+                <p className="services__description">{service.description}</p>
+                <ul className="services__benefits">
+                  {service.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
+                </ul>
               </div>
             </article>
           ))}
