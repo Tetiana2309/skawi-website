@@ -74,3 +74,22 @@
   transform: none;
   will-change: auto;
 }
+
+/* Section navigation only: gentle appearance and downward curtain exit. */
+.skawi-preloader--static {
+  animation: skawi-section-splash-in 420ms ease-out both;
+  transition: transform 1100ms cubic-bezier(.65, 0, .2, 1);
+}
+.skawi-preloader--static.skawi-preloader--revealing {
+  transform: translateY(100%);
+}
+@keyframes skawi-section-splash-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skawi-preloader--static {
+    animation-duration: 150ms;
+    transition-duration: 150ms;
+  }
+}
