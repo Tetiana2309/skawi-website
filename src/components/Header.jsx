@@ -11,7 +11,7 @@ const links = [
   ['Контакти', '#contacts'],
 ];
 
-export default function Header() {
+export default function Header({ language = 'UA', onLanguageChange }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const ctaRef = useRef(null);
   const labelRef = useRef(null);
@@ -55,7 +55,7 @@ export default function Header() {
           <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>
         ))}
       </nav>
-      <LanguageSwitcher />
+      <LanguageSwitcher active={language} onChange={onLanguageChange} />
       <a className="hero-header__cta" href="#contacts" ref={ctaRef}>
         <span className="hero-header__cta-label" ref={labelRef}>ПОЧАТИ НАВЧАННЯ</span>
         <span className="hero-header__arrow" aria-hidden="true" ref={arrowRef}>
