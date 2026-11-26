@@ -57,6 +57,7 @@ const pad = (n) => String(n).padStart(2, '0');
 
 export default function Services() {
   const root = useRef(null);
+  const stage = useRef(null);
   const cards = useRef([]);
   const progressBar = useRef(null);
   const progressRef = useRef(0);
@@ -146,6 +147,45 @@ export default function Services() {
     };
   }, [last, reduced]);
 
+  useEffect(() => {
+    const section = root.current;
+    const pinnedStage = stage.current;
+    if (!section || !pinnedStage) return;
+
+    // Fixed positioning avoids fractional-pixel movement of sticky text
+    // while Lenis eases document scrolling on 1440px desktops.
+    const breakpoint = window.matchMedia('(min-width: 1101px) and (max-width: 1550px)');
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (!breakpoint.matches) {
+        pinnedStage.removeAttribute('data-pin');
+        return;
+      }
+
+      const rect = section.getBoundingClientRect();
+      const next = rect.top >= 0 ? 'before'
+        : rect.bottom <= window.innerHeight ? 'after'
+        : 'active';
+      if (pinnedStage.dataset.pin !== next) pinnedStage.dataset.pin = next;
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    breakpoint.addEventListener('change', schedule);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      pinnedStage.removeAttribute('data-pin');
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      breakpoint.removeEventListener('change', schedule);
+    };
+  }, []);
+
   const choose = (index) => {
     if (!root.current) return;
     const sectionStart = window.scrollY + root.current.getBoundingClientRect().top;
@@ -154,7 +194,7 @@ export default function Services() {
 
   return (
     <section className="services-scroll" id="services" ref={root} aria-label="Напрями навчання">
-      <div className="services">
+      <div className="services" ref={stage}>
         <div className="services__eyebrow">напрями навчання</div>
         <p className="services__quote">“межі моєї мови — це межі мого світу” <span>— Людвіг Вітгенштайн</span></p>
 
