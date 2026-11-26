@@ -13,27 +13,48 @@ export default function App() {
   const showHero = useCallback(() => setHeroRevealing(true), []);
   const lenisRef = useRef(null);
   const transitionTimers = useRef([]);
-  const [sectionTransition, setSectionTransition] = useState(null);
+  const transitionActiveRef = useRef(false);
+  const [sectionTransitionPhase, setSectionTransitionPhase] = useState('idle');
 
-  useEffect(() => () => transitionTimers.current.forEach(window.clearTimeout), []);
+  useEffect(() => () => {
+    transitionTimers.current.forEach(window.clearTimeout);
+    lenisRef.current?.start();
+  }, []);
 
   const navigateWithSplash = useCallback((href) => {
-    if (href !== '#services' && href !== '#about') return;
-    transitionTimers.current.forEach(window.clearTimeout);
-    setSectionTransition({ href, phase: 'showing' });
+    if ((href !== '#services' && href !== '#about') || transitionActiveRef.current) return;
+    const section = document.querySelector(href);
+    if (!section) return;
 
-    const navigate = window.setTimeout(() => {
-      const section = document.querySelector(href);
-      if (section) {
-        const sectionTop = window.scrollY + section.getBoundingClientRect().top;
+    transitionActiveRef.current = true;
+    transitionTimers.current.forEach(window.clearTimeout);
+    lenisRef.current?.stop();
+
+    // Inspired by Bali Villa: a bottom-up curtain, a centered logo reveal,
+    // a brief hold, an invisible page jump, then a smooth downward exit.
+    setSectionTransitionPhase('enter');
+
+    const schedule = (callback, delay) => {
+      transitionTimers.current.push(window.setTimeout(callback, delay));
+    };
+
+    schedule(() => setSectionTransitionPhase('logo-in'), 570);
+    schedule(() => {
+      const currentSection = document.querySelector(href);
+      if (currentSection) {
+        const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
         const targetY = href === '#about' ? sectionTop + window.innerHeight : sectionTop + 1;
         if (lenisRef.current) lenisRef.current.scrollTo(targetY, { immediate: true, force: true });
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       }
-      setSectionTransition({ href, phase: 'revealing' });
-    }, 1000);
-    const finish = window.setTimeout(() => setSectionTransition(null), 2800);
-    transitionTimers.current = [navigate, finish];
+      setSectionTransitionPhase('logo-out');
+    }, 2370);
+    schedule(() => setSectionTransitionPhase('exit'), 3150);
+    schedule(() => {
+      setSectionTransitionPhase('idle');
+      transitionActiveRef.current = false;
+      lenisRef.current?.start();
+    }, 4200);
   }, []);
 
   useEffect(() => {
@@ -63,19 +84,14 @@ export default function App() {
   return (
     <>
       <Preloader onReveal={showHero} />
-      {sectionTransition && (
-        <div
-          className={`skawi-preloader skawi-preloader--static ${sectionTransition.phase === 'revealing' ? 'skawi-preloader--revealing' : ''}`}
-          role="status"
-          aria-label="Перехід до розділу"
-        >
-          <div className="skawi-preloader__scene" aria-hidden="true">
-            <div className="skawi-preloader__coin">
-              <img className="skawi-preloader__face skawi-preloader__face--front" src={`${import.meta.env.BASE_URL}images/logo.webp`} alt="" width="220" height="220" />
-            </div>
-          </div>
+      <div
+        className={`skawi-section-transition skawi-section-transition--${sectionTransitionPhase}`}
+        aria-hidden="true"
+      >
+        <div className="skawi-section-transition__logo">
+          <img src={`${import.meta.env.BASE_URL}images/logo.webp`} alt="" width="220" height="220" />
         </div>
-      )}
+      </div>
       <main>
         <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
         <Services language={language} />
