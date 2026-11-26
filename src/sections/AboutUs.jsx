@@ -1,9 +1,6 @@
 import './AboutUs.css';
 
 export default function AboutUs() {
-  return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="about-us" id="about" aria-labelledby="about-us-title" style={{ '--about-us-image': `url("${import.meta.env.BASE_URL}images/About-Us-Section.webp")` }}>
       <div className="about-us__panel">
