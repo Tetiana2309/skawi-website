@@ -32,7 +32,7 @@ export default function App() {
       }
       setSectionTransition({ href, phase: 'revealing' });
     }, 1000);
-    const finish = window.setTimeout(() => setSectionTransition(null), 2200);
+    const finish = window.setTimeout(() => setSectionTransition(null), 2800);
     transitionTimers.current = [navigate, finish];
   }, []);
 
