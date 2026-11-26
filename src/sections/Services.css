@@ -198,7 +198,8 @@
 
 .services__pagination {
   position: absolute;
-  bottom: 60px;
+  /* Keep pagination in the visible viewport even when the 1002px stage is taller. */
+  bottom: max(60px, calc(1062px - 100svh));
   left: 50%;
   z-index: 7;
   transform: translateX(-50%);
