@@ -1,10 +1,34 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
 
 export default function Hero({ revealing = false, copy, language, onLanguageChange }) {
   const videoRef = useRef(null);
+  const titleRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const title = titleRef.current;
+    if (!title) return;
+    let cancelled = false;
+    const fitTitle = () => {
+      if (cancelled) return;
+      title.style.fontSize = '';
+      const naturalSize = parseFloat(window.getComputedStyle(title).fontSize);
+      const availableWidth = Math.max(0, window.innerWidth - 80);
+      const actualWidth = title.scrollWidth;
+      if (actualWidth > availableWidth && naturalSize > 0) {
+        title.style.fontSize = `${Math.floor(naturalSize * availableWidth / actualWidth * 100) / 100}px`;
+      }
+    };
+    fitTitle();
+    window.addEventListener('resize', fitTitle);
+    document.fonts?.ready.then(fitTitle);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('resize', fitTitle);
+    };
+  }, [language]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -37,7 +61,7 @@ export default function Hero({ revealing = false, copy, language, onLanguageChan
 
       <div className="hero__heading" id="hero-heading">
         <p className="hero__pretitle">{copy.hero[0]}</p>
-        <h1>{copy.hero[1]}</h1>
+        <h1 ref={titleRef}>{copy.hero[1]}</h1>
       </div>
     </section>
   );
