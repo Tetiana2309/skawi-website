@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './Services.css';
+import { translations } from '../data/translations.js';
 
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const pad = (n) => String(n).padStart(2, '0');
@@ -160,11 +161,21 @@ export default function Services({ copy, language }) {
           {services.map((service, i) => (
             <article key={service.left} ref={node => { cards.current[i] = node; }} className="services__card" style={{ zIndex: i + 1, visibility: i === 0 ? 'visible' : 'hidden', opacity: i === 0 ? 1 : 0 }} aria-hidden={active !== i} inert={active !== i}>
               <div className="services__card-inner">
-                <h2 className="services__title">{service.title}</h2>
-                <p className="services__description">{service.description}</p>
-                <ul className="services__benefits">
-                  {service.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
-                </ul>
+                {/* The Ukrainian copy defines the original geometry on every language. */}
+                <div className="services__copy services__copy--reference" aria-hidden="true" inert>
+                  <h2 className="services__title">{translations.UA.services[i].title}</h2>
+                  <p className="services__description">{translations.UA.services[i].description}</p>
+                  <ul className="services__benefits">
+                    {translations.UA.services[i].benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                </div>
+                <div className="services__copy services__copy--translated">
+                  <h2 className="services__title">{service.title}</h2>
+                  <p className="services__description">{service.description}</p>
+                  <ul className="services__benefits">
+                    {service.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                </div>
               </div>
             </article>
           ))}
