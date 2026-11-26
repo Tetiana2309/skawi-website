@@ -3,7 +3,7 @@ import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
 
-export default function Hero({ revealing = false }) {
+export default function Hero({ revealing = false, copy, language, onLanguageChange }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -32,12 +32,12 @@ export default function Hero({ revealing = false }) {
 
       <div className="hero__top">
         <Logo />
-        <Header />
+        <Header copy={copy} language={language} onLanguageChange={onLanguageChange} />
       </div>
 
       <div className="hero__heading" id="hero-heading">
-        <p className="hero__pretitle">Твоя Мова.</p>
-        <h1>Твоя Свобода.</h1>
+        <p className="hero__pretitle">{copy.hero[0]}</p>
+        <h1>{copy.hero[1]}</h1>
       </div>
     </section>
   );
