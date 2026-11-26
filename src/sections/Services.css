@@ -230,7 +230,7 @@
   .services__nav--left { left: 28px; width: 238px; }
   .services__nav--right { right: 28px; width: 238px; }
   .services__nav-item { font-size: 14px; }
-  .services__benefits li { font-size: 20px; }
+  .services__benefits li { font-size: 18px; font-weight: 400; }
 }
 
 @media (max-width: 1100px) {
