@@ -78,7 +78,7 @@
 /* Section navigation only: the curtain enters from below and exits down. */
 .skawi-preloader--static {
   background: #F6FFFC;
-  animation: skawi-section-splash-in 420ms cubic-bezier(.65, 0, .2, 1) backwards;
+  animation: skawi-section-splash-in 950ms cubic-bezier(.65, 0, .2, 1) backwards;
   transition: transform 1100ms cubic-bezier(.65, 0, .2, 1);
 }
 .skawi-preloader--static.skawi-preloader--revealing {
