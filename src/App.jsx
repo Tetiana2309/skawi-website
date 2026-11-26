@@ -8,6 +8,7 @@ import Preloader from './components/Preloader.jsx';
 
 export default function App() {
   const [heroRevealing, setHeroRevealing] = useState(false);
+  const [language, setLanguage] = useState('UA');
   const showHero = useCallback(() => setHeroRevealing(true), []);
 
   useEffect(() => {
@@ -36,8 +37,8 @@ export default function App() {
     <>
       <Preloader onReveal={showHero} />
       <main>
-        <Hero revealing={heroRevealing} />
-        <Services />
+        <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} />
+        <Services language={language} />
         <AboutUs />
       </main>
     </>
