@@ -36,8 +36,8 @@ export default function Hero({ revealing = false }) {
       </div>
 
       <div className="hero__heading" id="hero-heading">
-        <p className="hero__pretitle">Твоя Мова.</p>
-        <h1>Твоя Свобода.</h1>
+        <p className="hero__pretitle">Twój Język.</p>
+        <h1>Twoja Wolność.</h1>
       </div>
     </section>
   );
