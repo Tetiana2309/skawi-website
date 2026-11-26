@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
+import LanguageSwitcher from './LanguageSwitcher.jsx';
 import './Header.css';
 
 const links = [
@@ -54,6 +55,7 @@ export default function Header() {
           <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>
         ))}
       </nav>
+      <LanguageSwitcher />
       <a className="hero-header__cta" href="#contacts" ref={ctaRef}>
         <span className="hero-header__cta-label" ref={labelRef}>ПОЧАТИ НАВЧАННЯ</span>
         <span className="hero-header__arrow" aria-hidden="true" ref={arrowRef}>
