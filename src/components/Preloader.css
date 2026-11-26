@@ -79,7 +79,7 @@
 .skawi-preloader--static {
   background: #F6FFFC;
   animation: skawi-section-splash-in 950ms cubic-bezier(.65, 0, .2, 1) backwards;
-  transition: transform 1100ms cubic-bezier(.65, 0, .2, 1);
+  transition: transform 1700ms cubic-bezier(.65, 0, .2, 1);
 }
 .skawi-preloader--static.skawi-preloader--revealing {
   transform: translateY(100%);
