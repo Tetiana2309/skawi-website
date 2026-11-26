@@ -38,7 +38,7 @@ export default function App() {
       transitionTimers.current.push(window.setTimeout(callback, delay));
     };
 
-    schedule(() => setSectionTransitionPhase('logo-in'), 570);
+    schedule(() => setSectionTransitionPhase('logo-in'), 500);
     schedule(() => {
       const currentSection = document.querySelector(href);
       if (currentSection) {
@@ -48,13 +48,13 @@ export default function App() {
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       }
       setSectionTransitionPhase('logo-out');
-    }, 2370);
-    schedule(() => setSectionTransitionPhase('exit'), 3150);
+    }, 2050);
+    schedule(() => setSectionTransitionPhase('exit'), 2700);
     schedule(() => {
       setSectionTransitionPhase('idle');
       transitionActiveRef.current = false;
       lenisRef.current?.start();
-    }, 4200);
+    }, 3650);
   }, []);
 
   useEffect(() => {
