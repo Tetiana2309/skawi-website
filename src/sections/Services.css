@@ -214,6 +214,10 @@
 .services__progress span { display: block; height: 100%; width: 25%; background: #a2e1cd; }
 
 @media (min-width: 1101px) and (max-width: 1550px) {
+  /* Keep the pinned stage fully within a 1440px desktop viewport. */
+  .services-scroll { height: calc(100svh + 270vh); }
+  .services { height: 100svh; }
+  .services__pagination { bottom: 45px; }
   /* Desktop 1440: keep side navigation outside the central text area. */
   .services__deck { width: calc(100% - 540px); max-width: 1010px; }
   .services__card-inner { width: 100%; }
