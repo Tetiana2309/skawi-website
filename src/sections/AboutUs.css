@@ -1,29 +1,42 @@
-.about-us {
+.about-us-scroll {
   position: relative;
+  height: 200svh;
+  background: #023536;
+}
+
+.about-us {
+  --about-photo-scale: .58;
+  --about-photo-radius: 30px;
+  --about-copy-opacity: 0;
+  --about-copy-shift: 22px;
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 1002px;
-  padding: 80px 24px;
-  background: #023536;
-  color: #023536;
-  isolation: isolate;
+  height: 100svh;
   overflow: hidden;
+  isolation: isolate;
+  color: #023536;
+  background: #023536;
 }
 
-.about-us::before {
-  content: '';
+.about-us__photo {
   position: absolute;
-  inset: -24px;
-  z-index: -1;
-  background: var(--about-us-image) center / cover no-repeat;
-  transform: none;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: var(--about-photo-radius);
+  transform: scale(var(--about-photo-scale));
+  transform-origin: center;
+  will-change: transform;
 }
-
 
 .about-us__panel {
   position: relative;
+  z-index: 1;
   flex: 0 1 910px;
   width: 910px;
   height: 629px;
@@ -33,6 +46,9 @@
   backdrop-filter: blur(15px);
   text-align: center;
   overflow: hidden;
+  opacity: var(--about-copy-opacity);
+  transform: translateY(var(--about-copy-shift));
+  will-change: opacity, transform;
 }
 
 .about-us__eyebrow {
@@ -96,7 +112,8 @@
 }
 
 @media (max-width: 800px) {
-  .about-us { min-height: 760px; padding: 72px 20px; }
+  .about-us { padding: 40px 20px; }
+  .about-us__photo { background-position: center; }
   .about-us__panel { width: 100%; height: auto; min-height: 629px; padding: 75px 28px 72px; overflow: visible; }
   .about-us__eyebrow, .about-us__title, .about-us__signature, .about-us__body {
     position: static;
@@ -111,9 +128,19 @@
 }
 
 @media (max-width: 480px) {
-  .about-us { min-height: 0; padding: 60px 14px; }
+  .about-us { padding: 20px 14px; }
   .about-us__panel { padding: 50px 20px; min-height: 0; }
   .about-us__title { font-size: 29px; }
   .about-us__body { margin-top: 35px; font-size: 16px; line-height: 1.6; }
 }
 
+
+@media (prefers-reduced-motion: reduce) {
+  .about-us-scroll { height: 100svh; }
+  .about-us {
+    --about-photo-scale: 1 !important;
+    --about-photo-radius: 0px !important;
+    --about-copy-opacity: 1 !important;
+    --about-copy-shift: 0px !important;
+  }
+}
