@@ -10,6 +10,7 @@
   --about-photo-radius: 30px;
   --about-copy-opacity: 0;
   --about-copy-shift: 22px;
+  --about-panel-visibility: visible;
   position: sticky;
   top: 0;
   display: flex;
@@ -47,6 +48,7 @@
   backdrop-filter: blur(15px);
   text-align: center;
   overflow: hidden;
+  visibility: var(--about-panel-visibility);
   opacity: var(--about-copy-opacity);
   transform: translateY(var(--about-copy-shift));
   will-change: opacity, transform;
@@ -110,6 +112,18 @@
   font-weight: 500;
   line-height: 160%;
   text-align: center;
+}
+
+/* Stable viewport pin and isolated glass compositing for 1440px desktops only. */
+@media (min-width: 1101px) and (max-width: 1550px) {
+  .about-us { position: absolute; top: 0; left: 0; }
+  .about-us[data-pin="active"] { position: fixed; top: 0; left: 0; }
+  .about-us[data-pin="after"] { top: auto; bottom: 0; }
+
+  .about-us__panel {
+    transform: translate3d(0, 0, 0);
+    will-change: opacity;
+  }
 }
 
 @media (max-width: 800px) {
