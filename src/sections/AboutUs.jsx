@@ -31,7 +31,9 @@ export default function AboutUs() {
       const copy = ease((progress - 0.65) / 0.3);
 
       stage.style.setProperty('--about-photo-scale', (0.58 + photo * 0.42).toFixed(6));
-      stage.style.setProperty('--about-photo-radius', `${((1 - photo) * 30).toFixed(2)}px`);
+      // Keep radius stable while scaling; continuous radius animation
+      // forces expensive full-screen repaints alongside backdrop blur.
+      stage.style.setProperty('--about-photo-radius', photo > 0.995 ? '0px' : '30px');
       stage.style.setProperty('--about-copy-opacity', copy.toFixed(4));
       stage.style.setProperty('--about-copy-shift', `${((1 - copy) * 22).toFixed(2)}px`);
     };
