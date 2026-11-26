@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header.jsx';
 import Logo from '../components/Logo.jsx';
 import './Hero.css';
@@ -13,27 +13,6 @@ const heroTitles = {
 
 export default function Hero({ revealing = false }) {
   const videoRef = useRef(null);
-  const heroRef = useRef(null);
-  const headingRef = useRef(null);
-
-  useLayoutEffect(() => {
-    const hero = heroRef.current;
-    const heading = headingRef.current;
-    if (!hero || !heading) return;
-
-    const alignWithNavigation = () => {
-      const firstLink = hero.querySelector('.hero-header__nav a');
-      const isDesktopNav = window.matchMedia('(min-width: 1321px)').matches;
-      const leftEdge = isDesktopNav && firstLink
-        ? firstLink.getBoundingClientRect().left - hero.getBoundingClientRect().left
-        : 40;
-      heading.style.left = `${leftEdge}px`;
-    };
-
-    alignWithNavigation();
-    window.addEventListener('resize', alignWithNavigation);
-    return () => window.removeEventListener('resize', alignWithNavigation);
-  }, []);
   const [language, setLanguage] = useState('UA');
 
   useEffect(() => {
@@ -52,7 +31,7 @@ export default function Hero({ revealing = false }) {
   }, []);
 
   return (
-    <section className={revealing ? "hero hero--revealing" : "hero hero--waiting"} id="home" ref={heroRef} aria-labelledby="hero-heading">
+    <section className={revealing ? "hero hero--revealing" : "hero hero--waiting"} id="home" aria-labelledby="hero-heading">
       <div className="hero__media" aria-hidden="true">
         <video ref={videoRef} className="hero__video" autoPlay muted loop playsInline preload="metadata">
           <source src={`${import.meta.env.BASE_URL}videos/video-hero.mp4`} type="video/mp4" />
@@ -65,7 +44,7 @@ export default function Hero({ revealing = false }) {
         <Header language={language} onLanguageChange={setLanguage} />
       </div>
 
-      <div className="hero__heading" id="hero-heading" ref={headingRef}>
+      <div className="hero__heading" id="hero-heading">
         <p className="hero__pretitle">{heroTitles[language][0]}</p>
         <h1>{heroTitles[language][1]}</h1>
       </div>
