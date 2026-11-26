@@ -14,7 +14,7 @@ const headerTranslations = {
     cta: 'ROZPOCZNIJ NAUKĘ',
   },
   EN: {
-    nav: ['Home', 'Our Services', 'About Us', 'Benefits', 'Gallery', 'Contact'],
+    nav: ['Home', 'Our services', 'About us', 'Benefits', 'Gallery', 'Contact'],
     cta: 'START LEARNING',
   },
   SP: {
