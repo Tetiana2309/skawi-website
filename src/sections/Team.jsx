@@ -98,7 +98,7 @@ export default function Team({ language = 'UA' }) {
       if (!root || !stage || !track) return;
       startY = window.scrollY + root.getBoundingClientRect().top;
       travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      slideWidth = track.clientWidth;
+      slideWidth = track.firstElementChild?.getBoundingClientRect().width ?? track.clientWidth;
     };
 
     const paint = (time) => {
