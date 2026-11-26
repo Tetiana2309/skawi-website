@@ -27,7 +27,7 @@ const headerTranslations = {
   },
 };
 
-export default function Header({ language = 'UA', onLanguageChange }) {
+export default function Header({ language = 'UA', onLanguageChange, onSectionNavigate }) {
   const copy = headerTranslations[language] ?? headerTranslations.UA;
   const [menuOpen, setMenuOpen] = useState(false);
   const ctaRef = useRef(null);
@@ -69,7 +69,13 @@ export default function Header({ language = 'UA', onLanguageChange }) {
       </button>
       <nav id="skawi-navigation" className={menuOpen ? 'hero-header__nav is-open' : 'hero-header__nav'} aria-label="Основная навигация">
         {navigationTargets.map((href, index) => (
-          <a key={href} href={href} onClick={() => setMenuOpen(false)}>{copy.nav[index]}</a>
+          <a key={href} href={href} onClick={(event) => {
+            setMenuOpen(false);
+            if ((href === '#services' || href === '#about') && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+              event.preventDefault();
+              onSectionNavigate?.(href);
+            }
+          }}>{copy.nav[index]}</a>
         ))}
       </nav>
       <LanguageSwitcher active={language} onChange={onLanguageChange} />
