@@ -13,6 +13,7 @@
   --team-photo-width: 382px;
   --team-copy-width: 442px;
   --team-copy-gap: 40px;
+  --team-slide-width: calc(var(--team-photo-width) + var(--team-copy-gap) + var(--team-copy-width) + 100px);
   --team-group-left: calc(50% - (var(--team-photo-width) + var(--team-copy-gap) + var(--team-copy-width)) / 2);
   --team-text-left: calc(var(--team-group-left) + var(--team-photo-width) + var(--team-copy-gap));
   position: sticky;
@@ -51,14 +52,16 @@
   touch-action: pan-y;
 }
 .team__track {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   display: flex;
+  padding-left: calc((100% - var(--team-slide-width)) / 2);
   will-change: transform;
 }
 .team__slide {
   position: relative;
-  flex: 0 0 100%;
+  flex: 0 0 var(--team-slide-width);
   min-width: 0;
   height: 100%;
   user-select: none;
@@ -189,6 +192,7 @@
 }
 @media (max-width: 700px) {
   .team {
+    --team-slide-width: 100%;
     background: linear-gradient(to bottom, var(--team-light) 0 57%, var(--team-dark) 57% 100%);
   }
   .team__topline { top: 24px; left: 20px; right: 20px; font-size: 10px; line-height: 1.4; }
