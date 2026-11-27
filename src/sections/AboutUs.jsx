@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import './AboutUs.css';
 
 const aboutTranslations = {
@@ -45,7 +45,7 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const section = sectionRef.current;
     const stage = stageRef.current;
     if (!section || !stage) return;
@@ -96,7 +96,8 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
       if (!frame) frame = requestAnimationFrame(update);
     };
 
-    schedule();
+    // Apply the correct visual state before the browser draws the new scroll position.
+    update();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     media.addEventListener('change', schedule);
