@@ -42,6 +42,7 @@
   position: absolute; inset: 0; border-radius: 20px;
   overflow: hidden;
   background: rgba(246,255,252,.6);
+  box-shadow: 0 8px 30px rgba(2,53,54,.12);
   backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   transform-origin: 50% 100%;
   backface-visibility: hidden;
