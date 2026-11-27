@@ -286,7 +286,6 @@ export default function Services({ language = 'UA' }) {
   const root = useRef(null);
   const stage = useRef(null);
   const cards = useRef([]);
-  const progressBar = useRef(null);
   const progressRef = useRef(0);
   const painter = useRef(null);
   const activeRef = useRef(0);
@@ -319,7 +318,6 @@ export default function Services({ language = 'UA' }) {
       card.style.visibility = opacity <= 0 ? 'hidden' : 'visible';
     }
 
-    if (progressBar.current) progressBar.current.style.width = ((progress + 1) / services.length * 100).toFixed(2) + '%';
     const nextActive = clamp(Math.round(progress), 0, last);
     if (nextActive !== activeRef.current) {
       activeRef.current = nextActive;
@@ -457,7 +455,16 @@ export default function Services({ language = 'UA' }) {
 
         <div className="services__pagination" aria-label={`Напрям ${active + 1} із ${services.length}`}>
           <span className="services__page-number">{pad(active + 1)}</span>
-          <div className="services__progress" aria-hidden="true"><span ref={progressBar} /></div>
+          <div className="services__progress" aria-label="Вибір напрямку навчання">
+            {services.map((service, i) => (
+              <button key={i} type="button"
+                aria-label={`Напрям ${i + 1}`}
+                aria-current={active === i ? 'true' : undefined}
+                className={i <= active ? 'is-current' : ''}
+                onClick={() => choose(i)}
+              />
+            ))}
+          </div>
           <span className="services__page-number">{pad(services.length)}</span>
         </div>
       </div>
