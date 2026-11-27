@@ -6,7 +6,7 @@ import './Gallery.css';
 // Every photographed frame uses one of the twelve numbered images.
 const slots = [
   { id: 'photo-1',  x: 0,    y: 30,   w: 498, h: 316, photo: 'gallery-img-one.webp' },
-  { id: 'video-1',  x: 544,  y: 0,    w: 462, h: 604, video: 'video-1.mp4' },
+  { id: 'video-1',  x: 544,  y: 0,    w: 462, h: 657, video: 'video-1.mp4' },
   { id: 'photo-2',  x: 1052, y: 45,   w: 362, h: 514, photo: 'gallery-img-two.webp' },
   { id: 'photo-3',  x: 1494, y: 0,    w: 346, h: 314, photo: 'gallery-img-three.webp' },
   { id: 'video-2',  x: 0,    y: 378,  w: 334, h: 481, video: 'video-2.mp4' },
