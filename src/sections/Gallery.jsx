@@ -56,22 +56,30 @@ export default function Gallery({ language = 'UA' }) {
 
   useEffect(() => {
     if (selected === null) return;
-    const previousOverflow = document.body.style.overflow;
+    const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (event) => {
       if (event.key === 'Escape') setSelected(null);
-      if (event.key === 'ArrowRight') setSelected((index) => (index + 1) % displayItems.length);
-      if (event.key === 'ArrowLeft') setSelected((index) => (index - 1 + displayItems.length) % displayItems.length);
     };
     window.addEventListener('keydown', onKeyDown);
-    requestAnimationFrame(() => setVisible(true));
+    const frame = requestAnimationFrame(() => setVisible(true));
     return () => {
-      document.body.style.overflow = previousOverflow;
+      cancelAnimationFrame(frame);
+      document.body.style.overflow = oldOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [selected === null]);
+  }, [selected !== null]);
 
-  const close = () => { setVisible(false); setSelected(null); };
+  const openItem = (index) => {
+    setSelected(index);
+    setVisible(false);
+  };
+
+  const close = () => {
+    setVisible(false);
+    setSelected(null);
+  };
+
 
   return (
     <section className="gallery-section" id="gallery" aria-label={copy.heading}>
@@ -85,7 +93,7 @@ export default function Gallery({ language = 'UA' }) {
             style={{ '--tile-x': `${item.x / 1840 * 100}%`, '--tile-y': `${item.y / 1690 * 100}%`,
               '--tile-w': `${item.w / 1840 * 100}%`, '--tile-h': `${item.h / 1690 * 100}%`,
               '--tile-ratio': `${item.w} / ${item.h}`, '--tile-order': index % 5 }}
-            onClick={() => { setSelected(index); setVisible(false); }}
+            onClick={() => openItem(index)}
             aria-label={item.video ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
             <span className="gallery__media">
               {item.video ? (
@@ -106,26 +114,27 @@ export default function Gallery({ language = 'UA' }) {
         ))}
       </div>
       {selected !== null && displayItems[selected] && (
-        <div className={`gallery-lightbox${visible ? ' is-visible' : ''}`} role="dialog" aria-modal="true" aria-label={copy.heading}
-          onClick={close}>
-          <span className="gallery-lightbox__count">{String(selected + 1).padStart(2, '0')} / {String(displayItems.length).padStart(2, '0')}</span>
-          <button type="button" className="gallery-lightbox__close" aria-label={copy.close} onClick={close}>×</button>
-          <button type="button" className="gallery-lightbox__arrow gallery-lightbox__arrow--prev" aria-label={copy.prev}
-            onClick={(event) => { event.stopPropagation(); setSelected((selected - 1 + displayItems.length) % displayItems.length); }}>‹</button>
-          <div className="gallery-lightbox__content" onClick={(event) => event.stopPropagation()}>
-            {displayItems[selected].video
-              ? <video key={displayItems[selected].id} src={videoPath(displayItems[selected].video)} controls autoPlay playsInline />
-              : <img key={displayItems[selected].id} src={imagePath(displayItems[selected].photo)} alt="" />}
-          </div>
-          <button type="button" className="gallery-lightbox__arrow gallery-lightbox__arrow--next" aria-label={copy.next}
-            onClick={(event) => { event.stopPropagation(); setSelected((selected + 1) % displayItems.length); }}>›</button>
-          <div className="gallery-lightbox__thumbnails">
-            {displayItems.map((item, index) => (
-              <button key={item.id} type="button" className={index === selected ? 'is-active' : ''} aria-label={String(index + 1)}
-                onClick={(event) => { event.stopPropagation(); setSelected(index); }}>
-                {item.video ? <video src={videoPath(item.video)} muted playsInline preload="metadata" /> : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
-              </button>
-            ))}
+        <div
+          className={`gallery-lightbox${visible ? ' is-visible' : ''}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label={copy.heading}
+          onClick={close}
+        >
+          <div className="gallery-lightbox__card" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="gallery-lightbox__close" aria-label={copy.close} onClick={close}>
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+                <rect width="60" height="60" rx="30" fill="#023536" />
+                <path d="M32.8649 30.2132L42.1457 20.9324L39.494 18.2808L30.2133 27.5616L20.9325 18.2808L18.2808 20.9324L27.5616 30.2132L18.2808 39.494L20.9325 42.1456L30.2133 32.8649L39.494 42.1456L42.1457 39.494L32.8649 30.2132Z" fill="#F6FFFC" />
+              </svg>
+            </button>
+            <div className="gallery-lightbox__content">
+              {displayItems[selected].video ? (
+                <video key={displayItems[selected].id} src={videoPath(displayItems[selected].video)} controls autoPlay playsInline />
+              ) : (
+                <img key={displayItems[selected].id} src={imagePath(displayItems[selected].photo)} alt="" />
+              )}
+            </div>
           </div>
         </div>
       )}
