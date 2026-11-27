@@ -15,9 +15,18 @@ export default function Awards({ language = 'UA' }) {
     if (!section || !viewport || !row) return;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame = 0;
-    const paint = () => {
+    let previousCenter = null;
+    let previousTime = 0;
+    let bend = 0;
+    let impulse = 0;
+    const paint = now => {
       frame = 0;
-      if (motion.matches) { row.style.transform = ''; items.current.forEach(el => { if(el) el.style.transform = ''; }); return; }
+      if (motion.matches) {
+        row.style.transform = '';
+        items.current.forEach(el => { if (el) el.style.transform = ''; });
+        previousCenter = null; previousTime = 0; bend = 0; impulse = 0;
+        return;
+      }
       const travel = Math.max(1, section.offsetHeight - viewport.offsetHeight);
       const p = clamp(-section.getBoundingClientRect().top / travel, 0, 1);
       const progress = clamp((p - .04) / .92, 0, 1);
@@ -26,13 +35,28 @@ export default function Awards({ language = 'UA' }) {
       const from = first.offsetLeft + first.offsetWidth / 2;
       const to = last.offsetLeft + last.offsetWidth / 2;
       const center = from + (to - from) * progress;
+      const dt = previousTime ? clamp((now - previousTime) / 1000, .008, .05) : 1 / 60;
+      const delta = previousCenter === null ? 0 : center - previousCenter;
+      previousCenter = center;
+      previousTime = now;
+      if (Math.abs(delta) > .04) {
+        impulse = clamp(delta / dt / 500, -1, 1);
+      } else {
+        impulse *= Math.exp(-dt * 4.5);
+      }
+      bend += (impulse - bend) * (1 - Math.exp(-dt * 9));
+      if (Math.abs(bend) < .001 && Math.abs(impulse) < .001) { bend = 0; impulse = 0; }
       row.style.transform = 'translate3d(' + (viewport.clientWidth / 2 - center) + 'px,0,0)';
       items.current.forEach(el => {
         if (!el) return;
-        const d = (el.offsetLeft + el.offsetWidth / 2 - center) / Math.max(1,viewport.clientWidth / 2);
-        const n = clamp(d,-1.5,1.5);
-        el.style.transform = 'translate3d(0,' + (n * n * 40) + 'px,0) rotate(' + (n * 8) + 'deg)';
+        const d = (el.offsetLeft + el.offsetWidth / 2 - center) / Math.max(1, viewport.clientWidth / 2);
+        const n = clamp(d, -1.5, 1.5);
+        const offset = n * bend * Math.min(180, viewport.clientHeight * .19);
+        const angle = n * bend * 9;
+        el.style.transform = 'translate3d(0,' + offset + 'px,0) rotate(' + angle + 'deg)';
       });
+      if (bend !== 0 || impulse !== 0) frame = requestAnimationFrame(paint);
+      else previousTime = 0;
     };
     const wake = () => { if (!frame) frame = requestAnimationFrame(paint); };
     const observer = new ResizeObserver(wake);
