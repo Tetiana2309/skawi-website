@@ -43,21 +43,28 @@ export default function App() {
 
     schedule(() => setSectionTransitionPhase('logo-in'), 500);
     schedule(() => {
-      const currentSection = document.querySelector(href);
-      if (currentSection) {
+      // Prepare the About Us photo and glass panel before the hidden jump.
+      setSectionTransitionPhase('logo-out');
+      requestAnimationFrame(() => {
+        const currentSection = document.querySelector(href);
+        if (!currentSection) return;
         const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
-        // Land just inside About Us's pinned range, not on the fixed/absolute boundary.
-        const targetY = href === '#about' ? sectionTop + window.innerHeight * 0.995 : sectionTop + 1;
+        const travel = Math.max(0, currentSection.offsetHeight - window.innerHeight);
+        // The precise end state (progress === 1) prevents a final layout correction.
+        const targetY = href === '#about' ? sectionTop + travel : sectionTop + 1;
         if (lenisRef.current) lenisRef.current.scrollTo(targetY, { immediate: true, force: true });
         else window.scrollTo({ top: targetY, behavior: 'instant' });
-      }
-      setSectionTransitionPhase('logo-out');
+      });
     }, 2050);
     schedule(() => setSectionTransitionPhase('exit'), 2700);
     schedule(() => {
+      // Keep Lenis and native scroll aligned before releasing the cover.
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(window.scrollY, { immediate: true, force: true });
+        lenisRef.current.start();
+      }
       setSectionTransitionPhase('idle');
       transitionActiveRef.current = false;
-      lenisRef.current?.start();
     }, 3650);
   }, []);
 
