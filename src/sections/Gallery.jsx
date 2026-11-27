@@ -89,7 +89,15 @@ export default function Gallery({ language = 'UA' }) {
             aria-label={item.video ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
             <span className="gallery__media">
               {item.video ? (
-                <span className="gallery__video-placeholder" aria-hidden="true" />
+                <video
+                  src={videoPath(item.video)}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-hidden="true"
+                />
               ) : (
                 <img src={imagePath(item.photo)} alt="" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
               )}
@@ -115,7 +123,7 @@ export default function Gallery({ language = 'UA' }) {
             {displayItems.map((item, index) => (
               <button key={item.id} type="button" className={index === selected ? 'is-active' : ''} aria-label={String(index + 1)}
                 onClick={(event) => { event.stopPropagation(); setSelected(index); }}>
-                {item.video ? <span className="gallery__video-placeholder" /> : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
+                {item.video ? <video src={videoPath(item.video)} muted playsInline preload="metadata" /> : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
               </button>
             ))}
           </div>
