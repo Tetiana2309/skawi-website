@@ -114,12 +114,9 @@
   text-align: center;
 }
 
-/* Stable viewport pin and isolated glass compositing for 1440px desktops only. */
+/* Keep About Us on one sticky compositing layer even while the curtain
+   opens. Switching absolute -> fixed -> absolute caused a visible jump. */
 @media (min-width: 1101px) and (max-width: 1550px) {
-  .about-us { position: absolute; top: 0; left: 0; }
-  .about-us[data-pin="active"] { position: fixed; top: 0; left: 0; }
-  .about-us[data-pin="after"] { top: auto; bottom: 0; }
-
   .about-us__panel {
     transform: translate3d(0, 0, 0);
     will-change: opacity;
