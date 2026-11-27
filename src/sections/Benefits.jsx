@@ -69,21 +69,22 @@ export default function Benefits({ language = 'UA' }) {
           el.style.visibility = i === index ? 'visible' : 'hidden';
           el.style.opacity = i === index ? '1' : '0';
           el.style.transform = 'none';
-          el.style.clipPath = 'none';
+          el.style.setProperty('--benefit-copy-opacity', i === index ? '1' : '0');
         } else if (d <= -1 || d >= 1) {
           el.style.visibility = 'hidden';
           el.style.opacity = '0';
+          el.style.setProperty('--benefit-copy-opacity', '0');
         } else if (d < 0) {
           const t = ease(d + 1);
           el.style.visibility = 'visible';
-          el.style.opacity = '1';
-          el.style.transform = 'translate3d(0,' + ((1 - t) * 14) + '%,0)';
-          el.style.clipPath = 'inset(' + ((1 - t) * 100) + '% 0 0 0 round 20px)';
+          el.style.opacity = String(ease(clamp((d + 1) / .28, 0, 1)));
+          el.style.transform = 'translate3d(0,' + ((1 - t) * 20) + '%,0)';
+          el.style.setProperty('--benefit-copy-opacity', String(ease(clamp((d + 1 - .52) / .48, 0, 1))));
         } else {
           const t = ease(d);
           el.style.visibility = 'visible';
-          el.style.opacity = String(1 - t * .32);
-          el.style.clipPath = 'none';
+          el.style.opacity = String(1 - ease(clamp((d - .35) / .65, 0, 1)));
+          el.style.setProperty('--benefit-copy-opacity', String(1 - ease(clamp(d / .42, 0, 1))));
           el.style.transform = 'perspective(1400px) translate3d(0,' + (-t * 7) + '%,0) rotateX(' + (t * 9) + 'deg) scale(' + (1 - t * .045) + ')';
         }
       });
@@ -128,10 +129,14 @@ export default function Benefits({ language = 'UA' }) {
             <div className="benefits__deck">
               {data.cards.map(([title, description], i) => (
                 <article key={i} ref={el => { cards.current[i] = el; }} className="benefits__card" style={{ zIndex: i + 1 }} aria-hidden={i !== active}>
-                  <div className="benefits__card-number">{number(i)}</div>
-                  <div className="benefits__card-line" aria-hidden="true" />
-                  <h3>{title}</h3>
-                  <p>{description}</p>
+                  <div className="benefits__card-surface">
+                    <div className="benefits__card-copy">
+                      <div className="benefits__card-number">{number(i)}</div>
+                      <div className="benefits__card-line" aria-hidden="true" />
+                      <h3>{title}</h3>
+                      <p>{description}</p>
+                    </div>
+                  </div>
                 </article>
               ))}
             </div>

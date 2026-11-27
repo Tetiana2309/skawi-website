@@ -28,7 +28,7 @@
 .benefits__left { overflow: hidden; isolation: isolate; }
 .benefits__photo, .benefits__gradient { position: absolute; inset: 0; width: 100%; height: 100%; }
 .benefits__photo { object-fit: cover; }
-.benefits__gradient { background: linear-gradient(to bottom, transparent 54.89%, #F6FFFC 96.407%); }
+.benefits__gradient { background: linear-gradient(to bottom, transparent 80%, #F6FFFC 100%); }
 .benefits__heading {
   position: absolute; z-index: 1; left: 9.862%; right: 5%; top: 8.264%;
   margin: 0; color: #133631; font: 500 clamp(25px, 2.5cqw, 48px)/1.1 "Roboto Serif", Georgia, serif;
@@ -40,16 +40,20 @@
 }
 .benefits__card {
   position: absolute; inset: 0; border-radius: 20px;
-  overflow: hidden;
-  background: rgba(246,255,252,.6);
+  overflow: visible;
   box-shadow: 0 8px 30px rgba(2,53,54,.12);
-  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   transform-origin: 50% 100%;
   backface-visibility: hidden;
-  will-change: transform, clip-path, opacity;
+  will-change: transform, opacity;
   visibility: hidden; opacity: 0;
 }
 .benefits__card:first-child { visibility: visible; opacity: 1; }
+.benefits__card-surface {
+  position: absolute; inset: 0; border-radius: inherit; overflow: hidden;
+  background: rgba(246,255,252,.75);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+}
+.benefits__card-copy { position: absolute; inset: 0; opacity: var(--benefit-copy-opacity, 1); }
 .benefits__card-number {
   position: absolute; left: 4.914%; top: 16.598%;
   font-size: clamp(15px, 1.25cqw, 24px); line-height: 1.1;
