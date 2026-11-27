@@ -40,6 +40,23 @@ html.skawi-about-nav-ready .about-us__panel {
   transition: none !important;
 }
 
+/* Reproduce Hero's two-stage entrance: the photo and glass are completely
+   settled under the curtain, then the composed scene fades in as one layer.
+   No backdrop-filter layer is animated independently during the reveal. */
+html.skawi-about-nav-ready .about-us {
+  opacity: 0;
+  transition: none;
+}
+html.skawi-about-nav-ready.skawi-about-nav-revealing .about-us {
+  opacity: 1;
+  transition: opacity 750ms cubic-bezier(.22, 1, .36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.skawi-about-nav-ready.skawi-about-nav-revealing .about-us {
+    transition: none;
+  }
+}
+
 .about-us__photo {
   position: absolute;
   inset: 0;
