@@ -13,8 +13,8 @@
 .awards__quote { display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
 .awards__signature { display: flex; align-items: center; gap: 8px; font-size: 12px; font-style: italic; letter-spacing: .6px; text-transform: none; white-space: nowrap; }
 .awards__signature i { width: 16px; height: .8px; background: #023536; flex: none; }
-.awards__viewport { position: absolute; inset: 0; overflow: hidden; }
-.awards__item { position: absolute; top: 0; left: 0; margin: 0; visibility: hidden; overflow: hidden; will-change: transform; }
+.awards__viewport { position: absolute; inset: 0; overflow: hidden; perspective: 1200px; perspective-origin: 50% 50%; }
+.awards__item { position: absolute; top: 0; left: 0; margin: 0; visibility: hidden; overflow: hidden; will-change: transform; backface-visibility: hidden; }
 .awards__item img { display: block; width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 800px) {
   .awards-scroll { margin-top: 80px; height: 540svh; }

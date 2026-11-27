@@ -28,7 +28,7 @@ export default function Awards({ language = 'UA' }) {
     const section = root.current, viewport = stage.current;
     if (!section || !viewport) return;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0, previous = 0, current = 0, initialized = false;
+    let frame = 0, previous = 0, current = 0, velocity = 0, initialized = false;
     const goal = () => {
       const travel = Math.max(1, section.offsetHeight - viewport.offsetHeight);
       return clamp((-section.getBoundingClientRect().top / travel - .025) / .95,0,1)*(count-1);
@@ -40,51 +40,73 @@ export default function Awards({ language = 'UA' }) {
       const gap = 48 * unit;
       const dimensions = photos.map(([,focus,side],i) => {
         let d = i-current;
-        // Wrap only the visible neighbors, not the scroll sequence.
         d -= Math.round(d/count)*count;
-        const focusAmount = ease(clamp(1-Math.abs(d),0,1));
-        return { d, width: mix(side,focus,focusAmount)*unit, height: mix(418,555,focusAmount)*unit, blur: 4*(1-focusAmount) };
+        const distance = Math.abs(d);
+        const f = ease(clamp(1-distance,0,1));
+        const depth = ease(clamp((distance-1)/2,0,1));
+        const shrink = 1-.32*depth;
+        return {
+          d, distance,
+          width: mix(side,focus,f)*unit*shrink,
+          height: mix(418,555,f)*unit*shrink,
+          blur: 4*(1-f)+4*depth,
+          angle: -Math.sign(d)*mix(0,10,ease(clamp(distance/2,0,1))),
+          opacity: 1-ease(clamp((distance-2.7)/1.3,0,1)),
+          z: -90*unit*depth,
+        };
       });
-      // Lay out real variable-width frames with a constant 48px design gap.
-      // Interpolate the anchor between the two nearest photos, so the
-      // horizontal motion remains continuous while their dimensions change.
+      // Keep the nearest frames at their specified dimensions, while the
+      // outer frames recede. Compensate perspective so the layout gap stays
+      // consistent and never expands into an empty space.
+      const perspective = 1200;
       const ordered = dimensions.map((v,i)=>({...v,i})).sort((a,b)=>a.d-b.d);
       let cursor = 0;
       const centers = [];
       ordered.forEach(v => { centers[v.i] = cursor+v.width/2; cursor += v.width+gap; });
       const lo = Math.floor(current), hi = Math.min(count-1,lo+1);
       const anchor = mix(centers[lo],centers[hi],current-lo);
-      const origin = w * (mobile ? .5 : 1148/1920);
+      const origin = w/2;
       items.current.forEach((el,i) => {
         if (!el) return;
         const v = dimensions[i];
-        const x = origin + centers[i]-anchor-v.width/2;
-        const y = (h-v.height)/2;
-        const visible = Math.abs(v.d) < 4.5;
+        const x = centers[i]-anchor;
+        const compensation = (perspective-v.z)/perspective;
         el.style.width = v.width+'px';
         el.style.height = v.height+'px';
-        el.style.transform = 'translate3d('+x+'px,'+y+'px,0)';
+        el.style.left = origin+'px';
+        el.style.top = h/2+'px';
+        el.style.transform = 'translate3d('+(-v.width/2+x*compensation)+'px,'+(-v.height/2)+'px,'+v.z+'px) rotateY('+v.angle+'deg) scale('+compensation+')';
         el.style.filter = v.blur < .015 ? 'none' : 'blur('+v.blur.toFixed(2)+'px)';
-        el.style.visibility = visible ? 'visible' : 'hidden';
-        el.style.opacity = String(1-ease(clamp((Math.abs(v.d)-3.5),0,1)));
-        el.style.zIndex = String(Math.round(100-Math.abs(v.d)*10));
+        el.style.visibility = v.opacity > .001 ? 'visible' : 'hidden';
+        el.style.opacity = String(v.opacity);
+        el.style.zIndex = String(Math.round(100-v.distance*10));
       });
     };
     const tick = now => {
       frame = 0;
       if (motion.matches) {
         items.current.forEach(el => { if(el) el.removeAttribute('style'); });
-        initialized = false; previous = 0;
+        initialized = false; previous = 0; velocity = 0;
         return;
       }
       const target = goal();
       const dt = previous ? clamp((now-previous)/1000,.008,.05) : 1/60;
       previous = now;
-      if (!initialized) { current = target; initialized = true; }
-      else current += (target-current)*(1-Math.exp(-dt*11));
-      if (Math.abs(target-current)<.001) current=target;
+      if (!initialized) { current = target; velocity = 0; initialized = true; }
+      else {
+        // Critically damped spring; small substeps keep it stable even
+        // when the browser drops frames. No overshoot at either endpoint.
+        const steps = Math.max(1,Math.ceil(dt/.008));
+        const step = dt/steps;
+        for(let i=0;i<steps;i++){
+          velocity += (100*(target-current)-20*velocity)*step;
+          current += velocity*step;
+          if(current<0 || current>count-1){current=clamp(current,0,count-1);velocity=0;}
+        }
+      }
+      if (Math.abs(target-current)<.001 && Math.abs(velocity)<.01) {current=target;velocity=0;}
       paint();
-      if (current!==target) frame=requestAnimationFrame(tick);
+      if (current!==target || velocity!==0) frame=requestAnimationFrame(tick);
       else previous=0;
     };
     const wake = () => { if(!frame) frame=requestAnimationFrame(tick); };
