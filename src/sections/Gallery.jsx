@@ -146,9 +146,9 @@ export default function Gallery({ language = 'UA' }) {
         >
           <div className="gallery-lightbox__card" onClick={(event) => event.stopPropagation()}>
             <button type="button" className="gallery-lightbox__close" aria-label={copy.close} onClick={close}>
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" aria-hidden="true">
-                <rect width="60" height="60" rx="30" fill="#023536" />
-                <path d="M32.8649 30.2132L42.1457 20.9324L39.494 18.2808L30.2133 27.5616L20.9325 18.2808L18.2808 20.9324L27.5616 30.2132L18.2808 39.494L20.9325 42.1456L30.2133 32.8649L39.494 42.1456L42.1457 39.494L32.8649 30.2132Z" fill="#F6FFFC" />
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <rect width="28" height="28" rx="14" fill="#023536" />
+                <path d="M15.7279 14.3137L20.6777 9.36396L19.2635 7.94975L14.3137 12.8995L9.36397 7.94975L7.94976 9.36396L12.8995 14.3137L7.94976 19.2635L9.36397 20.6777L14.3137 15.7279L19.2635 20.6777L20.6777 19.2635L15.7279 14.3137Z" fill="#F6FFFC" />
               </svg>
             </button>
             <div className="gallery-lightbox__content">
