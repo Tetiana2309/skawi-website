@@ -50,7 +50,7 @@
 .benefits__card:first-child { visibility: visible; opacity: 1; }
 .benefits__card-surface {
   position: absolute; inset: 0; border-radius: inherit; overflow: hidden;
-  background: rgba(246,255,252,.75);
+  background: rgba(246,255,252,.85);
   backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
 }
 .benefits__card-copy { position: absolute; inset: 0; opacity: var(--benefit-copy-opacity, 1); }
