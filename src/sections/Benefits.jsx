@@ -36,6 +36,7 @@ const copy = {
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 const ease = t => t * t * (3 - 2 * t);
 const number = i => String(i + 1).padStart(2, '0');
+const photo = import.meta.env.BASE_URL + 'images/Benefits-Content.webp';
 
 export default function Benefits({ language = 'UA' }) {
   const data = copy[language] ?? copy.UA;
@@ -69,23 +70,25 @@ export default function Benefits({ language = 'UA' }) {
           el.style.visibility = i === index ? 'visible' : 'hidden';
           el.style.opacity = i === index ? '1' : '0';
           el.style.transform = 'none';
-          el.style.setProperty('--benefit-copy-opacity', i === index ? '1' : '0');
+          el.style.setProperty('--benefit-dim', '0');
         } else if (d <= -1 || d >= 1) {
           el.style.visibility = 'hidden';
           el.style.opacity = '0';
-          el.style.setProperty('--benefit-copy-opacity', '0');
+          el.style.setProperty('--benefit-dim', '0');
         } else if (d < 0) {
           const t = ease(d + 1);
           el.style.visibility = 'visible';
-          el.style.opacity = String(ease(clamp((d + 1) / .28, 0, 1)));
-          el.style.transform = 'translate3d(0,' + ((1 - t) * 20) + '%,0)';
-          el.style.setProperty('--benefit-copy-opacity', String(ease(clamp((d + 1 - .52) / .48, 0, 1))));
+          // The complete, independently frosted surface rises with its text.
+          // Its opaque photo composite prevents additive white tint on overlap.
+          el.style.opacity = String(ease(clamp((d + 1) / .16, 0, 1)));
+          el.style.transform = 'translate3d(0,' + ((1 - t) * 32) + '%,0)';
+          el.style.setProperty('--benefit-dim', '0');
         } else {
           const t = ease(d);
           el.style.visibility = 'visible';
-          el.style.opacity = String(1 - ease(clamp((d - .35) / .65, 0, 1)));
-          el.style.setProperty('--benefit-copy-opacity', String(1 - ease(clamp(d / .42, 0, 1))));
-          el.style.transform = 'perspective(1400px) translate3d(0,' + (-t * 7) + '%,0) rotateX(' + (t * 9) + 'deg) scale(' + (1 - t * .045) + ')';
+          el.style.opacity = String(1 - ease(clamp((d - .78) / .22, 0, 1)));
+          el.style.setProperty('--benefit-dim', String(t * .16));
+          el.style.transform = 'perspective(1400px) translate3d(0,' + (-t * 7) + '%,0) rotateX(' + (t * 9) + 'deg) scale(' + (1 - t * .065) + ')';
         }
       });
       if (index !== activeRef.current) {
@@ -123,19 +126,21 @@ export default function Benefits({ language = 'UA' }) {
       <div className="benefits" ref={stage}>
         <div className="benefits__upper">
           <div className="benefits__left">
-            <img className="benefits__photo" src={import.meta.env.BASE_URL + 'images/Benefits-Content.webp'} alt="" loading="lazy" decoding="async" />
-            <div className="benefits__gradient" aria-hidden="true" />
+            <img className="benefits__photo" src={photo} alt="" loading="lazy" decoding="async" />
             <h2 className="benefits__heading" id="benefits-heading">{data.heading}</h2>
             <div className="benefits__deck">
               {data.cards.map(([title, description], i) => (
                 <article key={i} ref={el => { cards.current[i] = el; }} className="benefits__card" style={{ zIndex: i + 1 }} aria-hidden={i !== active}>
                   <div className="benefits__card-surface">
+                    <img className="benefits__card-photo" src={photo} alt="" loading="lazy" decoding="async" aria-hidden="true" />
+                    <div className="benefits__card-tint" aria-hidden="true" />
                     <div className="benefits__card-copy">
                       <div className="benefits__card-number">{number(i)}</div>
                       <div className="benefits__card-line" aria-hidden="true" />
                       <h3>{title}</h3>
                       <p>{description}</p>
                     </div>
+                    <div className="benefits__card-dim" aria-hidden="true" />
                   </div>
                 </article>
               ))}
