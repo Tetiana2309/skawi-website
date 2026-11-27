@@ -50,6 +50,7 @@ export default function Gallery({ language = 'UA' }) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(({ target: video, isIntersecting }) => {
         if (isIntersecting && !document.hidden) {
+          if (!video.getAttribute('src')) video.src = video.dataset.src;
           video.preload = 'auto';
           const playback = video.play();
           playback?.catch(() => {});
@@ -158,7 +159,7 @@ export default function Gallery({ language = 'UA' }) {
             <span className="gallery__media">
               {item.video ? (
                 <video
-                  src={videoPath(item.video)}
+                  data-src={videoPath(item.video)}
                   muted
                   loop
                   playsInline
@@ -166,7 +167,7 @@ export default function Gallery({ language = 'UA' }) {
                   aria-hidden="true"
                 />
               ) : (
-                <img src={imagePath(item.photo)} alt="" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
+                <img src={imagePath(item.photo)} alt="" loading="lazy" decoding="async" />
               )}
             </span>
           </button>

@@ -1,28 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Preloader.css';
 
 const SPIN_DURATION_MS = 3000;
 const REVEAL_DURATION_MS = 850;
+const MAX_WAIT_MS = 6500;
 
-export default function Preloader({ onReveal }) {
+export default function Preloader({ onReveal, videoReady = false }) {
   const [phase, setPhase] = useState('loading');
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const spinTime = prefersReducedMotion ? 150 : SPIN_DURATION_MS;
-    const revealTime = prefersReducedMotion ? 150 : REVEAL_DURATION_MS;
+  const [minimumElapsed, setMinimumElapsed] = useState(false);
+  const [deadlineElapsed, setDeadlineElapsed] = useState(false);
+  const started = useRef(false);
 
-    const reveal = window.setTimeout(() => {
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const minimum = window.setTimeout(() => setMinimumElapsed(true), reduced ? 150 : SPIN_DURATION_MS);
+    const deadline = window.setTimeout(() => setDeadlineElapsed(true), reduced ? 150 : MAX_WAIT_MS);
+    return () => {
+      window.clearTimeout(minimum);
+      window.clearTimeout(deadline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!minimumElapsed || (!videoReady && !deadlineElapsed)) return;
+    if (!started.current) {
+      started.current = true;
       setPhase('revealing');
       onReveal?.();
-    }, spinTime);
-    const finish = window.setTimeout(() => setPhase('hidden'), spinTime + revealTime);
+    }
+  }, [minimumElapsed, videoReady, deadlineElapsed, onReveal]);
 
-    return () => {
-      window.clearTimeout(reveal);
-      window.clearTimeout(finish);
-    };
-  }, [onReveal]);
+  useEffect(() => {
+    if (phase !== 'revealing') return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finish = window.setTimeout(() => setPhase('hidden'), reduced ? 150 : REVEAL_DURATION_MS);
+    return () => window.clearTimeout(finish);
+  }, [phase]);
 
   if (phase === 'hidden') return null;
 

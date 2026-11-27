@@ -11,77 +11,89 @@ const heroTitles = {
   RU: ['Твой Язык.', 'Твоя Свобода.'],
 };
 
-export default function Hero({ revealing = false, language = 'UA', onLanguageChange, onSectionNavigate }) {
+export default function Hero({ revealing = false, language = 'UA', onLanguageChange, onSectionNavigate, onVideoReady }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let inView = true;
-    let retryFrame = 0;
-    let playPending = false;
+    let pending = false;
+    let disposed = false;
+    let ready = false;
+    let lastTime = video.currentTime;
+    let lastProgress = performance.now();
+    let lastRecovery = 0;
 
-    const tryPlay = () => {
-      if (!inView || document.hidden || !video.paused || playPending) return;
-      video.muted = true;
-      playPending = true;
-      const playback = video.play();
-      if (playback && typeof playback.then === 'function') {
-        playback.then(() => { playPending = false; }).catch(() => {
-          // A first autoplay attempt may race with the video loading on refresh.
-          // The media-ready and page lifecycle listeners below retry it.
-          playPending = false;
-        });
-      } else {
-        playPending = false;
+    const markReady = () => {
+      if (!ready) {
+        ready = true;
+        onVideoReady?.();
       }
     };
-
-    const schedulePlay = () => {
-      cancelAnimationFrame(retryFrame);
-      retryFrame = requestAnimationFrame(tryPlay);
+    const active = () => !disposed && inView && !document.hidden && !motion.matches;
+    const tryPlay = () => {
+      if (!active() || pending || !video.paused) return;
+      video.muted = true;
+      pending = true;
+      Promise.resolve(video.play()).catch(() => {}).finally(() => { pending = false; });
     };
-
-    const onVisibilityChange = () => {
-      if (document.hidden) video.pause();
-      else schedulePlay();
+    const sync = () => {
+      lastTime = video.currentTime;
+      lastProgress = performance.now();
+      if (motion.matches) markReady();
+      if (active()) tryPlay();
+      else video.pause();
     };
-    const onPageShow = () => schedulePlay();
+    const progress = () => {
+      if (Math.abs(video.currentTime - lastTime) > 0.01) {
+        lastTime = video.currentTime;
+        lastProgress = performance.now();
+        markReady();
+      }
+    };
+    const check = () => {
+      if (!active()) return;
+      progress();
+      tryPlay();
+      const now = performance.now();
+      // A video can be stalled while paused is false. Do not restart downloads
+      // while buffering; only nudge the decoder once enough data is available.
+      if (!video.paused && !video.seeking && video.readyState >= 3 &&
+          now - lastProgress > 1800 && now - lastRecovery > 3500) {
+        lastRecovery = now;
+        video.pause();
+        pending = false;
+        tryPlay();
+      }
+    };
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
-      if (inView) schedulePlay();
-      else video.pause();
+      sync();
     }, { threshold: 0.01 });
-
-    video.addEventListener('loadeddata', schedulePlay);
-    video.addEventListener('canplay', schedulePlay);
-    video.addEventListener('stalled', schedulePlay);
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    window.addEventListener('pageshow', onPageShow);
+    const events = ['loadeddata', 'canplay', 'canplaythrough', 'waiting', 'stalled', 'pause'];
+    events.forEach(event => video.addEventListener(event, tryPlay));
+    video.addEventListener('timeupdate', progress);
+    video.addEventListener('error', markReady);
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('pageshow', sync);
+    motion.addEventListener('change', sync);
     observer.observe(video);
-    schedulePlay();
-
+    const watchdog = window.setInterval(check, 500);
+    sync();
     return () => {
-      cancelAnimationFrame(retryFrame);
+      disposed = true;
+      window.clearInterval(watchdog);
       observer.disconnect();
-      video.removeEventListener('loadeddata', schedulePlay);
-      video.removeEventListener('canplay', schedulePlay);
-      video.removeEventListener('stalled', schedulePlay);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-      window.removeEventListener('pageshow', onPageShow);
+      events.forEach(event => video.removeEventListener(event, tryPlay));
+      video.removeEventListener('timeupdate', progress);
+      video.removeEventListener('error', markReady);
+      document.removeEventListener('visibilitychange', sync);
+      window.removeEventListener('pageshow', sync);
+      motion.removeEventListener('change', sync);
     };
-  }, []);
-
-  // The preloader may finish before the browser has begun playing the video.
-  // Retry as soon as the hero is revealed, without resetting its position.
-  useEffect(() => {
-    if (!revealing) return;
-    const video = videoRef.current;
-    if (!video || !video.paused) return;
-    const playback = video.play();
-    playback?.catch(() => {});
-  }, [revealing]);
+  }, [onVideoReady]);
 
   return (
     <section className={revealing ? "hero hero--revealing" : "hero hero--waiting"} id="home" aria-labelledby="hero-heading">

@@ -11,6 +11,8 @@ import './components/Preloader.css';
 
 export default function App() {
   const [heroRevealing, setHeroRevealing] = useState(false);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
+  const markHeroVideoReady = useCallback(() => setHeroVideoReady(true), []);
   const [language, setLanguage] = useState('UA');
   const showHero = useCallback(() => setHeroRevealing(true), []);
   const lenisRef = useRef(null);
@@ -126,7 +128,7 @@ export default function App() {
   }, []);
   return (
     <>
-      <Preloader onReveal={showHero} />
+      <Preloader onReveal={showHero} videoReady={heroVideoReady} />
       <div
         className={`skawi-section-transition skawi-section-transition--${sectionTransitionPhase}`}
         aria-hidden="true"
@@ -136,7 +138,7 @@ export default function App() {
         </div>
       </div>
       <main>
-        <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
+        <Hero onVideoReady={markHeroVideoReady} revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
         <Services language={language} />
         <AboutUs language={language} />
         <Team language={language} />
