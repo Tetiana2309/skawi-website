@@ -95,6 +95,8 @@
    the whole curtain upwards. Never sweep the blur panel twice. */
 .skawi-section-transition--exit {
   transform: translate3d(0, -100%, 0);
+  transition-duration: 850ms;
+  transition-timing-function: cubic-bezier(.76, 0, .24, 1);
 }
 
 /* Reset offscreen instantly, only AFTER the curtain has fully left. */
