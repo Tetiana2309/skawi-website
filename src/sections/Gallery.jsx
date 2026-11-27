@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import './Gallery.css';
 
 // Pixel positions and dimensions are from Figma Gallery 101:284 (1840 × 1690).
-// The available 12 photos and 3 videos occupy all 15 original slots.
+// Figma has 11 photo slots and 4 video slots. Three actual videos are uploaded.
 const slots = [
   { id: 'photo-1', x: 0, y: 30, w: 498, h: 316, photo: 'gallery-img-one.webp' },
   { id: 'photo-2', x: 544, y: 0, w: 462, h: 604, photo: 'gallery-img-two.webp' },
   { id: 'photo-3', x: 1052, y: 45, w: 362, h: 514, photo: 'gallery-img-three.webp' },
-  { id: 'video-1', x: 1494, y: 0, w: 346, h: 314, video: 'video-1.mp4', poster: 'gallery-img-four.webp' },
-  { id: 'video-2', x: 0, y: 378, w: 334, h: 481, video: 'video-2.mp4', poster: 'gallery-img-five.webp' },
+  { id: 'video-1', x: 1494, y: 0, w: 346, h: 314, video: 'video-1.mp4' },
+  { id: 'video-2', x: 0, y: 378, w: 334, h: 481, video: 'video-2.mp4' },
   { id: 'photo-4', x: 544, y: 636, w: 476, h: 250, photo: 'gallery-img-four.webp' },
   { id: 'photo-5', x: 1052, y: 591, w: 410, h: 618, photo: 'gallery-img-five.webp' },
   { id: 'photo-6', x: 1494, y: 346, w: 346, h: 604, photo: 'gallery-img-six.webp' },
@@ -16,11 +16,10 @@ const slots = [
   { id: 'photo-8', x: 454, y: 918, w: 566, h: 394, photo: 'gallery-img-eight.webp' },
   { id: 'photo-9', x: 0, y: 1256, w: 420, h: 434, photo: 'gallery-img-nine.webp' },
   { id: 'photo-10', x: 454, y: 1344, w: 452, h: 346, photo: 'gallery-img-ten.webp' },
-  { id: 'video-3', x: 1052, y: 1241, w: 346, h: 449, video: 'video-3.mp4', poster: 'gallery-img-eleven.webp' },
+  { id: 'video-3', x: 1052, y: 1241, w: 346, h: 449, video: 'video-3.mp4' },
   { id: 'photo-11', x: 1414, y: 1498, w: 426, h: 192, photo: 'gallery-img-eleven.webp' },
-  // The reference has four video frames; this one uses the 12th provided photo
-  // rather than inventing an unavailable fourth video.
-  { id: 'photo-12', x: 1494, y: 982, w: 346, h: 490, photo: 'gallery-img-twelve.webp' },
+  // The fourth video rectangle exists in Figma; its video file is not uploaded yet.
+  { id: 'video-4', x: 1494, y: 982, w: 346, h: 490, video: null, videoSlot: true },
 ];
 
 const translations = {
@@ -40,7 +39,7 @@ export default function Gallery({ language = 'UA' }) {
   const [selected, setSelected] = useState(null);
   const [visible, setVisible] = useState(false);
   const galleryRef = useRef(null);
-  const displayItems = slots.filter((item) => filter === 'all' || (filter === 'videos' ? !!item.video : !item.video));
+  const displayItems = slots.filter((item) => filter === 'all' || (filter === 'videos' ? !!(item.video || item.videoSlot) : !item.video && !item.videoSlot));
 
   useEffect(() => {
     const root = galleryRef.current;
@@ -127,10 +126,17 @@ export default function Gallery({ language = 'UA' }) {
               '--tile-w': `${item.w / 1840 * 100}%`, '--tile-h': `${item.h / 1690 * 100}%`,
               '--tile-ratio': `${item.w} / ${item.h}`, '--tile-order': index % 5 }}
             onClick={() => { setSelected(index); setVisible(false); }}
-            aria-label={item.video ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
+            disabled={!!item.videoSlot}
+            aria-label={item.video || item.videoSlot ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
             <span className="gallery__media">
-              <img src={imagePath(item.photo ?? item.poster)} alt="" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
-              {item.video && <span className="gallery__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5 19 12 8 18.5Z" fill="currentColor"/></svg></span>}
+              {item.video ? (
+                <video src={videoPath(item.video)} preload="metadata" muted playsInline aria-hidden="true" />
+              ) : item.videoSlot ? (
+                <span className="gallery__video-placeholder" aria-hidden="true" />
+              ) : (
+                <img src={imagePath(item.photo)} alt="" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
+              )}
+              {(item.video || item.videoSlot) && <span className="gallery__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5 19 12 8 18.5Z" fill="currentColor"/></svg></span>}
             </span>
           </button>
         ))}
@@ -153,7 +159,7 @@ export default function Gallery({ language = 'UA' }) {
             {displayItems.map((item, index) => (
               <button key={item.id} type="button" className={index === selected ? 'is-active' : ''} aria-label={String(index + 1)}
                 onClick={(event) => { event.stopPropagation(); setSelected(index); }}>
-                <img src={imagePath(item.photo ?? item.poster)} alt="" loading="lazy"/>
+                {item.video ? <video src={videoPath(item.video)} preload="metadata" muted playsInline /> : item.videoSlot ? null : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
               </button>
             ))}
           </div>
