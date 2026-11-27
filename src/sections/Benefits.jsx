@@ -116,11 +116,11 @@ export default function Benefits({ language = 'UA' }) {
                 <img className="benefits__card-photo" src={photo} alt="" loading="lazy" decoding="async" />
                 <div className="benefits__card-tint" />
               </div>
-              <div className="benefits__card-line" aria-hidden="true" />
               <div className="benefits__copy-window">
                 {data.cards.map(([title, description], i) => (
                   <article key={i} ref={el => { cards.current[i] = el; }} className="benefits__card" aria-hidden={i !== active}>
                     <div className="benefits__card-number">{number(i)}</div>
+                    <div className="benefits__card-line" aria-hidden="true" />
                     <h3>{title}</h3>
                     <p>{description}</p>
                   </article>
