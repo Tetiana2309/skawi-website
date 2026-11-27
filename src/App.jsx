@@ -19,7 +19,7 @@ export default function App() {
 
   useEffect(() => () => {
     transitionTimers.current.forEach(window.clearTimeout);
-    document.documentElement.classList.remove('skawi-about-nav-ready');
+    document.documentElement.classList.remove('skawi-about-nav-ready', 'skawi-about-nav-revealing');
     lenisRef.current?.start();
   }, []);
 
@@ -59,7 +59,12 @@ export default function App() {
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       });
     }, 2050);
-    schedule(() => setSectionTransitionPhase('exit'), 2700);
+    schedule(() => {
+      // As in Hero, reveal the already-rendered content independently
+      // of the curtain motion, rather than exposing the glass layer abruptly.
+      if (href === '#about') document.documentElement.classList.add('skawi-about-nav-revealing');
+      setSectionTransitionPhase('exit');
+    }, 2700);
     schedule(() => {
       // Keep Lenis and native scroll aligned before releasing the cover.
       if (lenisRef.current) {
