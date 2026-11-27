@@ -50,8 +50,10 @@ export default function App() {
         if (!currentSection) return;
         const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
         const travel = Math.max(0, currentSection.offsetHeight - window.innerHeight);
-        // The precise end state (progress === 1) prevents a final layout correction.
-        const targetY = href === '#about' ? sectionTop + travel : sectionTop + 1;
+        // Stop safely inside the sticky interval, not on its final pixel.
+        // At 97% the photo and glass panel are already fully revealed, but
+        // the browser cannot flip the sticky element into its outgoing state.
+        const targetY = href === '#about' ? sectionTop + travel * 0.97 : sectionTop + 1;
         if (lenisRef.current) lenisRef.current.scrollTo(targetY, { immediate: true, force: true });
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       });
