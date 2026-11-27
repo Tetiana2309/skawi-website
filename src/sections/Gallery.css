@@ -9,7 +9,7 @@
 }
 .gallery__topline {
   height: 180px;
-  padding-top: 60px;
+  padding-top: 40px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
