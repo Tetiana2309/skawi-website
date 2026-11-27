@@ -9,10 +9,10 @@
 .team {
   --team-light: #F6FFFC;
   --team-dark: #023536;
-  /* Center the photo + 40px gap + text as one 864px composition. */
+  /* Figma 308:210: 382px photo + 80px gap + 442px copy = 904px centered composition. */
   --team-photo-width: 382px;
   --team-copy-width: 442px;
-  --team-copy-gap: 40px;
+  --team-copy-gap: 80px;
   --team-slide-width: calc(var(--team-photo-width) + var(--team-copy-gap) + var(--team-copy-width) + 100px);
   --team-group-left: calc(50% - (var(--team-photo-width) + var(--team-copy-gap) + var(--team-copy-width)) / 2);
   --team-text-left: calc(var(--team-group-left) + var(--team-photo-width) + var(--team-copy-gap));
@@ -91,12 +91,12 @@
 }
 .team__details h2 {
   margin: 0;
-  font: 500 54px/1.08 "Inter", sans-serif;
+  font: 500 54px/1 "Inter", sans-serif;
   letter-spacing: -1px;
 }
 .team__role {
   margin: 22px 0 0;
-  font: 400 14px/1.3 "Inter", sans-serif;
+  font: 400 14px/15px "Inter", sans-serif;
 }
 .team__description {
   margin: 50px 0 0;
