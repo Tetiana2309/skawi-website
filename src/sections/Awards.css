@@ -1,0 +1,21 @@
+.awards-scroll { position: relative; height: 540svh; margin-top: 120px; background: #F6FFFC; color: #023536; }
+.awards { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+.awards__heading { position: absolute; top: 9%; left: 5.2%; right: 5.2%; margin: 0; font: 500 clamp(26px,2.5vw,48px)/1.1 "Roboto Serif", Georgia, serif; }
+.awards__viewport { width: 100%; padding: 80px 0; overflow: visible; }
+.awards__track { position: relative; display: flex; align-items: center; gap: clamp(24px,3vw,58px); width: max-content; will-change: transform; }
+.awards__item { flex: 0 0 auto; margin: 0; height: clamp(180px,46svh,460px); will-change: transform; }
+.awards__item img { display: block; height: 100%; width: auto; max-width: 70vw; object-fit: contain; }
+@media (max-width:800px) {
+  .awards-scroll { margin-top: 80px; height: 620svh; }
+  .awards__heading { left: 6%; top: 8%; }
+  .awards__item { height: min(42svh,65vw); }
+  .awards__track { gap: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .awards-scroll { height: auto; }
+  .awards { position: relative; height: auto; padding: 40px 0; }
+  .awards__heading { position: static; margin: 0 6% 32px; }
+  .awards__viewport { overflow-x: auto; padding: 12px 6%; box-sizing: border-box; }
+  .awards__track { transform: none !important; }
+  .awards__item { transform: none !important; }
+}
