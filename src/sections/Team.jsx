@@ -122,8 +122,14 @@ export default function Team({ language = 'UA' }) {
     const update = () => {
       const progress = Math.max(0, Math.min(1, (window.scrollY - startY) / travelY));
       const position = progress * (teachers.length - 1);
-      targetX = -position * slideWidth;
-      const nextActive = Math.round(position);
+      const segment = Math.min(teachers.length - 2, Math.floor(position));
+      const raw = position - segment;
+      // Short resting moment at each teacher; faster through the empty middle,
+      // then a gentle stop when the next complete card reaches its Figma position.
+      const t = Math.max(0, Math.min(1, (raw - 0.06) / 0.88));
+      const eased = t * t * (3 - 2 * t);
+      targetX = -(segment + eased) * slideWidth;
+      const nextActive = Math.round(segment + eased);
       if (nextActive !== activeRef.current) {
         activeRef.current = nextActive;
         setActive(nextActive);
