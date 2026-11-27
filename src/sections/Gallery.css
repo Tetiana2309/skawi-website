@@ -182,8 +182,8 @@ html.gallery-modal-locked { overflow: hidden !important; }
 .gallery-lightbox__close {
   position: absolute;
   z-index: 2;
-  top: 60px;
-  right: 60px;
+  top: 40px;
+  right: 40px;
   width: 28px;
   height: 28px;
   padding: 0;
