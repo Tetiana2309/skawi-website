@@ -114,7 +114,7 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
 
   return (
     <section className="about-us-scroll" id="about" ref={sectionRef} aria-labelledby="about-us-title">
-      <div className="about-us" ref={stageRef}>
+      <div className={`about-us${freezeDuringReveal ? " about-us--navigation-reveal" : ""}`} ref={stageRef}>
         <div
           className="about-us__photo"
           aria-hidden="true"
