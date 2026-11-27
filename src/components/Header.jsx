@@ -71,7 +71,7 @@ export default function Header({ language = 'UA', onLanguageChange, onSectionNav
         {navigationTargets.map((href, index) => (
           <a key={href} href={href} onClick={(event) => {
             setMenuOpen(false);
-            if ((href === '#services' || href === '#about') && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            if ((href === '#services' || href === '#about' || href === '#gallery') && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
               event.preventDefault();
               onSectionNavigate?.(href);
             }
