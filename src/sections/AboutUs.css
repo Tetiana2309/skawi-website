@@ -24,6 +24,22 @@
   background: #f6fffc;
 }
 
+/* During menu navigation the curtain reveals an already finished, stationary
+   scene. Inline scroll-progress values continue updating invisibly underneath,
+   so releasing this state does not restart photo or panel animations. */
+html.skawi-about-nav-ready .about-us {
+  --about-photo-scale: 1 !important;
+  --about-photo-radius: 0px !important;
+  --about-copy-opacity: 1 !important;
+  --about-copy-shift: 0px !important;
+  --about-panel-visibility: visible !important;
+}
+
+html.skawi-about-nav-ready .about-us__photo,
+html.skawi-about-nav-ready .about-us__panel {
+  transition: none !important;
+}
+
 .about-us__photo {
   position: absolute;
   inset: 0;
