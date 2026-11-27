@@ -62,44 +62,17 @@ export default function Benefits({ language = 'UA' }) {
       return clamp((fraction - .07) / .86 * 3, 0, 3);
     };
     const paint = p => {
-      const index = motion.matches ? clamp(Math.round(p), 0, 3) : clamp(Math.floor(p + .001), 0, 3);
+      const index = clamp(Math.round(p), 0, 3);
       cards.current.forEach((el, i) => {
         if (!el) return;
         const d = p - i;
-        let opacity = 0, reveal = 1, scale = 1, dim = 0;
-        if (motion.matches) {
-          opacity = i === index ? 1 : 0;
-        } else if (d > -1 && d < 0) {
-          // Reveal from the bottom of the original card, never beyond it.
-          reveal = ease(d + 1);
-          opacity = 1;
-        } else if (d >= 0 && d < 1) {
-          // Keep the outgoing surface behind the incoming one; only retreat
-          // once the new surface has covered a substantial part of it.
-          const t = ease(clamp((d - .28) / .72, 0, 1));
-          scale = 1 - .025 * t;
-          dim = .055 * t;
-          opacity = 1 - ease(clamp((d - .88) / .12, 0, 1));
-        }
-        const isVisible = opacity > 0 && reveal > .0001;
-        el.style.visibility = isVisible ? 'visible' : 'hidden';
+        // Move only the copy. The glass and its shadow never move.
+        // Use a single visible text group at a time to avoid ghosting.
+        const opacity = motion.matches ? Number(i === index) : 1 - ease(clamp(Math.abs(d) / .5, 0, 1));
+        const shift = motion.matches ? 0 : -Math.sign(d) * ease(clamp(Math.abs(d) / .5, 0, 1)) * 24;
+        el.style.visibility = opacity > 0 ? 'visible' : 'hidden';
         el.style.opacity = String(opacity);
-        el.style.transform = 'scale(' + scale + ')';
-        el.style.setProperty('--benefit-inverse-scale', String(1 / scale));
-        el.style.setProperty('--benefit-reveal', ((1 - reveal) * 100).toFixed(3) + '%');
-        el.style.setProperty('--benefit-dim', String(dim));
-        // Let the opaque frosted surface cover the old copy naturally.
-        // Reveal each incoming text group only once its own area is visible.
-        const incoming = !motion.matches && d < 0;
-        const mobile = window.innerWidth <= 800;
-        const shortDesktop = !mobile && window.innerHeight <= 700;
-        const titleTop = mobile ? (window.innerHeight <= 620 ? .34 : .43) : shortDesktop ? .49 : .56639;
-        const numberTop = mobile ? .12 : .16598;
-        const descriptionTop = mobile ? (window.innerHeight <= 620 ? .52 : .59) : shortDesktop ? .64 : .69294;
-        const textAlpha = top => incoming ? ease(clamp((reveal - (1 - top)) / .065, 0, 1)) : 1;
-        el.style.setProperty('--benefit-number-opacity', String(textAlpha(numberTop)));
-        el.style.setProperty('--benefit-title-opacity', String(textAlpha(titleTop)));
-        el.style.setProperty('--benefit-description-opacity', String(textAlpha(descriptionTop)));
+        el.style.transform = 'translate3d(0,' + shift + 'px,0)';
       });
       if (index !== activeRef.current) {
         activeRef.current = index;
@@ -139,21 +112,20 @@ export default function Benefits({ language = 'UA' }) {
             <img className="benefits__photo" src={photo} alt="" loading="lazy" decoding="async" />
             <h2 className="benefits__heading" id="benefits-heading">{data.heading}</h2>
             <div className="benefits__deck">
-              {data.cards.map(([title, description], i) => (
-                <article key={i} ref={el => { cards.current[i] = el; }} className="benefits__card" style={{ zIndex: i + 1 }} aria-hidden={i !== active}>
-                  <div className="benefits__card-surface">
-                    <img className="benefits__card-photo" src={photo} alt="" loading="lazy" decoding="async" aria-hidden="true" />
-                    <div className="benefits__card-tint" aria-hidden="true" />
-                    <div className="benefits__card-copy">
-                      <div className="benefits__card-number">{number(i)}</div>
-                      <div className="benefits__card-line" aria-hidden="true" />
-                      <h3>{title}</h3>
-                      <p>{description}</p>
-                    </div>
-                    <div className="benefits__card-dim" aria-hidden="true" />
-                  </div>
-                </article>
-              ))}
+              <div className="benefits__card-surface" aria-hidden="true">
+                <img className="benefits__card-photo" src={photo} alt="" loading="lazy" decoding="async" />
+                <div className="benefits__card-tint" />
+              </div>
+              <div className="benefits__card-line" aria-hidden="true" />
+              <div className="benefits__copy-window">
+                {data.cards.map(([title, description], i) => (
+                  <article key={i} ref={el => { cards.current[i] = el; }} className="benefits__card" aria-hidden={i !== active}>
+                    <div className="benefits__card-number">{number(i)}</div>
+                    <h3>{title}</h3>
+                    <p>{description}</p>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
           <div className="benefits__right">
