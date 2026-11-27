@@ -36,6 +36,8 @@ export default function Gallery({ language = 'UA' }) {
   const copy = translations[language] ?? translations.UA;
   const [selected, setSelected] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeTimerRef = useRef(null);
   const galleryRef = useRef(null);
   const displayItems = slots;
 
@@ -82,7 +84,7 @@ export default function Gallery({ language = 'UA' }) {
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') setSelected(null);
+      if (event.key === 'Escape') close();
     };
     window.addEventListener('keydown', onKeyDown);
     const frame = requestAnimationFrame(() => setVisible(true));
@@ -93,14 +95,25 @@ export default function Gallery({ language = 'UA' }) {
     };
   }, [selected !== null]);
 
+  useEffect(() => () => window.clearTimeout(closeTimerRef.current), []);
+
   const openItem = (index) => {
+    window.clearTimeout(closeTimerRef.current);
+    setClosing(false);
     setSelected(index);
     setVisible(false);
   };
 
   const close = () => {
+    if (closing || selected === null) return;
+    setClosing(true);
     setVisible(false);
-    setSelected(null);
+    // Let the photo retract first, the glass card next, and background last.
+    // Keep the modal mounted until every exit transition is finished.
+    closeTimerRef.current = window.setTimeout(() => {
+      setSelected(null);
+      setClosing(false);
+    }, 760);
   };
 
 
@@ -138,7 +151,7 @@ export default function Gallery({ language = 'UA' }) {
       </div>
       {selected !== null && displayItems[selected] && (
         <div
-          className={`gallery-lightbox${visible ? ' is-visible' : ''}`}
+          className={`gallery-lightbox${visible ? ' is-visible' : '' }${closing ? ' is-closing' : ''}` }
           role="dialog"
           aria-modal="true"
           aria-label={copy.heading}
