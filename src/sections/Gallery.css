@@ -64,17 +64,19 @@
 }
 .gallery__tile--visible { opacity: 1; transform: translate3d(0,0,0); }
 .gallery__media { display: block; width: 100%; height: 100%; overflow: hidden; }
-.gallery__media img {
+/* Render exactly inside each measured Figma frame: no scale or mouse offset. */
+.gallery__media img,
+.gallery__media video {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.055) translate(calc(var(--gallery-parallax-x, 0px) * -.35), calc(var(--gallery-parallax-y, 0px) * -.35));
-  transition: transform .25s ease;
 }
-.gallery__tile:hover .gallery__media img {
-  transform: scale(1.12) translate(calc(var(--gallery-parallax-x, 0px) * -.35), calc(var(--gallery-parallax-y, 0px) * -.35));
-}
+.gallery__media video { background: #343434; }
+.gallery__video-placeholder { display: block; width: 100%; height: 100%; background: #555; }
+.gallery__tile:disabled { cursor: default; }
+.gallery__tile:disabled .gallery__play { opacity: .5; }
+.gallery-lightbox__thumbnails video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .gallery__tile:focus-visible { outline: 3px solid #DABE73; outline-offset: 3px; }
 .gallery__play {
   position: absolute;
