@@ -55,6 +55,29 @@ export default function Gallery({ language = 'UA' }) {
   }, []);
 
   useEffect(() => {
+    const root = galleryRef.current;
+    if (!root || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const move = (event) => {
+      const rect = root.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width - 0.5) * 16;
+      const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
+      root.style.setProperty('--gallery-mouse-x', x.toFixed(2) + 'px');
+      root.style.setProperty('--gallery-mouse-y', y.toFixed(2) + 'px');
+    };
+    const reset = () => {
+      root.style.setProperty('--gallery-mouse-x', '0px');
+      root.style.setProperty('--gallery-mouse-y', '0px');
+    };
+    root.addEventListener('pointermove', move, { passive: true });
+    root.addEventListener('pointerleave', reset);
+    return () => {
+      root.removeEventListener('pointermove', move);
+      root.removeEventListener('pointerleave', reset);
+    };
+  }, []);
+
+  useEffect(() => {
     if (selected === null) return;
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
