@@ -5,6 +5,7 @@ import Hero from './sections/Hero.jsx';
 import Services from './sections/Services.jsx';
 import AboutUs from './sections/AboutUs.jsx';
 import Team from './sections/Team.jsx';
+import Gallery from './sections/Gallery.jsx';
 import Preloader from './components/Preloader.jsx';
 import './components/Preloader.css';
 
@@ -139,6 +140,7 @@ export default function App() {
         <Services language={language} />
         <AboutUs language={language} />
         <Team language={language} />
+        <Gallery language={language} />
       </main>
     </>
   );
