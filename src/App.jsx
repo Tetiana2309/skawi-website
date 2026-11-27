@@ -16,6 +16,16 @@ export default function App() {
   const [language, setLanguage] = useState('UA');
   const showHero = useCallback(() => setHeroRevealing(true), []);
   const lenisRef = useRef(null);
+  const onGalleryModalChange = useCallback((open) => {
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+    if (open) lenis.stop();
+    else {
+      lenis.resize();
+      lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+      lenis.start();
+    }
+  }, []);
   const transitionTimers = useRef([]);
   const transitionActiveRef = useRef(false);
   const aboutImageReadyRef = useRef(null);
@@ -142,7 +152,7 @@ export default function App() {
         <Services language={language} />
         <AboutUs language={language} />
         <Team language={language} />
-        <Gallery language={language} />
+        <Gallery language={language} onModalChange={onGalleryModalChange} />
       </main>
     </>
   );

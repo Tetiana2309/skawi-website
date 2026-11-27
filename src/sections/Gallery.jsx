@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import './Gallery.css';
 
 // Coordinates relative to the gallery area beginning at (40, 180) in Figma 97:264 (1920 × 2050).
@@ -32,13 +33,15 @@ const translations = {
 const imagePath = (name) => import.meta.env.BASE_URL + 'images/' + name;
 const videoPath = (name) => import.meta.env.BASE_URL + 'videos/' + name;
 
-export default function Gallery({ language = 'UA' }) {
+export default function Gallery({ language = 'UA', onModalChange }) {
   const copy = translations[language] ?? translations.UA;
   const [selected, setSelected] = useState(null);
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
   const closeTimerRef = useRef(null);
   const galleryRef = useRef(null);
+  const closingRef = useRef(false);
+  const modalOpen = selected !== null;
   const displayItems = slots;
 
   // Defer heavy gallery videos until they actually approach the viewport.
@@ -86,6 +89,8 @@ export default function Gallery({ language = 'UA' }) {
     if (!root || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const move = (event) => {
+      if (root.classList.contains('gallery__canvas--modal-open')) return;
+      root.classList.remove('gallery__canvas--hover-suspended');
       const rect = root.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width - 0.5) * 16;
       const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
@@ -104,41 +109,52 @@ export default function Gallery({ language = 'UA' }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (selected === null) return;
-    const oldOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+  const close = useCallback(() => {
+    if (closingRef.current || !modalOpen) return;
+    closingRef.current = true;
+    setClosing(true);
+    setVisible(false);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    closeTimerRef.current = window.setTimeout(() => {
+      setSelected(null);
+      setClosing(false);
+      closingRef.current = false;
+    }, reduced ? 0 : 800);
+  }, [modalOpen]);
+
+  useLayoutEffect(() => {
+    if (!modalOpen) return;
+    const root = document.documentElement;
+    const canvas = galleryRef.current;
+    root.classList.add('gallery-modal-locked');
+    canvas?.classList.add('gallery__canvas--modal-open', 'gallery__canvas--hover-suspended');
+    onModalChange?.(true);
     const onKeyDown = (event) => {
       if (event.key === 'Escape') close();
     };
     window.addEventListener('keydown', onKeyDown);
-    const frame = requestAnimationFrame(() => setVisible(true));
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        if (!closingRef.current) setVisible(true);
+      });
+    });
     return () => {
       cancelAnimationFrame(frame);
-      document.body.style.overflow = oldOverflow;
       window.removeEventListener('keydown', onKeyDown);
+      canvas?.classList.remove('gallery__canvas--modal-open');
+      root.classList.remove('gallery-modal-locked');
+      onModalChange?.(false);
     };
-  }, [selected !== null]);
+  }, [modalOpen, close, onModalChange]);
 
   useEffect(() => () => window.clearTimeout(closeTimerRef.current), []);
 
   const openItem = (index) => {
-    window.clearTimeout(closeTimerRef.current);
+    if (modalOpen) return;
+    closingRef.current = false;
     setClosing(false);
+    setVisible(false);
     setSelected(index);
-    setVisible(false);
-  };
-
-  const close = () => {
-    if (closing || selected === null) return;
-    setClosing(true);
-    setVisible(false);
-    // Let the photo retract first, the glass card next, and background last.
-    // Keep the modal mounted until every exit transition is finished.
-    closeTimerRef.current = window.setTimeout(() => {
-      setSelected(null);
-      setClosing(false);
-    }, 760);
   };
 
 
@@ -173,9 +189,10 @@ export default function Gallery({ language = 'UA' }) {
           </button>
         ))}
       </div>
-      {selected !== null && displayItems[selected] && (
+      {selected !== null && displayItems[selected] && createPortal(
         <div
           className={`gallery-lightbox${visible ? ' is-visible' : '' }${closing ? ' is-closing' : ''}` }
+          data-lenis-prevent
           role="dialog"
           aria-modal="true"
           aria-label={copy.heading}
@@ -188,7 +205,7 @@ export default function Gallery({ language = 'UA' }) {
                 <path d="M15.7279 14.3137L20.6777 9.36396L19.2635 7.94975L14.3137 12.8995L9.36397 7.94975L7.94976 9.36396L12.8995 14.3137L7.94976 19.2635L9.36397 20.6777L14.3137 15.7279L19.2635 20.6777L20.6777 19.2635L15.7279 14.3137Z" fill="#F6FFFC" />
               </svg>
             </button>
-            <div className="gallery-lightbox__content">
+            <div className={`gallery-lightbox__content${displayItems[selected].photo ? ' gallery-lightbox__content--photo' : ''}`}>
               {displayItems[selected].video ? (
                 <video key={displayItems[selected].id} src={videoPath(displayItems[selected].video)} controls autoPlay playsInline />
               ) : (
@@ -196,7 +213,7 @@ export default function Gallery({ language = 'UA' }) {
               )}
             </div>
           </div>
-        </div>
+        </div>, document.body
       )}
     </section>
   );
