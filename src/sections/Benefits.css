@@ -42,7 +42,7 @@
 }
 .benefits__card-surface {
   position: absolute; inset: 0; border-radius: inherit; overflow: hidden;
-  background: #F6FFFC;
+  background: #EAF4F0;
 }
 /* One permanently aligned frosted background for all four text states. */
 .benefits__card-photo {
@@ -50,22 +50,30 @@
   left: -12.285%; top: -38.174%; width: 124.57%; height: 150.622%;
   object-fit: cover; filter: blur(15px); pointer-events: none;
 }
-.benefits__card-tint { position: absolute; inset: 0; background: rgba(246,255,252,.85); pointer-events: none; }
+.benefits__card-tint { position: absolute; inset: 0; background: rgba(234,244,240,.85); pointer-events: none; }
 .benefits__copy-window { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
-.benefits__card { position: absolute; inset: 0; visibility: hidden; opacity: 0; will-change: transform, opacity; }
+.benefits__card {
+  position: absolute; inset: 0; visibility: hidden; opacity: 0;
+  will-change: transform, opacity;
+  --card-x: min(40px, 2.08333vw);
+  --card-y: min(60px, 5.988vh);
+  --card-gap: min(30px, 2.994vh);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: var(--card-y) var(--card-x);
+}
 .benefits__card:first-child { visibility: visible; opacity: 1; }
 .benefits__card-number {
-  position: absolute; left: 4.914%; top: 16.598%;
-  font-size: clamp(15px, 1.25cqw, 24px); line-height: 1.1;
+  position: absolute; left: var(--card-x); top: var(--card-y);
+  font-size: clamp(15px, 1.25vw, 24px); line-height: 1.1;
 }
-.benefits__card-line { position: absolute; right: 4.914%; top: 19.295%; width: 37.346%; height: 1px; background: #023536; }
+.benefits__card-line { position: absolute; right: var(--card-x); top: calc(var(--card-y) + 13px); width: min(204px, 30%); height: 1px; background: #023536; }
 .benefits__card h3 {
-  position: absolute; left: 4.914%; right: 4.914%; top: 56.639%;
-  margin: 0; font-size: clamp(21px, 1.667cqw, 32px); font-weight: 500; line-height: 1; letter-spacing: .01em;
+  position: static;
+  margin: 0 0 var(--card-gap); font-size: clamp(21px, 1.667vw, 32px); font-weight: 500; line-height: 1; letter-spacing: .01em;
 }
 .benefits__card p {
-  position: absolute; left: 4.914%; right: 4.914%; top: 69.294%;
-  margin: 0; font-size: clamp(14px, 1.146cqw, 22px); font-weight: 500; line-height: 1.6;
+  position: static;
+  margin: 0; font-size: clamp(14px, 1.146vw, 22px); font-weight: 500; line-height: 1.6;
 }
 .benefits__quote {
   position: absolute; top: 8.264%; right: 4.415%; display: flex; align-items: center; gap: 8px; white-space: nowrap;
@@ -91,8 +99,8 @@
 }
 @media (min-width: 801px) and (max-height: 700px) {
   .benefits__heading { font-size: clamp(22px, 4.8cqh, 48px); }
-  .benefits__card h3 { top: 49%; font-size: clamp(19px, 3.2cqh, 32px); }
-  .benefits__card p { top: 64%; font-size: clamp(13px, 2.2cqh, 22px); line-height: 1.4; }
+  .benefits__card h3 { font-size: clamp(19px, 3.2vh, 32px); }
+  .benefits__card p { font-size: clamp(13px, 2.2vh, 22px); line-height: 1.4; }
 }
 @media (max-width: 800px) {
   .benefits-scroll { margin-top: 80px; height: 380svh; }
@@ -101,10 +109,10 @@
   .benefits__heading { left: 6%; right: 6%; top: 5%; font-size: clamp(22px, 5.4cqw, 38px); }
   .benefits__deck { left: 6%; right: 6%; top: 25%; height: 68%; }
   .benefits__card-photo { left: -6.818%; top: -36.765%; width: 113.636%; height: 147.059%; }
-  .benefits__card-number { top: 12%; }
-  .benefits__card-line { top: 16%; }
-  .benefits__card h3 { top: 43%; font-size: clamp(19px, 5cqw, 28px); line-height: 1.15; }
-  .benefits__card p { top: 59%; font-size: clamp(13px, 3.5cqw, 19px); line-height: 1.45; }
+  .benefits__card { --card-x: clamp(16px, 4.914vw, 40px); --card-y: min(28px, 5vh); --card-gap: min(20px, 3vh); }
+  .benefits__card-line { top: calc(var(--card-y) + 9px); }
+  .benefits__card h3 { font-size: clamp(19px, 5vw, 28px); line-height: 1.15; }
+  .benefits__card p { font-size: clamp(13px, 3.5vw, 19px); line-height: 1.45; }
   .benefits__quote { top: 10%; right: 6%; font-size: 10px; }
   .benefits__quote em { font-size: 10px; }
   .benefits__intro { left: 6%; top: 35%; width: 88%; font-size: clamp(13px, 3.3cqw, 17px); }
@@ -113,8 +121,8 @@
   .benefits__motto { position: static; text-align: center; font-size: clamp(18px, 4.8cqw, 30px); line-height: 1.1; }
 }
 @media (max-width: 800px) and (max-height: 620px) {
-  .benefits__card h3 { top: 34%; }
-  .benefits__card p { top: 52%; font-size: 13px; line-height: 1.3; }
+  .benefits__card { --card-y: min(18px, 3vh); --card-gap: min(12px, 2vh); }
+  .benefits__card p { font-size: 13px; line-height: 1.3; }
   .benefits__intro { top: 29%; font-size: 12px; line-height: 1.3; }
 }
 @media (prefers-reduced-motion: reduce) {
