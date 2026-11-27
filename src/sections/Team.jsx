@@ -99,7 +99,7 @@ export default function Team({ language = 'UA' }) {
       if (!root || !stage || !track) return;
       startY = window.scrollY + root.getBoundingClientRect().top;
       travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      slideWidth = stage.clientWidth;
+      slideWidth = Math.min(stage.clientWidth * 0.58, 950);
     };
 
     const paint = (time) => {
@@ -115,23 +115,20 @@ export default function Team({ language = 'UA' }) {
       else displayedPosition += (targetPosition - displayedPosition) * factor;
       if (Math.abs(targetPosition - displayedPosition) < 0.0001) displayedPosition = targetPosition;
 
-      // Move each teacher independently: the outgoing card leaves first,
-      // then the incoming card enters. No opacity, fading or overlapping.
+      // Both opaque frames move together. The incoming teacher becomes
+      // visible early, instead of leaving an empty screen between frames.
       const segment = Math.min(teachers.length - 2, Math.floor(displayedPosition));
       const progress = Math.max(0, Math.min(1, displayedPosition - segment));
-      const ease = (value) => {
-        const t = Math.max(0, Math.min(1, value));
-        return t * t * (3 - 2 * t);
-      };
+      const smooth = progress * progress * (3 - 2 * progress);
       for (const [index, slide] of [...track.children].entries()) {
         let x = 0;
         let visible = false;
         if (index === segment) {
-          x = -slideWidth * ease(progress / 0.56);
-          visible = progress < 0.56;
+          x = -slideWidth * smooth;
+          visible = progress < 0.98;
         } else if (index === segment + 1) {
-          x = slideWidth * (1 - ease((progress - 0.44) / 0.56));
-          visible = progress > 0.44;
+          x = slideWidth * (1 - smooth);
+          visible = progress > 0.02;
         }
         slide.style.transform = 'translate3d(' + x.toFixed(2) + 'px, 0, 0)';
         slide.style.visibility = visible ? 'visible' : 'hidden';
