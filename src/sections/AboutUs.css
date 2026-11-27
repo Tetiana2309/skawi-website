@@ -24,6 +24,29 @@
   background: #f6fffc;
 }
 
+/* Navigation curtain: hold the finished About Us scene in viewport coordinates.
+   It is released only after the curtain has completely left the screen. */
+.about-us--navigation-reveal {
+  position: fixed;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100svh;
+  z-index: 10;
+}
+
+.about-us--navigation-reveal .about-us__photo {
+  transform: translate3d(0, 0, 0) scale(1);
+  border-radius: 0;
+}
+
+.about-us--navigation-reveal .about-us__panel {
+  visibility: visible;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .about-us__photo {
   position: absolute;
   inset: 0;
