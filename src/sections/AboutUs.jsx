@@ -59,24 +59,15 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
       const bounds = section.getBoundingClientRect();
       const desktopPin = desktop.matches && !media.matches;
 
-      // The menu curtain hides the jump. Keep both the image and glass panel
-      // completely settled while it opens, avoiding a fixed/absolute pin flip.
+      // Keep the stage sticky at every scroll position; no layout-mode changes
+      // when the section-transition curtain opens.
       if (freezeDuringReveal) {
-        if (desktopPin) stage.dataset.pin = 'active';
         stage.style.setProperty('--about-photo-scale', '1');
         stage.style.setProperty('--about-photo-radius', '0px');
         stage.style.setProperty('--about-panel-visibility', 'visible');
         stage.style.setProperty('--about-copy-opacity', '1');
         stage.style.setProperty('--about-copy-shift', '0px');
         return;
-      }
-      if (desktopPin) {
-        const position = bounds.top >= 0
-          ? 'before'
-          : bounds.bottom <= window.innerHeight ? 'after' : 'active';
-        if (stage.dataset.pin !== position) stage.dataset.pin = position;
-      } else if (stage.dataset.pin) {
-        delete stage.dataset.pin;
       }
       const availableScroll = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = media.matches
