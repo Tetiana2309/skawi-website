@@ -44,6 +44,38 @@ export default function Gallery({ language = 'UA' }) {
 
   useEffect(() => {
     const root = galleryRef.current;
+    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+    let targetX = 0;
+    let targetY = 0;
+    const move = (event) => {
+      const bounds = root.getBoundingClientRect();
+      targetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 12;
+      targetY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 8;
+    };
+    const reset = () => { targetX = 0; targetY = 0; };
+    const tick = () => {
+      x += (targetX - x) * 0.075;
+      y += (targetY - y) * 0.075;
+      root.style.setProperty('--gallery-parallax-x', x.toFixed(2) + 'px');
+      root.style.setProperty('--gallery-parallax-y', y.toFixed(2) + 'px');
+      frame = requestAnimationFrame(tick);
+    };
+    root.addEventListener('pointermove', move, { passive: true });
+    root.addEventListener('pointerleave', reset);
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      root.removeEventListener('pointermove', move);
+      root.removeEventListener('pointerleave', reset);
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = galleryRef.current;
     if (!root) return;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(({ target, isIntersecting }) => {
