@@ -38,9 +38,9 @@ const translations = {
     heading: 'nasz zespół',
     slogan: '„KAŻDY MA WŁASNE PODEJŚCIE, ALE ŁĄCZY NAS WSPÓLNY CEL”',
     teachers: [
-      { name: 'Nazar', role: 'Licencjat z filologii polskiej  ·  4 lata doświadczenia', description: 'Pomaga swobodnie mówić po polsku w codziennych sytuacjach. Żywy język, praktyczne słownictwo i nauka w komfortowym tempie.', quote: '„Dwa języki otwierają przed tobą wszystkie drzwi”.', author: '— Frank Smith' },
-      { name: 'Wiktoria', role: 'Założycielka SKAWI  ·  magister  ·  9 lat doświadczenia', description: 'Łączy nauczanie z psychologią edukacji. Pomaga łatwo przyswajać trudne zagadnienia i zamieniać wiedzę w pewną komunikację.', quote: '„Edukacja jest naturalnym procesem, który rozwija się w człowieku”.', author: '— Maria Montessori' },
-      { name: 'Rusłana', role: 'Magister filologii polskiej  ·  5 lat doświadczenia', description: 'Tworzy przyjazną atmosferę nauki, wzmacnia pewność siebie uczniów i pomaga odkrywać nowe możliwości w nauce polskiego.', quote: '„Edukacja to najpotężniejsza broń, którą można zmienić świat”.', author: '— Nelson Mandela' },
+      { name: 'Nazar', role: 'Licencjat z filologii polskiej  ·  4 lata doświadczenia w nauczaniu', description: 'Pomaga swobodnie mówić po polsku w codziennych sytuacjach. Żywy język, praktyczne słownictwo i nauka w komfortowym tempie.', quote: '„Dwa języki otwierają przed tobą wszystkie drzwi”.', author: '— Frank Smith' },
+      { name: 'Wiktoria', role: 'Założycielka SKAWI  ·  magister  ·  9 lat doświadczenia w nauczaniu', description: 'Łączy nauczanie z psychologią edukacji. Pomaga łatwo przyswajać trudne zagadnienia i przekładać wiedzę na swobodną komunikację.', quote: '„Edukacja jest naturalnym procesem, który rozwija się w człowieku”.', author: '— Maria Montessori' },
+      { name: 'Rusłana', role: 'Magister filologii polskiej  ·  5 lat doświadczenia w nauczaniu', description: 'Tworzy przyjazną atmosferę nauki, wzmacnia pewność siebie uczniów i pomaga odkrywać nowe możliwości w nauce polskiego.', quote: '„Edukacja to najpotężniejsza broń, za pomocą której można zmienić świat”.', author: '— Nelson Mandela' },
     ],
   },
   EN: {
@@ -48,7 +48,7 @@ const translations = {
     slogan: '“DIFFERENT APPROACHES, ONE SHARED PURPOSE”',
     teachers: [
       { name: 'Nazar', role: 'BA in Polish Philology  ·  4 years of teaching experience', description: 'Helps students speak Polish confidently in everyday situations. Real conversations, practical vocabulary and learning at a comfortable pace.', quote: '“Two languages open every door along your way.”', author: '— Frank Smith' },
-      { name: 'Victoria', role: 'SKAWI founder  ·  Master’s degree  ·  9 years of experience', description: 'Combines language teaching with educational psychology. Makes complex topics easier and turns knowledge into confident communication.', quote: '“Education is a natural process carried out by the individual.”', author: '— Maria Montessori' },
+      { name: 'Victoria', role: 'SKAWI founder  ·  Master’s degree  ·  9 years of teaching experience', description: 'Combines language teaching with educational psychology. Makes complex topics easier and turns knowledge into confident communication.', quote: '“Education is a natural process carried out by the individual.”', author: '— Maria Montessori' },
       { name: 'Ruslana', role: 'MA in Polish Philology  ·  5 years of teaching experience', description: 'Creates a welcoming learning environment, builds students’ confidence and helps them discover new possibilities through Polish.', quote: '“Education is the most powerful weapon you can use to change the world.”', author: '— Nelson Mandela' },
     ],
   },
@@ -57,17 +57,17 @@ const translations = {
     slogan: '«CADA UNO TIENE SU ENFOQUE, PERO COMPARTIMOS UN PROPÓSITO»',
     teachers: [
       { name: 'Nazar', role: 'Grado en Filología Polaca  ·  4 años de experiencia docente', description: 'Ayuda a hablar polaco con confianza en situaciones cotidianas. Conversaciones reales, vocabulario práctico y aprendizaje a tu ritmo.', quote: '«Dos idiomas te abren todas las puertas del camino».', author: '— Frank Smith' },
-      { name: 'Victoria', role: 'Fundadora de SKAWI  ·  máster  ·  9 años de experiencia', description: 'Combina la enseñanza con la psicología educativa. Ayuda a comprender temas complejos y a transformar lo aprendido en comunicación segura.', quote: '«La educación es un proceso natural que se desarrolla en cada persona».', author: '— María Montessori' },
-      { name: 'Ruslana', role: 'Máster en Filología Polaca  ·  5 años de experiencia', description: 'Crea un ambiente cómodo, refuerza la confianza de sus alumnos y les ayuda a descubrir nuevas posibilidades al aprender polaco.', quote: '«La educación es el arma más poderosa para cambiar el mundo».', author: '— Nelson Mandela' },
+      { name: 'Victoria', role: 'Fundadora de SKAWI  ·  máster  ·  9 años de experiencia docente', description: 'Combina la enseñanza con la psicología educativa. Ayuda a comprender temas complejos y a transformar lo aprendido en comunicación segura.', quote: '«La educación es un proceso natural que se desarrolla en cada persona».', author: '— María Montessori' },
+      { name: 'Ruslana', role: 'Máster en Filología Polaca  ·  5 años de experiencia docente', description: 'Crea un ambiente cómodo, refuerza la confianza de sus alumnos y les ayuda a descubrir nuevas posibilidades al aprender polaco.', quote: '«La educación es el arma más poderosa para cambiar el mundo».', author: '— Nelson Mandela' },
     ],
   },
   RU: {
     heading: 'наша команда',
     slogan: '«У КАЖДОГО СВОЙ ПОДХОД, НО ОБЩЕЕ ДЕЛО»',
     teachers: [
-      { name: 'Назар', role: 'Бакалавр польской филологии  ·  4 года преподавания', description: 'Помогает уверенно говорить по-польски в повседневных ситуациях. Живой язык, практическая лексика и обучение в комфортном темпе.', quote: '«Два языка открывают все двери на твоём пути».', author: '— Фрэнк Смит' },
-      { name: 'Виктория', role: 'Основательница SKAWI  ·  магистр  ·  9 лет преподавания', description: 'Совмещает преподавание с педагогической психологией. Помогает легко осваивать сложное и превращать знания в уверенное общение.', quote: '«Образование — естественный процесс, развивающийся в самом человеке».', author: '— Мария Монтессори' },
-      { name: 'Руслана', role: 'Магистр польской филологии  ·  5 лет преподавания', description: 'Создаёт комфортную атмосферу обучения, развивает уверенность учеников и помогает открывать новые возможности в изучении польского.', quote: '«Образование — самое мощное оружие, которым можно изменить мир».', author: '— Нельсон Мандела' },
+      { name: 'Назар', role: 'Бакалавр польской филологии  ·  4 года опыта преподавания', description: 'Помогает уверенно говорить по-польски в повседневных ситуациях. Живой язык, практическая лексика и обучение в комфортном темпе.', quote: '«Два языка открывают все двери на твоём пути».', author: '— Фрэнк Смит' },
+      { name: 'Виктория', role: 'Основательница SKAWI  ·  магистр  ·  9 лет опыта преподавания', description: 'Совмещает преподавание с педагогической психологией. Помогает легко осваивать сложное и превращать знания в уверенное общение.', quote: '«Образование — естественный процесс, развивающийся в самом человеке».', author: '— Мария Монтессори' },
+      { name: 'Руслана', role: 'Магистр польской филологии  ·  5 лет опыта преподавания', description: 'Создаёт комфортную атмосферу обучения, развивает уверенность учеников и помогает открывать новые возможности в изучении польского.', quote: '«Образование — самое мощное оружие, которым можно изменить мир».', author: '— Нельсон Мандела' },
     ],
   },
 };
