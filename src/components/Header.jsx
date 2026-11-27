@@ -6,23 +6,23 @@ const navigationTargets = ['#home', '#services', '#about', '#benefits', '#galler
 
 const headerTranslations = {
   UA: {
-    nav: ['Головна', 'Наші послуги', 'Про нас', 'Переваги', 'Галерея', 'Контакти'],
+    nav: ['Головна', 'Наші послуги', 'Про нас', 'Галерея', 'Переваги', 'Галерея', 'Контакти'],
     cta: 'ПОЧАТИ НАВЧАННЯ',
   },
   PL: {
-    nav: ['Główna', 'Nasze usługi', 'O nas', 'Zalety', 'Galeria', 'Kontakt'],
+    nav: ['Główna', 'Nasze usługi', 'O nas', 'Galeria', 'Zalety', 'Galeria', 'Kontakt'],
     cta: 'ROZPOCZNIJ NAUKĘ',
   },
   EN: {
-    nav: ['Home', 'Our services', 'About us', 'Benefits', 'Gallery', 'Contact'],
+    nav: ['Home', 'Our services', 'About us', 'Gallery', 'Benefits', 'Gallery', 'Contact'],
     cta: 'START LEARNING',
   },
   SP: {
-    nav: ['Inicio', 'Nuestros servicios', 'Sobre nosotros', 'Ventajas', 'Galería', 'Contacto'],
+    nav: ['Inicio', 'Nuestros servicios', 'Sobre nosotros', 'Galería', 'Ventajas', 'Galería', 'Contacto'],
     cta: 'EMPEZAR A APRENDER',
   },
   RU: {
-    nav: ['Главная', 'Наши услуги', 'О нас', 'Преимущества', 'Галерея', 'Контакты'],
+    nav: ['Главная', 'Наши услуги', 'О нас', 'Галерея', 'Преимущества', 'Галерея', 'Контакты'],
     cta: 'НАЧАТЬ ОБУЧЕНИЕ',
   },
 };
