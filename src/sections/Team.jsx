@@ -99,7 +99,7 @@ export default function Team({ language = 'UA' }) {
       if (!root || !stage || !track) return;
       startY = window.scrollY + root.getBoundingClientRect().top;
       travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      slideWidth = Math.min(window.innerWidth * 0.65, 1100);
+      slideWidth = stage.clientWidth;
     };
 
     const paint = (time) => {
@@ -115,15 +115,26 @@ export default function Team({ language = 'UA' }) {
       else displayedPosition += (targetPosition - displayedPosition) * factor;
       if (Math.abs(targetPosition - displayedPosition) < 0.0001) displayedPosition = targetPosition;
 
-      // Each teacher has its own full-screen frame. Slides enter from the
-      // right and exit to the left, without a shared track's empty gaps.
+      // Move each teacher independently: the outgoing card leaves first,
+      // then the incoming card enters. No opacity, fading or overlapping.
+      const segment = Math.min(teachers.length - 2, Math.floor(displayedPosition));
+      const progress = Math.max(0, Math.min(1, displayedPosition - segment));
+      const ease = (value) => {
+        const t = Math.max(0, Math.min(1, value));
+        return t * t * (3 - 2 * t);
+      };
       for (const [index, slide] of [...track.children].entries()) {
-        const distance = index - displayedPosition;
-        const x = distance * slideWidth;
-        const opacity = Math.max(0, 1 - Math.abs(distance));
+        let x = 0;
+        let visible = false;
+        if (index === segment) {
+          x = -slideWidth * ease(progress / 0.56);
+          visible = progress < 0.56;
+        } else if (index === segment + 1) {
+          x = slideWidth * (1 - ease((progress - 0.44) / 0.56));
+          visible = progress > 0.44;
+        }
         slide.style.transform = 'translate3d(' + x.toFixed(2) + 'px, 0, 0)';
-        slide.style.opacity = opacity.toFixed(4);
-        slide.style.visibility = opacity <= 0 ? 'hidden' : 'visible';
+        slide.style.visibility = visible ? 'visible' : 'hidden';
       }
 
       if (displayedPosition !== targetPosition) frame = window.requestAnimationFrame(paint);
