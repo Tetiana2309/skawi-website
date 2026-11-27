@@ -70,23 +70,36 @@ export default function Benefits({ language = 'UA' }) {
         if (motion.matches) {
           opacity = i === index ? 1 : 0;
         } else if (d > -1 && d < 0) {
+          // Reveal from the bottom of the original card, never beyond it.
           reveal = ease(d + 1);
           opacity = 1;
         } else if (d >= 0 && d < 1) {
-          const t = ease(d);
+          // Keep the outgoing surface behind the incoming one; only retreat
+          // once the new surface has covered a substantial part of it.
+          const t = ease(clamp((d - .28) / .72, 0, 1));
           scale = 1 - .025 * t;
-          dim = .06 * t;
-          opacity = 1 - ease(clamp((d - .72) / .28, 0, 1));
+          dim = .055 * t;
+          opacity = 1 - ease(clamp((d - .88) / .12, 0, 1));
         }
-        el.style.visibility = opacity > 0 && reveal > 0 ? 'visible' : 'hidden';
+        const isVisible = opacity > 0 && reveal > .0001;
+        el.style.visibility = isVisible ? 'visible' : 'hidden';
         el.style.opacity = String(opacity);
         el.style.transform = 'scale(' + scale + ')';
         el.style.setProperty('--benefit-inverse-scale', String(1 / scale));
         el.style.setProperty('--benefit-reveal', ((1 - reveal) * 100).toFixed(3) + '%');
         el.style.setProperty('--benefit-dim', String(dim));
-        // Keep the incoming text intact as the surface reveals it.
-        // Fade only the outgoing copy before the next card covers it.
-        el.style.setProperty('--benefit-copy-opacity', String(motion.matches || d < 0 ? 1 : 1 - ease(clamp((d - .25) / .35, 0, 1))));
+        // Let the opaque frosted surface cover the old copy naturally.
+        // Reveal each incoming text group only once its own area is visible.
+        const incoming = !motion.matches && d < 0;
+        const mobile = window.innerWidth <= 800;
+        const shortDesktop = !mobile && window.innerHeight <= 700;
+        const titleTop = mobile ? (window.innerHeight <= 620 ? .34 : .43) : shortDesktop ? .49 : .56639;
+        const numberTop = mobile ? .12 : .16598;
+        const descriptionTop = mobile ? (window.innerHeight <= 620 ? .52 : .59) : shortDesktop ? .64 : .69294;
+        const textAlpha = top => incoming ? ease(clamp((reveal - (1 - top)) / .065, 0, 1)) : 1;
+        el.style.setProperty('--benefit-number-opacity', String(textAlpha(numberTop)));
+        el.style.setProperty('--benefit-title-opacity', String(textAlpha(titleTop)));
+        el.style.setProperty('--benefit-description-opacity', String(textAlpha(descriptionTop)));
       });
       if (index !== activeRef.current) {
         activeRef.current = index;

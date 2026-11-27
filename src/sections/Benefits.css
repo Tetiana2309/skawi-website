@@ -60,10 +60,13 @@
   position: absolute; max-width: none;
   left: -12.285%; top: -38.174%; width: 124.57%; height: 150.622%;
   object-fit: cover; filter: blur(15px); pointer-events: none;
-  transform: scale(var(--benefit-inverse-scale)); transform-origin: 50% 58.535%;
+  transform: scale(var(--benefit-inverse-scale)); transform-origin: 50% 58.537%;
 }
 .benefits__card-tint { position: absolute; inset: 0; background: rgba(246,255,252,.85); pointer-events: none; }
-.benefits__card-copy { position: absolute; inset: 0; opacity: var(--benefit-copy-opacity, 1); }
+.benefits__card-copy { position: absolute; inset: 0; }
+.benefits__card-number, .benefits__card-line { opacity: var(--benefit-number-opacity, 1); }
+.benefits__card h3 { opacity: var(--benefit-title-opacity, 1); }
+.benefits__card p { opacity: var(--benefit-description-opacity, 1); }
 .benefits__card-dim { position: absolute; inset: 0; background: #023536; opacity: var(--benefit-dim, 0); pointer-events: none; }
 .benefits__card-number {
   position: absolute; left: 4.914%; top: 16.598%;
