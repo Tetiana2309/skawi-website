@@ -62,7 +62,7 @@ export default function App() {
   }, []);
 
   const navigateWithSplash = useCallback((href) => {
-    if (!['#services', '#about', '#gallery'].includes(href) || transitionActiveRef.current) return;
+    if (!['#services', '#about', '#gallery', '#benefits'].includes(href) || transitionActiveRef.current) return;
     const section = document.querySelector(href);
     if (!section) return;
 
@@ -84,6 +84,19 @@ export default function App() {
       // and the text fonts are ready. This matters on the FIRST navigation.
       if (href === '#about') {
         await Promise.all([prepareAboutImage(), document.fonts.ready]);
+      }
+
+      if (href === '#benefits') {
+        const image = document.querySelector('#benefits .benefits__photo');
+        const frost = document.querySelector('#benefits .benefits__card-photo');
+        // Load the lazy background before revealing the destination.
+        await Promise.all([
+          ...[image, frost].filter(Boolean).map(img => {
+            img.loading = 'eager';
+            return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+          }),
+          document.fonts.ready,
+        ]);
       }
 
       const currentSection = document.querySelector(href);
