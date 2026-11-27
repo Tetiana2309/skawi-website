@@ -15,11 +15,35 @@ export default function App() {
   const lenisRef = useRef(null);
   const transitionTimers = useRef([]);
   const transitionActiveRef = useRef(false);
+  const aboutImageReadyRef = useRef(null);
   const [sectionTransitionPhase, setSectionTransitionPhase] = useState('idle');
+
+  // Image decoding can be deferred until the first time a large CSS
+  // background appears. Start it as soon as the app mounts instead.
+  const prepareAboutImage = useCallback(() => {
+    if (!aboutImageReadyRef.current) {
+      const img = new Image();
+      img.src = `${import.meta.env.BASE_URL}images/About-Us-Section.webp`;
+      aboutImageReadyRef.current = (img.decode
+        ? img.decode()
+        : new Promise((resolve) => {
+          if (img.complete) resolve();
+          else {
+            img.onload = resolve;
+            img.onerror = resolve;
+          }
+        })
+      ).catch(() => {});
+    }
+    return aboutImageReadyRef.current;
+  }, []);
+
+  useEffect(() => {
+    prepareAboutImage();
+  }, [prepareAboutImage]);
 
   useEffect(() => () => {
     transitionTimers.current.forEach(window.clearTimeout);
-    document.documentElement.classList.remove('skawi-about-nav-ready', 'skawi-about-nav-revealing');
     lenisRef.current?.start();
   }, []);
 
@@ -41,42 +65,39 @@ export default function App() {
     };
 
     schedule(() => setSectionTransitionPhase('logo-in'), 500);
-    schedule(() => {
-      // Prepare a finished, non-animated About Us scene while the curtain covers it.
-      // This changes only paint properties, never the stage's sticky positioning.
-      if (href === '#about') document.documentElement.classList.add('skawi-about-nav-ready');
-      setSectionTransitionPhase('logo-out');
-      requestAnimationFrame(() => {
-        const currentSection = document.querySelector(href);
-        if (!currentSection) return;
+    schedule(async () => {
+      // Keep the curtain fully closed until the background image is decoded
+      // and the text fonts are ready. This matters on the FIRST navigation.
+      if (href === '#about') {
+        await Promise.all([prepareAboutImage(), document.fonts.ready]);
+      }
+
+      const currentSection = document.querySelector(href);
+      if (currentSection) {
         const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
         const travel = Math.max(0, currentSection.offsetHeight - window.innerHeight);
-        // Stop safely inside the sticky interval, not on its final pixel.
-        // At 97% the photo and glass panel are already fully revealed, but
-        // the browser cannot flip the sticky element into its outgoing state.
         const targetY = href === '#about' ? sectionTop + travel * 0.97 : sectionTop + 1;
         if (lenisRef.current) lenisRef.current.scrollTo(targetY, { immediate: true, force: true });
         else window.scrollTo({ top: targetY, behavior: 'instant' });
-      });
-    }, 2050);
-    schedule(() => {
-      // As in Hero, reveal the already-rendered content independently
-      // of the curtain motion, rather than exposing the glass layer abruptly.
-      if (href === '#about') document.documentElement.classList.add('skawi-about-nav-revealing');
-      setSectionTransitionPhase('exit');
-    }, 2700);
-    schedule(() => {
-      // Keep Lenis and native scroll aligned before releasing the cover.
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(window.scrollY, { immediate: true, force: true });
-        lenisRef.current.start();
       }
-      setSectionTransitionPhase('idle');
-      transitionActiveRef.current = false;
-      // The underlying scroll effect has already caught up while covered.
-      document.documentElement.classList.remove('skawi-about-nav-ready');
-    }, 3650);
-  }, []);
+
+      // Two frames let the browser settle the photo, text and glass BEFORE
+      // the user sees them, rather than during the curtain's exit.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (!transitionActiveRef.current) return;
+        setSectionTransitionPhase('logo-out');
+        schedule(() => setSectionTransitionPhase('exit'), 650);
+        schedule(() => {
+          if (lenisRef.current) {
+            lenisRef.current.scrollTo(window.scrollY, { immediate: true, force: true });
+            lenisRef.current.start();
+          }
+          setSectionTransitionPhase('idle');
+          transitionActiveRef.current = false;
+        }, 1650);
+      }));
+    }, 2050);
+  }, [prepareAboutImage]);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
