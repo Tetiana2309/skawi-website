@@ -89,6 +89,31 @@
   visibility: visible;
   transition: opacity .48s cubic-bezier(.22, 1, .36, 1), visibility 0s;
 }
+/* Closing uses the reverse choreography: photo -> glass -> backdrop. */
+.gallery-lightbox.is-closing {
+  visibility: visible;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease .48s, visibility 0s linear .76s;
+}
+.gallery-lightbox.is-closing .gallery-lightbox__content {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0) scale(.94);
+  filter: blur(4px);
+  transition: opacity .25s ease, transform .36s cubic-bezier(.4, 0, .6, 1), filter .3s ease;
+  transition-delay: 0s;
+}
+.gallery-lightbox.is-closing .gallery-lightbox__card {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0) scale(.965);
+  transition: opacity .30s ease .20s, transform .45s cubic-bezier(.4, 0, .6, 1) .20s;
+}
+.gallery-lightbox.is-closing .gallery-lightbox__close {
+  opacity: 0;
+  transform: scale(.78) rotate(-35deg);
+  transition: opacity .2s ease, transform .3s ease;
+  transition-delay: 0s;
+}
 /* Figma 106:320: 1600 × 900, 20px radius, grey 40% + 50px background blur. */
 .gallery-lightbox__card {
   position: relative;
@@ -195,4 +220,10 @@
     transition: none;
   }
   .gallery-lightbox__content { filter: none; }
+  .gallery-lightbox.is-closing,
+  .gallery-lightbox.is-closing .gallery-lightbox__content,
+  .gallery-lightbox.is-closing .gallery-lightbox__card,
+  .gallery-lightbox.is-closing .gallery-lightbox__close {
+    transition: none;
+  }
 }
