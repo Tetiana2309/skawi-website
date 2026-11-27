@@ -78,20 +78,22 @@
   overflow: hidden;
   background: #F6FFFC;
   pointer-events: none;
-  clip-path: inset(100% 0 0 0);
-  transition: clip-path 900ms cubic-bezier(.65, 0, .35, 1);
-  will-change: clip-path;
+  /* A single composited layer, rather than an animated full-viewport clip.
+     This avoids repainting the backdrop-blurred About Us panel each frame. */
+  transform: translate3d(0, 100%, 0);
+  transition: transform 900ms cubic-bezier(.65, 0, .35, 1);
+  will-change: transform;
 }
 
 .skawi-section-transition--enter,
 .skawi-section-transition--logo-in,
 .skawi-section-transition--logo-out {
-  clip-path: inset(0 0 0 0);
+  transform: translate3d(0, 0, 0);
 }
 
 .skawi-section-transition--exit,
 .skawi-section-transition--idle {
-  clip-path: inset(100% 0 0 0);
+  transform: translate3d(0, 100%, 0);
 }
 
 .skawi-section-transition__logo {
