@@ -49,7 +49,7 @@ export default function App() {
   }, []);
 
   const navigateWithSplash = useCallback((href) => {
-    if ((href !== '#services' && href !== '#about') || transitionActiveRef.current) return;
+    if (!['#services', '#about', '#gallery'].includes(href) || transitionActiveRef.current) return;
     const section = document.querySelector(href);
     if (!section) return;
 
