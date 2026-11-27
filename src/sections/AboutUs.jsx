@@ -40,7 +40,7 @@ const ease = (value) => {
   return t * t * (3 - 2 * t);
 };
 
-export default function AboutUs({ language = 'UA', freezeDuringReveal = false }) {
+export default function AboutUs({ language = 'UA' }) {
   const copy = aboutTranslations[language] ?? aboutTranslations.UA;
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
@@ -59,16 +59,6 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
       const bounds = section.getBoundingClientRect();
       const desktopPin = desktop.matches && !media.matches;
 
-      // Keep the stage sticky at every scroll position; no layout-mode changes
-      // when the section-transition curtain opens.
-      if (freezeDuringReveal) {
-        stage.style.setProperty('--about-photo-scale', '1');
-        stage.style.setProperty('--about-photo-radius', '0px');
-        stage.style.setProperty('--about-panel-visibility', 'visible');
-        stage.style.setProperty('--about-copy-opacity', '1');
-        stage.style.setProperty('--about-copy-shift', '0px');
-        return;
-      }
       const availableScroll = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = media.matches
         ? 1
@@ -110,11 +100,11 @@ export default function AboutUs({ language = 'UA', freezeDuringReveal = false })
       media.removeEventListener('change', schedule);
       desktop.removeEventListener('change', schedule);
     };
-  }, [freezeDuringReveal]);
+  }, []);
 
   return (
     <section className="about-us-scroll" id="about" ref={sectionRef} aria-labelledby="about-us-title">
-      <div className={`about-us${freezeDuringReveal ? " about-us--navigation-reveal" : ""}`} ref={stageRef}>
+      <div className="about-us" ref={stageRef}>
         <div
           className="about-us__photo"
           aria-hidden="true"
