@@ -2,27 +2,27 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import './Header.css';
 
-const navigationTargets = ['#home', '#services', '#about', '#benefits', '#gallery', '#contacts'];
+const navigationTargets = ['#home', '#services', '#about', '#gallery', '#benefits', '#contacts'];
 
 const headerTranslations = {
   UA: {
-    nav: ['Головна', 'Наші послуги', 'Про нас', 'Галерея', 'Переваги', 'Галерея', 'Контакти'],
+    nav: ['Головна', 'Наші послуги', 'Про нас', 'Галерея', 'Переваги', 'Контакти'],
     cta: 'ПОЧАТИ НАВЧАННЯ',
   },
   PL: {
-    nav: ['Główna', 'Nasze usługi', 'O nas', 'Galeria', 'Zalety', 'Galeria', 'Kontakt'],
+    nav: ['Główna', 'Nasze usługi', 'O nas', 'Galeria', 'Zalety', 'Kontakt'],
     cta: 'ROZPOCZNIJ NAUKĘ',
   },
   EN: {
-    nav: ['Home', 'Our services', 'About us', 'Gallery', 'Benefits', 'Gallery', 'Contact'],
+    nav: ['Home', 'Our services', 'About us', 'Gallery', 'Benefits', 'Contact'],
     cta: 'START LEARNING',
   },
   SP: {
-    nav: ['Inicio', 'Nuestros servicios', 'Sobre nosotros', 'Galería', 'Ventajas', 'Galería', 'Contacto'],
+    nav: ['Inicio', 'Nuestros servicios', 'Sobre nosotros', 'Galería', 'Ventajas', 'Contacto'],
     cta: 'EMPEZAR A APRENDER',
   },
   RU: {
-    nav: ['Главная', 'Наши услуги', 'О нас', 'Галерея', 'Преимущества', 'Галерея', 'Контакты'],
+    nav: ['Главная', 'Наши услуги', 'О нас', 'Галерея', 'Преимущества', 'Контакты'],
     cta: 'НАЧАТЬ ОБУЧЕНИЕ',
   },
 };
