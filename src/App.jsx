@@ -44,7 +44,8 @@ export default function App() {
       const currentSection = document.querySelector(href);
       if (currentSection) {
         const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
-        const targetY = href === '#about' ? sectionTop + window.innerHeight : sectionTop + 1;
+        // Land just inside About Us's pinned range, not on the fixed/absolute boundary.
+        const targetY = href === '#about' ? sectionTop + window.innerHeight * 0.995 : sectionTop + 1;
         if (lenisRef.current) lenisRef.current.scrollTo(targetY, { immediate: true, force: true });
         else window.scrollTo({ top: targetY, behavior: 'instant' });
       }
@@ -96,7 +97,7 @@ export default function App() {
       <main>
         <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
         <Services language={language} />
-        <AboutUs language={language} />
+        <AboutUs language={language} freezeDuringReveal={sectionTransitionPhase === 'logo-out' || sectionTransitionPhase === 'exit'} />
         <Team language={language} />
       </main>
     </>
