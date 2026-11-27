@@ -1,27 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import './Gallery.css';
 
-// Pixel positions and dimensions are from Figma Gallery 101:284 (1840 × 1690).
-// Figma has 11 photo slots and 4 video slots. Three actual videos are uploaded.
+// Exact Figma 101:284 coordinates, 1840 × 1690.
+// The three GREY frames in the screenshot are the three uploaded videos.
+// Every photographed frame uses one of the twelve numbered images.
 const slots = [
-  { id: 'photo-1', x: 0, y: 30, w: 498, h: 316, photo: 'gallery-img-one.webp' },
-  { id: 'photo-2', x: 544, y: 0, w: 462, h: 604, photo: 'gallery-img-two.webp' },
-  { id: 'photo-3', x: 1052, y: 45, w: 362, h: 514, photo: 'gallery-img-three.webp' },
-  { id: 'video-1', x: 1494, y: 0, w: 346, h: 314, video: 'video-1.mp4' },
-  { id: 'video-2', x: 0, y: 378, w: 334, h: 481, video: 'video-2.mp4' },
-  { id: 'photo-4', x: 544, y: 636, w: 476, h: 250, photo: 'gallery-img-four.webp' },
-  { id: 'photo-5', x: 1052, y: 591, w: 410, h: 618, photo: 'gallery-img-five.webp' },
-  { id: 'photo-6', x: 1494, y: 346, w: 346, h: 604, photo: 'gallery-img-six.webp' },
-  { id: 'photo-7', x: 0, y: 891, w: 410, h: 302, photo: 'gallery-img-seven.webp' },
-  { id: 'photo-8', x: 454, y: 918, w: 566, h: 394, photo: 'gallery-img-eight.webp' },
-  { id: 'photo-9', x: 0, y: 1256, w: 420, h: 434, photo: 'gallery-img-nine.webp' },
-  { id: 'photo-10', x: 454, y: 1344, w: 452, h: 346, photo: 'gallery-img-ten.webp' },
-  { id: 'video-3', x: 1052, y: 1241, w: 346, h: 449, video: 'video-3.mp4' },
-  { id: 'photo-11', x: 1414, y: 1498, w: 426, h: 192, photo: 'gallery-img-eleven.webp' },
-  // The fourth video rectangle exists in Figma; its video file is not uploaded yet.
-  { id: 'video-4', x: 1494, y: 982, w: 346, h: 490, video: null, videoSlot: true },
+  { id: 'photo-1',  x: 0,    y: 30,   w: 498, h: 316, photo: 'gallery-img-one.webp' },
+  { id: 'video-1',  x: 544,  y: 0,    w: 462, h: 604, video: 'video-1.mp4' },
+  { id: 'photo-2',  x: 1052, y: 45,   w: 362, h: 514, photo: 'gallery-img-two.webp' },
+  { id: 'photo-3',  x: 1494, y: 0,    w: 346, h: 314, photo: 'gallery-img-three.webp' },
+  { id: 'video-2',  x: 0,    y: 378,  w: 334, h: 481, video: 'video-2.mp4' },
+  { id: 'photo-4',  x: 544,  y: 636,  w: 476, h: 250, photo: 'gallery-img-four.webp' },
+  { id: 'video-3',  x: 1052, y: 591,  w: 410, h: 618, video: 'video-3.mp4' },
+  { id: 'photo-5',  x: 1494, y: 346,  w: 346, h: 604, photo: 'gallery-img-five.webp' },
+  { id: 'photo-6',  x: 0,    y: 891,  w: 410, h: 302, photo: 'gallery-img-six.webp' },
+  { id: 'photo-7',  x: 454,  y: 918,  w: 566, h: 394, photo: 'gallery-img-seven.webp' },
+  { id: 'photo-8',  x: 1494, y: 982,  w: 346, h: 490, photo: 'gallery-img-eight.webp' },
+  { id: 'photo-9',  x: 0,    y: 1256, w: 420, h: 434, photo: 'gallery-img-nine.webp' },
+  { id: 'photo-10', x: 454,  y: 1344, w: 452, h: 346, photo: 'gallery-img-ten.webp' },
+  { id: 'photo-11', x: 1052, y: 1241, w: 346, h: 449, photo: 'gallery-img-eleven.webp' },
+  { id: 'photo-12', x: 1414, y: 1498, w: 426, h: 192, photo: 'gallery-img-twelve.webp' },
 ];
-
 const translations = {
   UA: { heading: 'галерея', quote: '“за кожним кадром - своя історія”', all: 'Усе', photos: 'Фото', videos: 'Відео', close: 'Закрити', next: 'Наступне', prev: 'Попереднє' },
   PL: { heading: 'galeria', quote: '„za każdym kadrem kryje się historia”', all: 'Wszystkie', photos: 'Zdjęcia', videos: 'Wideo', close: 'Zamknij', next: 'Następne', prev: 'Poprzednie' },
@@ -35,43 +34,10 @@ const videoPath = (name) => import.meta.env.BASE_URL + 'videos/' + name;
 
 export default function Gallery({ language = 'UA' }) {
   const copy = translations[language] ?? translations.UA;
-  const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(null);
   const [visible, setVisible] = useState(false);
   const galleryRef = useRef(null);
-  const displayItems = slots.filter((item) => filter === 'all' || (filter === 'videos' ? !!(item.video || item.videoSlot) : !item.video && !item.videoSlot));
-
-  useEffect(() => {
-    const root = galleryRef.current;
-    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    let targetX = 0;
-    let targetY = 0;
-    const move = (event) => {
-      const bounds = root.getBoundingClientRect();
-      targetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 12;
-      targetY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 8;
-    };
-    const reset = () => { targetX = 0; targetY = 0; };
-    const tick = () => {
-      x += (targetX - x) * 0.075;
-      y += (targetY - y) * 0.075;
-      root.style.setProperty('--gallery-parallax-x', x.toFixed(2) + 'px');
-      root.style.setProperty('--gallery-parallax-y', y.toFixed(2) + 'px');
-      frame = requestAnimationFrame(tick);
-    };
-    root.addEventListener('pointermove', move, { passive: true });
-    root.addEventListener('pointerleave', reset);
-    frame = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(frame);
-      root.removeEventListener('pointermove', move);
-      root.removeEventListener('pointerleave', reset);
-    };
-  }, []);
+  const displayItems = slots;
 
   useEffect(() => {
     const root = galleryRef.current;
@@ -86,7 +52,7 @@ export default function Gallery({ language = 'UA' }) {
     }, { threshold: 0.06, rootMargin: '0px 0px 90px 0px' });
     root.querySelectorAll('.gallery__tile').forEach((tile) => observer.observe(tile));
     return () => observer.disconnect();
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     if (selected === null) return;
@@ -103,7 +69,7 @@ export default function Gallery({ language = 'UA' }) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [selected === null, filter, displayItems.length]);
+  }, [selected === null]);
 
   const close = () => { setVisible(false); setSelected(null); };
 
@@ -113,30 +79,20 @@ export default function Gallery({ language = 'UA' }) {
         <span>{copy.heading}</span>
         <span>{copy.quote}</span>
       </div>
-      <div className="gallery__filters" role="group" aria-label={copy.heading}>
-        {['all', 'photos', 'videos'].map((option) => (
-          <button key={option} type="button" className={filter === option ? 'is-active' : ''} aria-pressed={filter === option}
-            onClick={() => { close(); setFilter(option); }}>{copy[option]}</button>
-        ))}
-      </div>
-      <div className="gallery__canvas" ref={galleryRef} data-filter={filter}>
+      <div className="gallery__canvas" ref={galleryRef}>
         {displayItems.map((item, index) => (
           <button className="gallery__tile" type="button" key={item.id}
             style={{ '--tile-x': `${item.x / 1840 * 100}%`, '--tile-y': `${item.y / 1690 * 100}%`,
               '--tile-w': `${item.w / 1840 * 100}%`, '--tile-h': `${item.h / 1690 * 100}%`,
               '--tile-ratio': `${item.w} / ${item.h}`, '--tile-order': index % 5 }}
             onClick={() => { setSelected(index); setVisible(false); }}
-            disabled={!!item.videoSlot}
-            aria-label={item.video || item.videoSlot ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
+            aria-label={item.video ? `${copy.videos} ${index + 1}` : `${copy.photos} ${index + 1}`}>
             <span className="gallery__media">
               {item.video ? (
-                <video src={videoPath(item.video)} preload="metadata" muted playsInline aria-hidden="true" />
-              ) : item.videoSlot ? (
                 <span className="gallery__video-placeholder" aria-hidden="true" />
               ) : (
                 <img src={imagePath(item.photo)} alt="" loading={index < 4 ? 'eager' : 'lazy'} decoding="async" />
               )}
-              {(item.video || item.videoSlot) && <span className="gallery__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5 19 12 8 18.5Z" fill="currentColor"/></svg></span>}
             </span>
           </button>
         ))}
@@ -159,7 +115,7 @@ export default function Gallery({ language = 'UA' }) {
             {displayItems.map((item, index) => (
               <button key={item.id} type="button" className={index === selected ? 'is-active' : ''} aria-label={String(index + 1)}
                 onClick={(event) => { event.stopPropagation(); setSelected(index); }}>
-                {item.video ? <video src={videoPath(item.video)} preload="metadata" muted playsInline /> : item.videoSlot ? null : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
+                {item.video ? <span className="gallery__video-placeholder" /> : <img src={imagePath(item.photo)} alt="" loading="lazy"/>}
               </button>
             ))}
           </div>
