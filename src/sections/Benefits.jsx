@@ -62,34 +62,31 @@ export default function Benefits({ language = 'UA' }) {
       return clamp((fraction - .07) / .86 * 3, 0, 3);
     };
     const paint = p => {
-      const index = clamp(Math.round(p), 0, 3);
+      const index = motion.matches ? clamp(Math.round(p), 0, 3) : clamp(Math.floor(p + .001), 0, 3);
       cards.current.forEach((el, i) => {
         if (!el) return;
         const d = p - i;
+        let opacity = 0, reveal = 1, scale = 1, dim = 0;
         if (motion.matches) {
-          el.style.visibility = i === index ? 'visible' : 'hidden';
-          el.style.opacity = i === index ? '1' : '0';
-          el.style.transform = 'none';
-          el.style.setProperty('--benefit-dim', '0');
-        } else if (d <= -1 || d >= 1) {
-          el.style.visibility = 'hidden';
-          el.style.opacity = '0';
-          el.style.setProperty('--benefit-dim', '0');
-        } else if (d < 0) {
-          const t = ease(d + 1);
-          el.style.visibility = 'visible';
-          // The complete, independently frosted surface rises with its text.
-          // Its opaque photo composite prevents additive white tint on overlap.
-          el.style.opacity = String(ease(clamp((d + 1) / .16, 0, 1)));
-          el.style.transform = 'translate3d(0,' + ((1 - t) * 32) + '%,0)';
-          el.style.setProperty('--benefit-dim', '0');
-        } else {
+          opacity = i === index ? 1 : 0;
+        } else if (d > -1 && d < 0) {
+          reveal = ease(d + 1);
+          opacity = 1;
+        } else if (d >= 0 && d < 1) {
           const t = ease(d);
-          el.style.visibility = 'visible';
-          el.style.opacity = String(1 - ease(clamp((d - .78) / .22, 0, 1)));
-          el.style.setProperty('--benefit-dim', String(t * .16));
-          el.style.transform = 'perspective(1400px) translate3d(0,' + (-t * 7) + '%,0) rotateX(' + (t * 9) + 'deg) scale(' + (1 - t * .065) + ')';
+          scale = 1 - .025 * t;
+          dim = .06 * t;
+          opacity = 1 - ease(clamp((d - .72) / .28, 0, 1));
         }
+        el.style.visibility = opacity > 0 && reveal > 0 ? 'visible' : 'hidden';
+        el.style.opacity = String(opacity);
+        el.style.transform = 'scale(' + scale + ')';
+        el.style.setProperty('--benefit-inverse-scale', String(1 / scale));
+        el.style.setProperty('--benefit-reveal', ((1 - reveal) * 100).toFixed(3) + '%');
+        el.style.setProperty('--benefit-dim', String(dim));
+        // Keep the incoming text intact as the surface reveals it.
+        // Fade only the outgoing copy before the next card covers it.
+        el.style.setProperty('--benefit-copy-opacity', String(motion.matches || d < 0 ? 1 : 1 - ease(clamp((d - .25) / .35, 0, 1))));
       });
       if (index !== activeRef.current) {
         activeRef.current = index;
