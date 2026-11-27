@@ -20,26 +20,6 @@
   text-transform: uppercase;
 }
 .gallery__topline span:last-child { text-align: right; }
-.gallery__filters {
-  position: absolute;
-  z-index: 2;
-  right: 40px;
-  top: 111px;
-  display: flex;
-  gap: 8px;
-}
-.gallery__filters button {
-  padding: 6px 13px;
-  color: #023536;
-  font: 400 12px/1.3 "Inter", sans-serif;
-  background: transparent;
-  border: 1px solid rgba(2,53,54,.25);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.gallery__filters button.is-active,
-.gallery__filters button:hover { color: #F6FFFC; background: #023536; }
 .gallery__canvas {
   position: relative;
   width: 100%;
@@ -54,7 +34,7 @@
   display: block;
   padding: 0;
   border: 0;
-  background: #E0E0DB;
+  background: #C4CAC8;
   overflow: hidden;
   cursor: pointer;
   opacity: 0;
@@ -66,51 +46,14 @@
 .gallery__media { display: block; width: 100%; height: 100%; overflow: hidden; }
 /* Render exactly inside each measured Figma frame: no scale or mouse offset. */
 .gallery__media img,
-.gallery__media video {
+.gallery__video-placeholder {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background: #C4CAC8;
 }
-.gallery__media video { background: #343434; }
-.gallery__video-placeholder { display: block; width: 100%; height: 100%; background: #555; }
-.gallery__tile:disabled { cursor: default; }
-.gallery__tile:disabled .gallery__play { opacity: .5; }
-.gallery-lightbox__thumbnails video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.gallery-lightbox__thumbnails .gallery__video-placeholder { width: 100%; height: 100%; }
 .gallery__tile:focus-visible { outline: 3px solid #DABE73; outline-offset: 3px; }
-.gallery__play {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  color: white;
-  background: rgba(2,53,54,.55);
-  border: 1px solid rgba(255,255,255,.6);
-  border-radius: 50%;
-  backdrop-filter: blur(5px);
-  transform: translate(-50%,-50%);
-}
-.gallery__play svg { width: 22px; height: 22px; margin-left: 3px; }
-.gallery__canvas[data-filter="photos"],
-.gallery__canvas[data-filter="videos"] {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  align-content: start;
-  gap: 24px;
-  aspect-ratio: auto;
-}
-.gallery__canvas[data-filter="photos"] .gallery__tile,
-.gallery__canvas[data-filter="videos"] .gallery__tile {
-  position: relative;
-  top: auto;
-  left: auto;
-  width: 100%;
-  height: auto;
-  aspect-ratio: var(--tile-ratio);
-}
 .gallery-lightbox {
   position: fixed;
   inset: 0;
@@ -161,17 +104,14 @@
 @media (max-width: 1100px) {
   .gallery-section { min-height: 0; padding: 0 25px 100px; }
   .gallery__topline { height: 145px; padding-top: 40px; font-size: 12px; }
-  .gallery__filters { top: 95px; right: 25px; }
   .gallery__canvas { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; aspect-ratio: auto; }
-  .gallery__canvas .gallery__tile, .gallery__canvas[data-filter] .gallery__tile { position: relative; top: auto; left: auto; width: 100%; height: auto; aspect-ratio: var(--tile-ratio); }
-  .gallery__canvas[data-filter] { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+  .gallery__canvas .gallery__tile { position: relative; top: auto; left: auto; width: 100%; height: auto; aspect-ratio: var(--tile-ratio); }
 }
 @media (max-width: 650px) {
   .gallery-section { padding: 0 20px 75px; }
   .gallery__topline { height: 155px; padding-top: 28px; font-size: 11px; }
   .gallery__topline span:last-child { max-width: 55%; line-height: 1.35; }
-  .gallery__filters { top: 98px; right: 20px; }
-  .gallery__canvas, .gallery__canvas[data-filter] { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .gallery__canvas { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
   .gallery-lightbox__content { max-width: 88vw; }
   .gallery-lightbox__arrow { width: 32px; height: 32px; font-size: 24px; }
   .gallery-lightbox__arrow--prev { left: 5px; }
