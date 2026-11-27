@@ -50,7 +50,7 @@
   left: -12.285%; top: -38.174%; width: 124.57%; height: 150.622%;
   object-fit: cover; filter: blur(15px); pointer-events: none;
 }
-.benefits__card-tint { position: absolute; inset: 0; background: rgba(234,244,240,.85); pointer-events: none; }
+.benefits__card-tint { position: absolute; inset: 0; background: rgba(234,244,240,.60); pointer-events: none; }
 .benefits__copy-window { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
 .benefits__card {
   position: absolute; inset: 0; visibility: hidden; opacity: 0;
