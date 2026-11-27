@@ -28,7 +28,7 @@
 .benefits__left { overflow: hidden; isolation: isolate; }
 .benefits__photo, .benefits__gradient { position: absolute; inset: 0; width: 100%; height: 100%; }
 .benefits__photo { object-fit: cover; }
-.benefits__gradient { background: linear-gradient(to bottom, transparent 80%, #F6FFFC 100%); }
+.benefits__gradient { display: none; }
 .benefits__heading {
   position: absolute; z-index: 1; left: 9.862%; right: 5%; top: 8.264%;
   margin: 0; color: #133631; font: 500 clamp(25px, 2.5cqw, 48px)/1.1 "Roboto Serif", Georgia, serif;
