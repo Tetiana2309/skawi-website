@@ -89,7 +89,8 @@ export default function Team({ language = 'UA' }) {
     let startY = 0;
     let travelY = 1;
     let slideWidth = 1;
-    let targetX = 0;
+    let targetPosition = 0;
+    let displayedPosition = null;
 
     const measure = () => {
       const root = rootRef.current;
@@ -98,33 +99,41 @@ export default function Team({ language = 'UA' }) {
       if (!root || !stage || !track) return;
       startY = window.scrollY + root.getBoundingClientRect().top;
       travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      slideWidth = track.firstElementChild?.getBoundingClientRect().width ?? track.clientWidth;
+      slideWidth = Math.min(window.innerWidth * 0.65, 1100);
     };
 
     const paint = (time) => {
       frame = 0;
       const track = trackRef.current;
       if (!track) return;
+
       const delta = previousTime ? Math.min(0.05, (time - previousTime) / 1000) : 1 / 60;
       previousTime = time;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const factor = reduceMotion ? 1 : 1 - Math.exp(-delta * 12);
-      if (displayedX === null) displayedX = targetX;
-      else displayedX += (targetX - displayedX) * factor;
-      if (Math.abs(targetX - displayedX) < 0.1) displayedX = targetX;
+      if (displayedPosition === null) displayedPosition = targetPosition;
+      else displayedPosition += (targetPosition - displayedPosition) * factor;
+      if (Math.abs(targetPosition - displayedPosition) < 0.0001) displayedPosition = targetPosition;
 
-      // Pixel-based translation avoids layout rounding in percentage transforms.
-      track.style.transform = 'translate3d(' + displayedX.toFixed(2) + 'px, 0, 0)';
+      // Each teacher has its own full-screen frame. Slides enter from the
+      // right and exit to the left, without a shared track's empty gaps.
+      for (const [index, slide] of [...track.children].entries()) {
+        const distance = index - displayedPosition;
+        const x = distance * slideWidth;
+        const opacity = Math.max(0, 1 - Math.abs(distance));
+        slide.style.transform = 'translate3d(' + x.toFixed(2) + 'px, 0, 0)';
+        slide.style.opacity = opacity.toFixed(4);
+        slide.style.visibility = opacity <= 0 ? 'hidden' : 'visible';
+      }
 
-      if (displayedX !== targetX) frame = window.requestAnimationFrame(paint);
+      if (displayedPosition !== targetPosition) frame = window.requestAnimationFrame(paint);
       else previousTime = 0;
     };
 
     const update = () => {
       const progress = Math.max(0, Math.min(1, (window.scrollY - startY) / travelY));
-      const position = progress * (teachers.length - 1);
-      targetX = -position * slideWidth;
-      const nextActive = Math.round(position);
+      targetPosition = progress * (teachers.length - 1);
+      const nextActive = Math.round(targetPosition);
       if (nextActive !== activeRef.current) {
         activeRef.current = nextActive;
         setActive(nextActive);
