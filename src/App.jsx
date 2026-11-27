@@ -15,7 +15,6 @@ export default function App() {
   const lenisRef = useRef(null);
   const transitionTimers = useRef([]);
   const transitionActiveRef = useRef(false);
-  const transitionTargetRef = useRef(null);
   const [sectionTransitionPhase, setSectionTransitionPhase] = useState('idle');
 
   useEffect(() => () => {
@@ -29,7 +28,6 @@ export default function App() {
     if (!section) return;
 
     transitionActiveRef.current = true;
-    transitionTargetRef.current = href;
     transitionTimers.current.forEach(window.clearTimeout);
     lenisRef.current?.stop();
 
@@ -108,7 +106,7 @@ export default function App() {
       <main>
         <Hero revealing={heroRevealing} language={language} onLanguageChange={setLanguage} onSectionNavigate={navigateWithSplash} />
         <Services language={language} />
-        <AboutUs language={language} freezeDuringReveal={transitionTargetRef.current === '#about' && (sectionTransitionPhase === 'logo-out' || sectionTransitionPhase === 'exit')} />
+        <AboutUs language={language} />
         <Team language={language} />
       </main>
     </>
