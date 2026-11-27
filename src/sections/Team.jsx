@@ -85,63 +85,45 @@ export default function Team({ language = 'UA' }) {
   useEffect(() => {
     let frame = 0;
     let previousTime = 0;
-    let displayedX = null;
+    let currentX = null;
+    let targetX = 0;
     let startY = 0;
     let travelY = 1;
     let slideWidth = 1;
-    let targetPosition = 0;
-    let displayedPosition = null;
 
     const measure = () => {
       const root = rootRef.current;
       const stage = stageRef.current;
-      const track = trackRef.current;
-      if (!root || !stage || !track) return;
+      if (!root || !stage) return;
       startY = window.scrollY + root.getBoundingClientRect().top;
       travelY = Math.max(1, root.offsetHeight - stage.offsetHeight);
-      slideWidth = Math.min(stage.clientWidth * 0.58, 950);
+      slideWidth = stage.clientWidth;
     };
 
     const paint = (time) => {
       frame = 0;
       const track = trackRef.current;
       if (!track) return;
-
       const delta = previousTime ? Math.min(0.05, (time - previousTime) / 1000) : 1 / 60;
       previousTime = time;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const factor = reduceMotion ? 1 : 1 - Math.exp(-delta * 12);
-      if (displayedPosition === null) displayedPosition = targetPosition;
-      else displayedPosition += (targetPosition - displayedPosition) * factor;
-      if (Math.abs(targetPosition - displayedPosition) < 0.0001) displayedPosition = targetPosition;
+      if (currentX === null) currentX = targetX;
+      else currentX += (targetX - currentX) * factor;
+      if (Math.abs(targetX - currentX) < 0.1) currentX = targetX;
 
-      // Both opaque frames move together. The incoming teacher becomes
-      // visible early, instead of leaving an empty screen between frames.
-      const segment = Math.min(teachers.length - 2, Math.floor(displayedPosition));
-      const progress = Math.max(0, Math.min(1, displayedPosition - segment));
-      const smooth = progress * progress * (3 - 2 * progress);
-      for (const [index, slide] of [...track.children].entries()) {
-        let x = 0;
-        let visible = false;
-        if (index === segment) {
-          x = -slideWidth * smooth;
-          visible = progress < 0.98;
-        } else if (index === segment + 1) {
-          x = slideWidth * (1 - smooth);
-          visible = progress > 0.02;
-        }
-        slide.style.transform = 'translate3d(' + x.toFixed(2) + 'px, 0, 0)';
-        slide.style.visibility = visible ? 'visible' : 'hidden';
-      }
-
-      if (displayedPosition !== targetPosition) frame = window.requestAnimationFrame(paint);
+      // All content for each teacher belongs to a separate 100%-wide card.
+      // The full track moves as one unit: no fades or independently moving layers.
+      track.style.transform = 'translate3d(' + currentX.toFixed(2) + 'px, 0, 0)';
+      if (currentX !== targetX) frame = window.requestAnimationFrame(paint);
       else previousTime = 0;
     };
 
     const update = () => {
       const progress = Math.max(0, Math.min(1, (window.scrollY - startY) / travelY));
-      targetPosition = progress * (teachers.length - 1);
-      const nextActive = Math.round(targetPosition);
+      const position = progress * (teachers.length - 1);
+      targetX = -position * slideWidth;
+      const nextActive = Math.round(position);
       if (nextActive !== activeRef.current) {
         activeRef.current = nextActive;
         setActive(nextActive);
