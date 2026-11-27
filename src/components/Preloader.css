@@ -91,9 +91,16 @@
   transform: translate3d(0, 0, 0);
 }
 
-.skawi-section-transition--exit,
+/* Match the opening preloader: reveal the prepared page by lifting
+   the whole curtain upwards. Never sweep the blur panel twice. */
+.skawi-section-transition--exit {
+  transform: translate3d(0, -100%, 0);
+}
+
+/* Reset offscreen instantly, only AFTER the curtain has fully left. */
 .skawi-section-transition--idle {
   transform: translate3d(0, 100%, 0);
+  transition: none;
 }
 
 .skawi-section-transition__logo {
