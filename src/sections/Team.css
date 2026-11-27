@@ -99,7 +99,7 @@
 }
 .team__description {
   margin: 50px 0 0;
-  font: 500 22px/1.3 "Inter", sans-serif;
+  font: 400 20px/1.3 "Inter", sans-serif;
 }
 .team__quotation {
   position: absolute;
@@ -112,12 +112,12 @@
 }
 .team__quotation blockquote {
   margin: 0;
-  font: 400 24px/1.22 "Prata", Georgia, serif;
+  font: 400 18px/1.22 "Prata", Georgia, serif;
 }
 .team__quotation figcaption {
   margin-top: 10px;
   text-align: right;
-  font: 400 16px/1.3 "Prata", Georgia, serif;
+  font: 400 18px/1.3 "Prata", Georgia, serif;
 }
 .team__controls {
   position: absolute;
@@ -171,8 +171,8 @@
   .team__details { top: 21.16%; }
   .team__quotation { top: 62.2%; }
   .team__details h2 { font-size: clamp(38px, 2.8vw, 54px); }
-  .team__description { font-size: clamp(16px, 1.15vw, 22px); margin-top: 34px; }
-  .team__quotation blockquote { font-size: clamp(17px, 1.25vw, 24px); }
+  .team__description { font-size: 20px; font-weight: 400; margin-top: 34px; }
+  .team__quotation blockquote { font-size: 18px; }
   .team__controls { bottom: 8%; }
 }
 @media (max-width: 1100px) {
@@ -181,10 +181,10 @@
   .team__details { top: 140px; }
   .team__details h2 { font-size: 42px; }
   .team__role { margin-top: 12px; font-size: 12px; }
-  .team__description { margin-top: 26px; font-size: 17px; }
+  .team__description { margin-top: 26px; font-size: 20px; font-weight: 400; }
   .team__quotation { top: 515px; }
-  .team__quotation blockquote { font-size: 17px; }
-  .team__quotation figcaption { font-size: 12px; }
+  .team__quotation blockquote { font-size: 18px; }
+  .team__quotation figcaption { font-size: 18px; }
   .team__controls { left: 25px; right: 25px; bottom: 45px; }
   .team__pagination { width: 320px; font-size: 19px; }
   .team__progress { width: 190px; }
