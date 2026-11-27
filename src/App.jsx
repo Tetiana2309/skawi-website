@@ -19,6 +19,7 @@ export default function App() {
 
   useEffect(() => () => {
     transitionTimers.current.forEach(window.clearTimeout);
+    document.documentElement.classList.remove('skawi-about-nav-ready');
     lenisRef.current?.start();
   }, []);
 
@@ -41,7 +42,9 @@ export default function App() {
 
     schedule(() => setSectionTransitionPhase('logo-in'), 500);
     schedule(() => {
-      // Prepare the About Us photo and glass panel before the hidden jump.
+      // Prepare a finished, non-animated About Us scene while the curtain covers it.
+      // This changes only paint properties, never the stage's sticky positioning.
+      if (href === '#about') document.documentElement.classList.add('skawi-about-nav-ready');
       setSectionTransitionPhase('logo-out');
       requestAnimationFrame(() => {
         const currentSection = document.querySelector(href);
@@ -65,6 +68,8 @@ export default function App() {
       }
       setSectionTransitionPhase('idle');
       transitionActiveRef.current = false;
+      // The underlying scroll effect has already caught up while covered.
+      document.documentElement.classList.remove('skawi-about-nav-ready');
     }, 3650);
   }, []);
 
