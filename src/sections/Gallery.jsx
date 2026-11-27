@@ -41,6 +41,30 @@ export default function Gallery({ language = 'UA' }) {
   const galleryRef = useRef(null);
   const displayItems = slots;
 
+  // Defer heavy gallery videos until they actually approach the viewport.
+  // Otherwise the three 19–25 MB files compete with the hero video on reload.
+  useEffect(() => {
+    const root = galleryRef.current;
+    if (!root) return;
+    const videos = root.querySelectorAll('.gallery__media video');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({ target: video, isIntersecting }) => {
+        if (isIntersecting && !document.hidden) {
+          video.preload = 'auto';
+          const playback = video.play();
+          playback?.catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { rootMargin: '200px 0px', threshold: 0.01 });
+    videos.forEach((video) => observer.observe(video));
+    return () => {
+      observer.disconnect();
+      videos.forEach((video) => video.pause());
+    };
+  }, []);
+
   useEffect(() => {
     const root = galleryRef.current;
     if (!root) return;
@@ -135,11 +159,10 @@ export default function Gallery({ language = 'UA' }) {
               {item.video ? (
                 <video
                   src={videoPath(item.video)}
-                  autoPlay
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-hidden="true"
                 />
               ) : (
