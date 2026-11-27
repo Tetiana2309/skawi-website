@@ -40,7 +40,7 @@ const ease = (value) => {
   return t * t * (3 - 2 * t);
 };
 
-export default function AboutUs({ language = 'UA' }) {
+export default function AboutUs({ language = 'UA', freezeDuringReveal = false }) {
   const copy = aboutTranslations[language] ?? aboutTranslations.UA;
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
@@ -58,6 +58,18 @@ export default function AboutUs({ language = 'UA' }) {
       frame = 0;
       const bounds = section.getBoundingClientRect();
       const desktopPin = desktop.matches && !media.matches;
+
+      // The menu curtain hides the jump. Keep both the image and glass panel
+      // completely settled while it opens, avoiding a fixed/absolute pin flip.
+      if (freezeDuringReveal) {
+        if (desktopPin) stage.dataset.pin = 'active';
+        stage.style.setProperty('--about-photo-scale', '1');
+        stage.style.setProperty('--about-photo-radius', '0px');
+        stage.style.setProperty('--about-panel-visibility', 'visible');
+        stage.style.setProperty('--about-copy-opacity', '1');
+        stage.style.setProperty('--about-copy-shift', '0px');
+        return;
+      }
       if (desktopPin) {
         const position = bounds.top >= 0
           ? 'before'
@@ -106,7 +118,7 @@ export default function AboutUs({ language = 'UA' }) {
       media.removeEventListener('change', schedule);
       desktop.removeEventListener('change', schedule);
     };
-  }, []);
+  }, [freezeDuringReveal]);
 
   return (
     <section className="about-us-scroll" id="about" ref={sectionRef} aria-labelledby="about-us-title">
