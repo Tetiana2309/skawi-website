@@ -121,7 +121,13 @@ export default function App() {
       requestAnimationFrame(() => requestAnimationFrame(() => {
         if (!transitionActiveRef.current) return;
         setSectionTransitionPhase('logo-out');
-        schedule(() => setSectionTransitionPhase('exit'), 650);
+        schedule(() => {
+          setSectionTransitionPhase('exit');
+          if (href === '#pricing') {
+            // Reveal the cards while the curtain lifts, not during the hidden jump.
+            schedule(() => currentSection?.dispatchEvent(new Event('pricing:reveal-navigation')), 480);
+          }
+        }, 650);
         schedule(() => {
           if (lenisRef.current) {
             lenisRef.current.scrollTo(window.scrollY, { immediate: true, force: true });

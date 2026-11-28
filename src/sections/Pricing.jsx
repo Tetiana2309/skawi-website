@@ -48,9 +48,20 @@ export default function Pricing({language='UA',onSectionNavigate}){
   let frame=0, navigationAligned=false;
   const prepareNavigation=()=>{
    navigationAligned=true;
+   section.classList.remove('pricing--navigation-reveal');
+   section.classList.add('pricing--navigation-pending');
    cards.forEach(card=>card.style.setProperty('--pricing-offset','0px'));
   };
+  const revealNavigation=()=>{
+   section.classList.remove('pricing--navigation-pending');
+   section.classList.add('pricing--navigation-reveal');
+  };
+  const finishReveal=e=>{
+   if(e.animationName==='pricing-navigation-card'&&e.target===cards[2])section.classList.remove('pricing--navigation-reveal');
+  };
   section.addEventListener('pricing:prepare-navigation',prepareNavigation);
+  section.addEventListener('pricing:reveal-navigation',revealNavigation);
+  section.addEventListener('animationend',finishReveal);
   const update=()=>{
    frame=0;
    if(reduced.matches||!desktop.matches){cards.forEach(card=>card.style.removeProperty('--pricing-offset'));return;}
@@ -73,7 +84,7 @@ export default function Pricing({language='UA',onSectionNavigate}){
   reduced.addEventListener('change',request);
   desktop.addEventListener('change',request);
   update();
-  return()=>{cancelAnimationFrame(frame);section.removeEventListener('pricing:prepare-navigation',prepareNavigation);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);desktop.removeEventListener('change',request);cards.forEach(card=>card.style.removeProperty('--pricing-offset'));};
+  return()=>{cancelAnimationFrame(frame);section.removeEventListener('pricing:prepare-navigation',prepareNavigation);section.removeEventListener('pricing:reveal-navigation',revealNavigation);section.removeEventListener('animationend',finishReveal);section.classList.remove('pricing--navigation-pending','pricing--navigation-reveal');window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);desktop.removeEventListener('change',request);cards.forEach(card=>card.style.removeProperty('--pricing-offset'));};
  },[]);
  return <section id="pricing" className="pricing" ref={root} aria-labelledby="pricing-heading">
   <div className="pricing__backdrop" aria-hidden="true"/>

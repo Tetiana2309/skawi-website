@@ -58,3 +58,22 @@
 }
 @media(max-width:440px){ .pricing { padding-inline:20px; } .pricing__topline { font-size:11px; } .pricing__card { padding:24px; min-height:550px; } .pricing__head h3,.pricing__card--2 .pricing__head h3 { font-size:25px; } .pricing__cta { font-size:13px; } .pricing__price { font-size:36px; } }
 @media(prefers-reduced-motion:reduce){ .pricing__backdrop,.pricing__card,.pricing__card-content { animation:none!important; opacity:1!important; transform:none!important; } .pricing__cta,.pricing__cta-label,.pricing__arrow,.pricing__arrow img { transition:none!important; } .pricing__cta-label,.pricing__arrow { transform:none!important; } }
+
+/* A separate, cinematic entrance only when navigating from the header. */
+@media(prefers-reduced-motion:no-preference){
+ .pricing--navigation-pending .pricing__card {
+  opacity:0;
+  clip-path:inset(100% 0 0 0 round 20px);
+  transform:translate3d(0,54px,0);
+ }
+ .pricing--navigation-reveal .pricing__card {
+  animation:pricing-navigation-card 1.12s cubic-bezier(.22,1,.36,1) both;
+ }
+ .pricing--navigation-reveal .pricing__card--1 { animation-delay:.13s; }
+ .pricing--navigation-reveal .pricing__card--2 { animation-delay:.26s; }
+ @keyframes pricing-navigation-card {
+  from { opacity:0; clip-path:inset(100% 0 0 0 round 20px); transform:translate3d(0,54px,0); }
+  22% { opacity:1; }
+  to { opacity:1; clip-path:inset(0 round 20px); transform:translate3d(0,var(--pricing-offset,0px),0); }
+ }
+}
