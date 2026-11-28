@@ -1,0 +1,32 @@
+/* Review section, Figma 145:294 and modal states. */
+.reviews { position:relative; margin-top:120px; min-height:1002px; background:#023536; color:#F6FFFC; font-family:Inter,sans-serif; overflow:hidden; box-sizing:border-box; padding:60px 0 164px; }
+.reviews__topline { display:flex; justify-content:space-between; gap:24px; margin:0 40px 89px; font-size:14px; font-weight:400; line-height:1.1; letter-spacing:.7px; text-transform:uppercase; }
+.reviews__topline h2 { margin:0; font:inherit; }
+.reviews__topline span { text-align:right; }
+.reviews__rows { display:flex; flex-direction:column; gap:34px; }
+.reviews__row { overflow:hidden; touch-action:pan-y; }
+.reviews__track,.reviews__group { display:flex; width:max-content; flex:none; }
+.reviews__track { will-change:transform; }
+.reviews__group { gap:34px; padding-right:34px; }
+.reviews__card { position:relative; flex:0 0 390px; width:390px; height:320px; background:#fff; color:#023536; border-radius:20px; overflow:hidden; box-sizing:border-box; }
+.reviews__avatar { height:104px; width:100%; overflow:hidden; border-radius:20px 20px 0 0; }
+.reviews__avatar img { display:block; width:100%; height:100%; object-fit:cover; object-position:top left; pointer-events:none; user-select:none; }
+.reviews__text { margin:24px 22px 0; font:400 16px/1.4 Inter,sans-serif; white-space:pre-line; overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:6; overflow:hidden; }
+.reviews__card:has(.reviews__more) .reviews__text { -webkit-line-clamp:6; }
+.reviews__more { position:absolute; bottom:22px; left:22px; padding:0; border:0; background:none; color:inherit; font:600 14px/1.4 Inter,sans-serif; cursor:pointer; }
+.reviews__more:hover { text-decoration:underline; text-underline-offset:3px; }
+.reviews-modal { position:fixed; inset:0; z-index:11000; display:grid; place-items:center; padding:24px; box-sizing:border-box; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); background:rgba(2,53,54,.06); animation:review-fade .35s ease both; }
+.reviews-modal__glass { position:relative; width:min(718px,100%); height:min(815px,calc(100dvh - 48px)); border-radius:20px; background:rgba(85,85,85,.4); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); display:flex; align-items:center; justify-content:center; padding:80px 20px 30px; box-sizing:border-box; animation:review-glass .55s cubic-bezier(.22,1,.36,1) both; }
+.reviews-modal__close { position:absolute; top:40px; right:40px; width:28px; height:28px; padding:0; border:0; background:transparent; cursor:pointer; z-index:2; }
+.reviews__card--full { width:min(390px,100%); flex:0 1 390px; height:auto; min-height:min(var(--review-height),100%); max-height:100%; overflow:auto; padding-bottom:34px; animation:review-content .55s .14s cubic-bezier(.22,1,.36,1) both; }
+.reviews__card--full .reviews__text { display:block; overflow:visible; }
+.reviews-modal.is-closing .reviews__card--full { animation:review-content-out .25s ease both; }
+.reviews-modal.is-closing .reviews-modal__glass { animation:review-fade-out .3s .2s ease both; }
+.reviews-modal.is-closing { animation:review-fade-out .25s .4s ease both; }
+@keyframes review-fade { from{opacity:0}to{opacity:1} }
+@keyframes review-fade-out { to{opacity:0} }
+@keyframes review-glass { from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none} }
+@keyframes review-content { from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:none} }
+@keyframes review-content-out { to{opacity:0;transform:translateY(10px) scale(.96)} }
+@media(max-width:800px){.reviews{margin-top:80px;min-height:0;padding:40px 0 80px}.reviews__topline{margin:0 20px 50px;font-size:11px}.reviews__rows{gap:20px}.reviews__group{gap:20px;padding-right:20px}.reviews__card:not(.reviews__card--full){width:min(390px,85vw);flex-basis:min(390px,85vw);height:320px}.reviews__text{font-size:14px}.reviews-modal__close{top:20px;right:20px}.reviews-modal__glass{padding:60px 16px 24px}}
+@media(prefers-reduced-motion:reduce){.reviews__row{overflow-x:auto}.reviews__track{transform:none!important}.reviews__group[aria-hidden=true]{display:none}.reviews-modal,.reviews-modal__glass,.reviews__card--full{animation:none!important}}

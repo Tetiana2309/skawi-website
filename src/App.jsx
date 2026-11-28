@@ -8,6 +8,7 @@ import Team from './sections/Team.jsx';
 import Gallery from './sections/Gallery.jsx';
 import Benefits from './sections/Benefits.jsx';
 import Awards from './sections/Awards.jsx';
+import Reviews from './sections/Reviews.jsx';
 import Preloader from './components/Preloader.jsx';
 import './components/Preloader.css';
 
@@ -170,6 +171,7 @@ export default function App() {
         <Gallery language={language} onModalChange={onGalleryModalChange} />
         <Benefits language={language} />
         <Awards language={language} />
+        <Reviews language={language} onModalChange={onGalleryModalChange} />
       </main>
     </>
   );
