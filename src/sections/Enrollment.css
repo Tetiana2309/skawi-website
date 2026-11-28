@@ -33,16 +33,21 @@
 @media (hover:hover) and (pointer:fine){
  .enrollment__card:hover .enrollment__face--accent { clip-path:inset(0 0 0 0); }
 }
-.enrollment__card--pending { clip-path:inset(49.8% 50% 49.8% 50%); }
-.enrollment__card--pending,.enrollment__card--revealed { background-image:linear-gradient(#023536,#023536); background-size:100% 1px; background-position:center; background-repeat:no-repeat; }
-.enrollment__card--revealed { background-image:none; }
-.enrollment__card--revealed::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:#023536; pointer-events:none; animation:enrollment-reveal-line 1.15s both; animation-delay:calc(var(--step) * 100ms); }
-@keyframes enrollment-reveal-line { 0%,30% { opacity:1; } 65%,100% { opacity:0; } }
+.enrollment__card { background:transparent; }
+.enrollment__surface { position:relative; isolation:isolate; flex:1; display:flex; flex-direction:column; background:#EAF4F0; }
+.enrollment__card--pending .enrollment__surface { clip-path:inset(49.8% 50% 49.8% 50%); }
 .enrollment__card--pending .enrollment__face { visibility:hidden; }
-.enrollment__card--revealed {
+.enrollment__card--revealed .enrollment__surface {
  animation:enrollment-line-open 1.15s cubic-bezier(.22,1,.36,1) both;
  animation-delay:calc(var(--step) * 100ms);
 }
+.enrollment__card--revealed .enrollment__surface::before {
+ content:''; position:absolute; top:50%; left:0; right:0; height:1px;
+ background:#023536; pointer-events:none;
+ animation:enrollment-reveal-line 1.15s both;
+ animation-delay:calc(var(--step) * 100ms);
+}
+@keyframes enrollment-reveal-line { 0%,30% { opacity:1; } 65%,100% { opacity:0; } }
 .enrollment__card--revealed .enrollment__face:not(.enrollment__face--accent) {
  animation:enrollment-copy-in .65s cubic-bezier(.22,1,.36,1) both;
  animation-delay:calc(var(--step) * 100ms + 500ms);
@@ -99,8 +104,9 @@
  .enrollment__line { margin-top:40px; }
 }
 @media(prefers-reduced-motion:reduce){
- .enrollment__card,.enrollment__card--revealed,.enrollment__face { animation:none!important; clip-path:none; visibility:visible; opacity:1; }
- .enrollment__card--revealed::before { display:none; }
+ .enrollment__card,.enrollment__surface,.enrollment__face { animation:none!important; visibility:visible!important; opacity:1; }
+ .enrollment__card .enrollment__surface { clip-path:none!important; }
+ .enrollment__card--revealed .enrollment__surface::before { display:none; }
  .enrollment__face--accent { transition:none; clip-path:inset(0 100% 0 0); }
  .enrollment__card:nth-child(3) .enrollment__face--accent { clip-path:inset(0 0 100% 0); }
  .enrollment__card:hover .enrollment__face--accent { clip-path:inset(0); }

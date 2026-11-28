@@ -44,12 +44,13 @@ export default function Enrollment({language='UA'}){
     target.classList.add('enrollment__card--revealed');
     observer.unobserve(target);
    });
-  },{threshold:.12});
+  },{threshold:.08});
   cards.forEach(card=>{
    if(card.getBoundingClientRect().bottom<0)return;
    card.classList.add('enrollment__card--pending');
    observer.observe(card);
   });
+  // Observe the full-size, unclipped layout box, never the animated surface.
   const stopMotion=()=>{if(reduced.matches){observer.disconnect();cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealed'));}};
   reduced.addEventListener('change',stopMotion);
   return()=>{observer.disconnect();reduced.removeEventListener('change',stopMotion);cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealed'));};
@@ -58,13 +59,13 @@ export default function Enrollment({language='UA'}){
   <div className="enrollment__topline"><h2 id="enrollment-heading">{title}</h2><span>{quote}</span></div>
   <ol className="enrollment__grid">
    {steps.map(([name,heading,description],i)=><li className="enrollment__card" key={i} style={{'--step':i}}>
-    <div className="enrollment__face"><div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
+    <div className="enrollment__surface"><div className="enrollment__face"><div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
     <div className="enrollment__line" aria-hidden="true"/>
     <div className="enrollment__content"><p className="enrollment__lead">{heading}</p><p className="enrollment__description">{description}</p></div></div>
     <div className="enrollment__face enrollment__face--accent" aria-hidden="true"><div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
     <div className="enrollment__line" aria-hidden="true"/>
     <div className="enrollment__content"><p className="enrollment__lead">{heading}</p><p className="enrollment__description">{description}</p></div></div>
-   </li>)}
+   </div></li>)}
   </ol>
  </section>;
 }
