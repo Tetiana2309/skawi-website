@@ -45,11 +45,22 @@ export default function Pricing({language='UA',onSectionNavigate}){
   const cards=[...grid.querySelectorAll('.pricing__card')];
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop=window.matchMedia('(min-width:951px)');
-  let frame=0;
+  let frame=0, navigationAligned=false;
+  const prepareNavigation=()=>{
+   navigationAligned=true;
+   cards.forEach(card=>card.style.setProperty('--pricing-offset','0px'));
+  };
+  section.addEventListener('pricing:prepare-navigation',prepareNavigation);
   const update=()=>{
    frame=0;
    if(reduced.matches||!desktop.matches){cards.forEach(card=>card.style.removeProperty('--pricing-offset'));return;}
    const rect=grid.getBoundingClientRect(),vh=window.innerHeight;
+   // Keep the direct navigation view aligned, including short desktop viewports.
+   // Release only after leaving the pricing entrance region on a manual scroll.
+   if(navigationAligned){
+    if(rect.top>=vh || rect.bottom<=0 || rect.top<=vh*.28) navigationAligned=false;
+    else {cards.forEach(card=>card.style.setProperty('--pricing-offset','0px'));return;}
+   }
    const span=Math.max(1,vh*.72);
    const progress=Math.max(0,Math.min(1,(vh-rect.top)/span));
    const eased=progress*progress*(3-2*progress);
@@ -62,7 +73,7 @@ export default function Pricing({language='UA',onSectionNavigate}){
   reduced.addEventListener('change',request);
   desktop.addEventListener('change',request);
   update();
-  return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);desktop.removeEventListener('change',request);cards.forEach(card=>card.style.removeProperty('--pricing-offset'));};
+  return()=>{cancelAnimationFrame(frame);section.removeEventListener('pricing:prepare-navigation',prepareNavigation);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);desktop.removeEventListener('change',request);cards.forEach(card=>card.style.removeProperty('--pricing-offset'));};
  },[]);
  return <section id="pricing" className="pricing" ref={root} aria-labelledby="pricing-heading">
   <div className="pricing__backdrop" aria-hidden="true"/>

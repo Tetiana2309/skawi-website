@@ -104,6 +104,10 @@ export default function App() {
       }
 
       const currentSection = document.querySelector(href);
+      if (href === '#pricing' && currentSection) {
+        await document.fonts.ready;
+        currentSection.dispatchEvent(new Event('pricing:prepare-navigation'));
+      }
       if (currentSection) {
         const sectionTop = window.scrollY + currentSection.getBoundingClientRect().top;
         const travel = Math.max(0, currentSection.offsetHeight - window.innerHeight);
