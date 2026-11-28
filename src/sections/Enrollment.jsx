@@ -35,15 +35,41 @@ export default function Enrollment({language='UA'}){
   const section=root.current;
   if(!section||!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const cards=[...section.querySelectorAll('.enrollment__card')];
-  // Only hide cards that have not reached the viewport yet.
-  cards.forEach(card=>{if(card.getBoundingClientRect().top>window.innerHeight*.9)card.classList.add('enrollment__card--pending');});
-  const observer=new IntersectionObserver(entries=>{
+  const mobile=window.matchMedia('(max-width: 650px)');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const timers=new Set();
+  let observer;
+  let next=0;
+  let busy=false;
+  let disposed=false;
+  const eligible=new Set();
+  const schedule=(fn,ms)=>{const id=window.setTimeout(()=>{timers.delete(id);if(!disposed)fn();},ms);timers.add(id);};
+  const reveal=()=>{
+   if(busy||next>=cards.length||!eligible.has(next))return;
+   busy=true;
+   const card=cards[next];
+   card.classList.remove('enrollment__card--pending');
+   card.classList.add('enrollment__card--revealing');
+   observer?.unobserve(card);
+   next++;
+   schedule(()=>{busy=false;reveal();},mobile.matches?430:650);
+  };
+  cards.forEach((card,i)=>{
+   // On a restored scroll position, retain cards already passed.
+   if(card.getBoundingClientRect().bottom<0){eligible.add(i);return;}
+   card.classList.add('enrollment__card--pending');
+  });
+  observer=new IntersectionObserver(entries=>{
    entries.forEach(({target,isIntersecting})=>{
-    if(isIntersecting){target.classList.remove('enrollment__card--pending');observer.unobserve(target);}
+    if(isIntersecting)eligible.add(cards.indexOf(target));
    });
-  },{threshold:.12});
+   reveal();
+  },{threshold:.08,rootMargin:'0px 0px 0px 0px'});
   cards.forEach(card=>observer.observe(card));
-  return()=>{observer.disconnect();cards.forEach(card=>card.classList.remove('enrollment__card--pending'));};
+  reveal();
+  const stopMotion=()=>{if(reduced.matches){observer.disconnect();timers.forEach(window.clearTimeout);timers.clear();cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealing'));}};
+  reduced.addEventListener('change',stopMotion);
+  return()=>{disposed=true;observer.disconnect();timers.forEach(window.clearTimeout);reduced.removeEventListener('change',stopMotion);cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealing'));};
  },[]);
  return <section className="enrollment" id="enrollment" ref={root} aria-labelledby="enrollment-heading">
   <div className="enrollment__topline"><h2 id="enrollment-heading">{title}</h2><span>{quote}</span></div>
