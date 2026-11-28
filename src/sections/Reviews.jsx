@@ -17,6 +17,7 @@ function ReviewCard({index,language,full=false,onOpen,duplicate=false}){
 function ReviewRow({start,direction,language,paused,onOpen}){
  const viewport=useRef(null),track=useRef(null),group=useRef(null),offset=useRef(0),drag=useRef(null),hover=useRef(false),focused=useRef(false),skip=useRef(false);
  const pause=useRef(paused);pause.current=paused;
+ useEffect(()=>{hover.current=false;focused.current=false;drag.current=null;skip.current=false;},[paused]);
  useEffect(()=>{
   let raf=0,last=0,lastY=window.scrollY,speed=0,visible=false;
   const mq=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -26,7 +27,7 @@ function ReviewRow({start,direction,language,paused,onOpen}){
    const y=window.scrollY,raw=dt?(y-lastY)/dt:0;lastY=y;speed+=(Math.max(-1800,Math.min(1800,raw))-speed)*(1-Math.exp(-dt*12));
    const width=group.current?.offsetWidth||1;
    if(!mq.matches){
-    if(visible&&!pause.current&&!hover.current&&!focused.current&&!drag.current)offset.current+=direction*(25+speed*.12)*dt;
+    if(visible&&!pause.current&&!viewport.current.matches(':hover')&&!focused.current&&!drag.current)offset.current+=direction*(25+speed*.12)*dt;
     offset.current=((offset.current%width)+width)%width;
     track.current.style.transform='translate3d('+(-width+offset.current)+'px,0,0)';
    }else track.current.style.transform='none';
@@ -37,16 +38,17 @@ function ReviewRow({start,direction,language,paused,onOpen}){
  const pointerDown=e=>{if(e.button!==0&&e.pointerType==='mouse')return;drag.current={x:e.clientX,id:e.pointerId,moved:false};skip.current=false;};
  const pointerMove=e=>{const d=drag.current;if(!d||d.id!==e.pointerId)return;const dx=e.clientX-d.x;if(Math.abs(dx)>4||d.moved){d.moved=true;skip.current=true;offset.current+=dx;d.x=e.clientX;viewport.current.setPointerCapture(e.pointerId);}};
  const pointerEnd=()=>{drag.current=null;};
- return <div className="reviews__row" ref={viewport} onPointerEnter={()=>{hover.current=true;}} onPointerLeave={()=>{hover.current=false;}} onFocusCapture={()=>{focused.current=true;}} onBlurCapture={e=>{if(!e.currentTarget.contains(e.relatedTarget))focused.current=false;}} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClickCapture={e=>{if(skip.current){e.preventDefault();e.stopPropagation();skip.current=false;}}}>
+ useEffect(()=>{window.addEventListener('pointerup',pointerEnd);window.addEventListener('pointercancel',pointerEnd);window.addEventListener('blur',pointerEnd);return()=>{window.removeEventListener('pointerup',pointerEnd);window.removeEventListener('pointercancel',pointerEnd);window.removeEventListener('blur',pointerEnd);};},[]);
+ return <div className="reviews__row" ref={viewport} onPointerEnter={()=>{hover.current=true;}} onPointerLeave={()=>{hover.current=false;}} onFocusCapture={e=>{focused.current=e.target.matches(':focus-visible');}} onBlurCapture={e=>{if(!e.currentTarget.contains(e.relatedTarget))focused.current=false;}} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onLostPointerCapture={pointerEnd} onClickCapture={e=>{if(skip.current){e.preventDefault();e.stopPropagation();skip.current=false;}}}>
  <div className="reviews__track" ref={track}>{[0,1,2].map(copy=><div key={copy} ref={copy===0?group:null} className="reviews__group" aria-hidden={copy!==1?true:undefined}>{Array.from({length:5},(_,i)=><ReviewCard key={i} index={start+i} language={language} duplicate={copy!==1} onOpen={onOpen}/>)}</div>)}</div>
  </div>;
 }
 export default function Reviews({language='UA',onModalChange}){
  const [selected,setSelected]=useState(null),[closing,setClosing]=useState(false);
- const closeRef=useRef(null),trigger=useRef(null),timer=useRef(0);
+ const closeRef=useRef(null),trigger=useRef(null),timer=useRef(0),restoreKeyboard=useRef(false);
  const active=selected!==null;
- const open=(index,button)=>{trigger.current=button;setClosing(false);setSelected(index);};
- const close=()=>{if(closing)return;setClosing(true);timer.current=window.setTimeout(()=>{setSelected(null);setClosing(false);trigger.current?.focus({preventScroll:true});},650);};
+ const open=(index,button)=>{trigger.current=button;restoreKeyboard.current=button.matches(':focus-visible');setClosing(false);setSelected(index);};
+ const close=()=>{if(closing)return;setClosing(true);timer.current=window.setTimeout(()=>{setSelected(null);setClosing(false);if(restoreKeyboard.current)requestAnimationFrame(()=>trigger.current?.focus({preventScroll:true}));},650);};
  useEffect(()=>{if(!active)return;onModalChange?.(true);const old=document.body.style.overflow;document.body.style.overflow='hidden';closeRef.current?.focus();return()=>{document.body.style.overflow=old;onModalChange?.(false);};},[active,onModalChange]);
  useEffect(()=>{if(!active)return;const key=e=>{if(e.key==='Escape')close();if(e.key==='Tab'){e.preventDefault();closeRef.current?.focus();}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[active,closing]);
  useEffect(()=>()=>clearTimeout(timer.current),[]);
