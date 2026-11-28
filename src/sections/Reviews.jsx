@@ -27,7 +27,7 @@ function ReviewRow({start,direction,language,paused,onOpen}){
    const y=window.scrollY,raw=dt?(y-lastY)/dt:0;lastY=y;speed+=(Math.max(-1800,Math.min(1800,raw))-speed)*(1-Math.exp(-dt*12));
    const width=group.current?.offsetWidth||1;
    if(!mq.matches){
-    if(visible&&!pause.current&&!viewport.current.matches(':hover')&&!focused.current&&!drag.current)offset.current+=direction*(25+speed*.12)*dt;
+    if(visible&&(pause.current||(!viewport.current.matches(':hover')&&!focused.current&&!drag.current)))offset.current+=direction*(38+(pause.current?0:speed*.12))*dt;
     offset.current=((offset.current%width)+width)%width;
     track.current.style.transform='translate3d('+(-width+offset.current)+'px,0,0)';
    }else track.current.style.transform='none';
@@ -44,18 +44,18 @@ function ReviewRow({start,direction,language,paused,onOpen}){
  </div>;
 }
 export default function Reviews({language='UA',onModalChange}){
- const [selected,setSelected]=useState(null),[closing,setClosing]=useState(false);
- const closeRef=useRef(null),trigger=useRef(null),timer=useRef(0),restoreKeyboard=useRef(false);
+ const [selected,setSelected]=useState(null),[closing,setClosing]=useState(false),[visible,setVisible]=useState(false);
+ const closeRef=useRef(null),trigger=useRef(null),timer=useRef(0),restoreKeyboard=useRef(false),closingRef=useRef(false);
  const active=selected!==null;
- const open=(index,button)=>{trigger.current=button;restoreKeyboard.current=button.matches(':focus-visible');setClosing(false);setSelected(index);};
- const close=()=>{if(closing)return;setClosing(true);timer.current=window.setTimeout(()=>{setSelected(null);setClosing(false);if(restoreKeyboard.current)requestAnimationFrame(()=>trigger.current?.focus({preventScroll:true}));},650);};
- useEffect(()=>{if(!active)return;onModalChange?.(true);const old=document.body.style.overflow;document.body.style.overflow='hidden';closeRef.current?.focus();return()=>{document.body.style.overflow=old;onModalChange?.(false);};},[active,onModalChange]);
+ const open=(index,button)=>{if(active)return;trigger.current=button;restoreKeyboard.current=button.matches(':focus-visible');closingRef.current=false;setClosing(false);setVisible(false);setSelected(index);};
+ const close=()=>{if(closingRef.current||!active)return;closingRef.current=true;setClosing(true);setVisible(false);timer.current=window.setTimeout(()=>{setSelected(null);setClosing(false);closingRef.current=false;if(restoreKeyboard.current)requestAnimationFrame(()=>trigger.current?.focus({preventScroll:true}));},window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:800);};
+ useEffect(()=>{if(!active)return;const root=document.documentElement;root.classList.add('gallery-modal-locked');onModalChange?.(true);let frame=requestAnimationFrame(()=>{frame=requestAnimationFrame(()=>{if(!closingRef.current){setVisible(true);closeRef.current?.focus({preventScroll:true});}});});return()=>{cancelAnimationFrame(frame);root.classList.remove('gallery-modal-locked');onModalChange?.(false);};},[active,onModalChange]);
  useEffect(()=>{if(!active)return;const key=e=>{if(e.key==='Escape')close();if(e.key==='Tab'){e.preventDefault();closeRef.current?.focus();}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[active,closing]);
  useEffect(()=>()=>clearTimeout(timer.current),[]);
  const l=labels[language]??labels.UA;
  return <section className="reviews" id="reviews" aria-labelledby="reviews-heading">
  <div className="reviews__topline"><h2 id="reviews-heading">{l[0]}</h2><span>{l[1]}</span></div>
  <div className="reviews__rows"><ReviewRow start={0} direction={1} language={language} paused={active} onOpen={open}/><ReviewRow start={5} direction={-1} language={language} paused={active} onOpen={open}/></div>
- {active&&createPortal(<div className={'reviews-modal'+(closing?' is-closing':'')} onClick={close}><div className="reviews-modal__glass" role="dialog" aria-modal="true" aria-label={reviews[selected][1]} onClick={e=>e.stopPropagation()}><button className="reviews-modal__close" type="button" ref={closeRef} aria-label={l[3]} onClick={close}><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="14" fill="#023536"/><path d="m9 9 10 10M19 9 9 19" stroke="#EAF4F0" strokeWidth="1.5" strokeLinecap="round"/></svg></button><ReviewCard index={selected} language={language} full/></div></div>,document.body)}
+ {active&&createPortal(<div className={'reviews-modal'+(visible?' is-visible':'')+(closing?' is-closing':'')} data-lenis-prevent onClick={close}><div className="reviews-modal__glass" role="dialog" aria-modal="true" aria-label={reviews[selected][1]} onClick={e=>e.stopPropagation()}><button className="reviews-modal__close" type="button" ref={closeRef} aria-label={l[3]} onClick={close}><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect width="28" height="28" rx="14" fill="#023536"/><path d="M15.7279 14.3137L20.6777 9.36396L19.2635 7.94975L14.3137 12.8995L9.36397 7.94975L7.94976 9.36396L12.8995 14.3137L7.94976 19.2635L9.36397 20.6777L14.3137 15.7279L19.2635 20.6777L20.6777 19.2635L15.7279 14.3137Z" fill="#F6FFFC"/></svg></button><ReviewCard index={selected} language={language} full/></div></div>,document.body)}
  </section>;
 }

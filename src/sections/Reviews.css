@@ -15,18 +15,132 @@
 .reviews__card:has(.reviews__more) .reviews__text { -webkit-line-clamp:6; }
 .reviews__more { position:absolute; bottom:22px; left:22px; padding:0; border:0; background:none; color:inherit; font:600 14px/1.4 Inter,sans-serif; cursor:pointer; }
 .reviews__more:hover { text-decoration:underline; text-underline-offset:3px; }
-.reviews-modal { position:fixed; inset:0; z-index:11000; display:grid; place-items:center; padding:24px; box-sizing:border-box; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); background:rgba(2,53,54,.06); animation:review-fade .35s ease both; }
-.reviews-modal__glass { position:relative; width:min(718px,100%); height:min(815px,calc(100dvh - 48px)); border-radius:20px; background:rgba(85,85,85,.4); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); display:flex; align-items:center; justify-content:center; padding:80px 20px 30px; box-sizing:border-box; animation:review-glass .55s cubic-bezier(.22,1,.36,1) both; }
-.reviews-modal__close { position:absolute; top:40px; right:40px; width:28px; height:28px; padding:0; border:0; background:transparent; cursor:pointer; z-index:2; }
-.reviews__card--full { width:min(390px,100%); flex:0 1 390px; height:auto; min-height:min(var(--review-height),100%); max-height:100%; overflow:auto; padding-bottom:34px; animation:review-content .55s .14s cubic-bezier(.22,1,.36,1) both; }
+.reviews-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(2,53,54,.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .48s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .48s;
+}
+.reviews-modal.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .48s cubic-bezier(.22, 1, .36, 1), visibility 0s;
+}
+
+.reviews-modal.is-closing {
+  visibility: visible;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity .30s ease .45s, visibility 0s linear .75s;
+}
+.reviews-modal.is-closing .reviews__card--full {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0) scale(.94);
+  filter: blur(4px);
+  transition: opacity .25s ease, transform .36s cubic-bezier(.4, 0, .6, 1), filter .3s ease;
+  transition-delay: 0s;
+}
+.reviews-modal.is-closing .reviews-modal__glass {
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: opacity .35s ease .20s, transform .25s ease;
+}
+.reviews-modal.is-closing .reviews-modal__close {
+  opacity: 0;
+  transform: scale(.78) rotate(-35deg);
+  transition: opacity .2s ease, transform .3s ease;
+  transition-delay: 0s;
+}
+
+.reviews-modal__glass {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(718px, 100%);
+  height: min(815px, calc(100dvh - 48px));
+  max-height: 815px;
+  padding: 80px 20px 30px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: rgba(85, 85, 85, .4);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  opacity: 0;
+  transform: translate3d(0, 42px, 0) scale(.955);
+  transition:
+    transform .78s cubic-bezier(.16, 1, .3, 1),
+    opacity .55s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform, opacity;
+}
+.reviews-modal.is-visible .reviews-modal__glass {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.reviews__card--full {
+  display: block;
+  width: min(390px, 100%);
+  flex: 0 1 390px;
+  height: auto;
+  min-height: min(var(--review-height), 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding-bottom: 34px;
+  min-width: 0;
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(.93);
+  filter: blur(6px);
+  transition:
+    opacity .58s ease,
+    transform .85s cubic-bezier(.16, 1, .3, 1),
+    filter .65s ease;
+  transition-delay: 0s;
+}
+.reviews-modal.is-visible .reviews__card--full {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+  transition-delay: .15s;
+}
+
+
+.reviews-modal__close {
+  position: absolute;
+  z-index: 2;
+  top: 40px;
+  right: 40px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.reviews-modal__close svg { display: block; width: 100%; height: 100%; }
+.reviews-modal__close {
+  opacity: 0;
+  transform: scale(.7) rotate(-45deg);
+  transition: transform .55s cubic-bezier(.16, 1, .3, 1), opacity .4s ease, filter .2s ease;
+}
+.reviews-modal.is-visible .reviews-modal__close {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  transition-delay: .28s;
+}
+.reviews-modal__close:hover { filter: brightness(1.1); transform: scale(1.12) rotate(0); }
+
 .reviews__card--full .reviews__text { display:block; overflow:visible; }
-.reviews-modal.is-closing .reviews__card--full { animation:review-content-out .25s ease both; }
-.reviews-modal.is-closing .reviews-modal__glass { animation:review-fade-out .3s .2s ease both; }
-.reviews-modal.is-closing { animation:review-fade-out .25s .4s ease both; }
-@keyframes review-fade { from{opacity:0}to{opacity:1} }
-@keyframes review-fade-out { to{opacity:0} }
-@keyframes review-glass { from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none} }
-@keyframes review-content { from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:none} }
-@keyframes review-content-out { to{opacity:0;transform:translateY(10px) scale(.96)} }
 @media(max-width:800px){.reviews{margin-top:80px;min-height:0;padding:40px 0 80px}.reviews__topline{margin:0 20px 50px;font-size:11px}.reviews__rows{gap:20px}.reviews__group{gap:20px;padding-right:20px}.reviews__card:not(.reviews__card--full){width:min(390px,85vw);flex-basis:min(390px,85vw);height:320px}.reviews__text{font-size:14px}.reviews-modal__close{top:20px;right:20px}.reviews-modal__glass{padding:60px 16px 24px}}
-@media(prefers-reduced-motion:reduce){.reviews__row{overflow-x:auto}.reviews__track{transform:none!important}.reviews__group[aria-hidden=true]{display:none}.reviews-modal,.reviews-modal__glass,.reviews__card--full{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.reviews__row{overflow-x:auto}.reviews__track{transform:none!important}.reviews__group[aria-hidden=true]{display:none}.reviews-modal,.reviews-modal__glass,.reviews__card--full,.reviews-modal__close,.reviews-modal.is-closing,.reviews-modal.is-closing .reviews-modal__glass,.reviews-modal.is-closing .reviews__card--full,.reviews-modal.is-closing .reviews-modal__close{animation:none!important;transition:none!important}}
