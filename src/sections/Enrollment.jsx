@@ -33,51 +33,48 @@ export default function Enrollment({language='UA'}){
  const root=useRef(null);
  useEffect(()=>{
   const section=root.current;
-  if(!section||!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const cards=[...section.querySelectorAll('.enrollment__card')];
-  const mobile=window.matchMedia('(max-width: 650px)');
+  const grid=section?.querySelector('.enrollment__grid');
+  if(!grid)return;
+  const cards=[...grid.querySelectorAll('.enrollment__card')];
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const timers=new Set();
-  let observer;
-  let next=0;
-  let busy=false;
-  let disposed=false;
-  const eligible=new Set();
-  const schedule=(fn,ms)=>{const id=window.setTimeout(()=>{timers.delete(id);if(!disposed)fn();},ms);timers.add(id);};
-  const reveal=()=>{
-   if(busy||next>=cards.length||!eligible.has(next))return;
-   busy=true;
-   const card=cards[next];
-   card.classList.remove('enrollment__card--pending');
-   card.classList.add('enrollment__card--revealing');
-   observer?.unobserve(card);
-   next++;
-   schedule(()=>{busy=false;reveal();},mobile.matches?430:650);
+  const mobile=window.matchMedia('(max-width: 650px)');
+  let raf=0,active=-1;
+  const update=()=>{
+   raf=0;
+   if(reduced.matches){active=-1;cards.forEach(card=>card.classList.remove('is-accent'));return;}
+   const rect=grid.getBoundingClientRect(),vh=window.innerHeight;
+   let index=-1;
+   if(rect.top<vh*.85&&rect.bottom>vh*.15){
+    if(mobile.matches){
+     const anchor=vh*.55;
+     index=cards.reduce((best,card,i)=>Math.abs(card.getBoundingClientRect().top+card.offsetHeight/2-anchor)<Math.abs(cards[best].getBoundingClientRect().top+cards[best].offsetHeight/2-anchor)?i:best,0);
+    }else{
+     const travel=Math.max(1,rect.height+vh*.7);
+     const progress=Math.min(.9999,Math.max(0,(vh*.85-rect.top)/travel));
+     index=Math.floor(progress*cards.length);
+    }
+   }
+   if(index===active)return;
+   active=index;
+   cards.forEach((card,i)=>card.classList.toggle('is-accent',i===index));
   };
-  cards.forEach((card,i)=>{
-   // On a restored scroll position, retain cards already passed.
-   if(card.getBoundingClientRect().bottom<0){eligible.add(i);return;}
-   card.classList.add('enrollment__card--pending');
-  });
-  observer=new IntersectionObserver(entries=>{
-   entries.forEach(({target,isIntersecting})=>{
-    if(isIntersecting)eligible.add(cards.indexOf(target));
-   });
-   reveal();
-  },{threshold:.08,rootMargin:'0px 0px 0px 0px'});
-  cards.forEach(card=>observer.observe(card));
-  reveal();
-  const stopMotion=()=>{if(reduced.matches){observer.disconnect();timers.forEach(window.clearTimeout);timers.clear();cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealing'));}};
-  reduced.addEventListener('change',stopMotion);
-  return()=>{disposed=true;observer.disconnect();timers.forEach(window.clearTimeout);reduced.removeEventListener('change',stopMotion);cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealing'));};
+  const request=()=>{if(!raf)raf=requestAnimationFrame(update);};
+  window.addEventListener('scroll',request,{passive:true});
+  window.addEventListener('resize',request,{passive:true});
+  reduced.addEventListener('change',request);
+  request();
+  return()=>{cancelAnimationFrame(raf);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);cards.forEach(card=>card.classList.remove('is-accent'));};
  },[]);
  return <section className="enrollment" id="enrollment" ref={root} aria-labelledby="enrollment-heading">
   <div className="enrollment__topline"><h2 id="enrollment-heading">{title}</h2><span>{quote}</span></div>
   <ol className="enrollment__grid">
    {steps.map(([name,heading,description],i)=><li className="enrollment__card" key={i} style={{'--step':i}}>
-    <div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
+    <div className="enrollment__face"><div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
     <div className="enrollment__line" aria-hidden="true"/>
-    <div className="enrollment__content"><p className="enrollment__lead">{heading}</p><p className="enrollment__description">{description}</p></div>
+    <div className="enrollment__content"><p className="enrollment__lead">{heading}</p><p className="enrollment__description">{description}</p></div></div>
+    <div className="enrollment__face enrollment__face--accent" aria-hidden="true"><div className="enrollment__card-head"><span>{String(i+1).padStart(2,'0')}</span><h3>{name}</h3></div>
+    <div className="enrollment__line" aria-hidden="true"/>
+    <div className="enrollment__content"><p className="enrollment__lead">{heading}</p><p className="enrollment__description">{description}</p></div></div>
    </li>)}
   </ol>
  </section>;
