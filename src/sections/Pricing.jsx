@@ -39,13 +39,30 @@ export default function Pricing({language='UA',onSectionNavigate}){
  const [heading,quote,includes,cta,hour,plans]=copy[language]??copy.UA;
  const root=useRef(null);
  useEffect(()=>{
-  const el=root.current;
-  if(!el||!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  if(el.getBoundingClientRect().bottom<0)return;
-  el.classList.add('pricing--waiting');
-  const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){el.classList.remove('pricing--waiting');el.classList.add('pricing--visible');observer.disconnect();}},{threshold:.12});
-  observer.observe(el);
-  return()=>{observer.disconnect();el.classList.remove('pricing--waiting','pricing--visible');};
+  const section=root.current;
+  const grid=section?.querySelector('.pricing__grid');
+  if(!grid)return;
+  const cards=[...grid.querySelectorAll('.pricing__card')];
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktop=window.matchMedia('(min-width:951px)');
+  let frame=0;
+  const update=()=>{
+   frame=0;
+   if(reduced.matches||!desktop.matches){cards.forEach(card=>card.style.removeProperty('--pricing-offset'));return;}
+   const rect=grid.getBoundingClientRect(),vh=window.innerHeight;
+   const span=Math.max(1,vh*.72);
+   const progress=Math.max(0,Math.min(1,(vh-rect.top)/span));
+   const eased=progress*progress*(3-2*progress);
+   const offsets=[65,-40,90];
+   cards.forEach((card,i)=>card.style.setProperty('--pricing-offset',((1-eased)*offsets[i]).toFixed(2)+'px'));
+  };
+  const request=()=>{if(!frame)frame=requestAnimationFrame(update);};
+  window.addEventListener('scroll',request,{passive:true});
+  window.addEventListener('resize',request,{passive:true});
+  reduced.addEventListener('change',request);
+  desktop.addEventListener('change',request);
+  update();
+  return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);desktop.removeEventListener('change',request);cards.forEach(card=>card.style.removeProperty('--pricing-offset'));};
  },[]);
  return <section id="pricing" className="pricing" ref={root} aria-labelledby="pricing-heading">
   <div className="pricing__backdrop" aria-hidden="true"/>
