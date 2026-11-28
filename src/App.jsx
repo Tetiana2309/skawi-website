@@ -65,7 +65,7 @@ export default function App() {
   }, []);
 
   const navigateWithSplash = useCallback((href) => {
-    if (!['#services', '#about', '#gallery', '#benefits'].includes(href) || transitionActiveRef.current) return;
+    if (!['#services', '#about', '#team', '#gallery', '#benefits', '#awards', '#reviews', '#enrollment', '#pricing', '#contacts'].includes(href) || transitionActiveRef.current) return;
     const section = document.querySelector(href);
     if (!section) return;
 

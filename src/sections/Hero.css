@@ -76,3 +76,5 @@
     clip-path: none;
   }
 }
+
+.hero__top { position:relative; z-index:5; }
