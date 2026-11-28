@@ -33,37 +33,26 @@ export default function Enrollment({language='UA'}){
  const root=useRef(null);
  useEffect(()=>{
   const section=root.current;
-  const grid=section?.querySelector('.enrollment__grid');
-  if(!grid)return;
-  const cards=[...grid.querySelectorAll('.enrollment__card')];
+  if(!section||!('IntersectionObserver' in window))return;
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const mobile=window.matchMedia('(max-width: 650px)');
-  let raf=0,active=-1;
-  const update=()=>{
-   raf=0;
-   if(reduced.matches){active=-1;cards.forEach(card=>card.classList.remove('is-accent'));return;}
-   const rect=grid.getBoundingClientRect(),vh=window.innerHeight;
-   let index=-1;
-   if(rect.top<vh*.85&&rect.bottom>vh*.15){
-    if(mobile.matches){
-     const anchor=vh*.55;
-     index=cards.reduce((best,card,i)=>Math.abs(card.getBoundingClientRect().top+card.offsetHeight/2-anchor)<Math.abs(cards[best].getBoundingClientRect().top+cards[best].offsetHeight/2-anchor)?i:best,0);
-    }else{
-     const travel=Math.max(1,rect.height+vh*.7);
-     const progress=Math.min(.9999,Math.max(0,(vh*.85-rect.top)/travel));
-     index=Math.floor(progress*cards.length);
-    }
-   }
-   if(index===active)return;
-   active=index;
-   cards.forEach((card,i)=>card.classList.toggle('is-accent',i===index));
-  };
-  const request=()=>{if(!raf)raf=requestAnimationFrame(update);};
-  window.addEventListener('scroll',request,{passive:true});
-  window.addEventListener('resize',request,{passive:true});
-  reduced.addEventListener('change',request);
-  request();
-  return()=>{cancelAnimationFrame(raf);window.removeEventListener('scroll',request);window.removeEventListener('resize',request);reduced.removeEventListener('change',request);cards.forEach(card=>card.classList.remove('is-accent'));};
+  if(reduced.matches)return;
+  const cards=[...section.querySelectorAll('.enrollment__card')];
+  const observer=new IntersectionObserver(entries=>{
+   entries.forEach(({target,isIntersecting})=>{
+    if(!isIntersecting)return;
+    target.classList.remove('enrollment__card--pending');
+    target.classList.add('enrollment__card--revealed');
+    observer.unobserve(target);
+   });
+  },{threshold:.12});
+  cards.forEach(card=>{
+   if(card.getBoundingClientRect().bottom<0)return;
+   card.classList.add('enrollment__card--pending');
+   observer.observe(card);
+  });
+  const stopMotion=()=>{if(reduced.matches){observer.disconnect();cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealed'));}};
+  reduced.addEventListener('change',stopMotion);
+  return()=>{observer.disconnect();reduced.removeEventListener('change',stopMotion);cards.forEach(card=>card.classList.remove('enrollment__card--pending','enrollment__card--revealed'));};
  },[]);
  return <section className="enrollment" id="enrollment" ref={root} aria-labelledby="enrollment-heading">
   <div className="enrollment__topline"><h2 id="enrollment-heading">{title}</h2><span>{quote}</span></div>
