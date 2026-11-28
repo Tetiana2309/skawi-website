@@ -10,6 +10,7 @@ import Benefits from './sections/Benefits.jsx';
 import Awards from './sections/Awards.jsx';
 import Reviews from './sections/Reviews.jsx';
 import Enrollment from './sections/Enrollment.jsx';
+import Pricing from './sections/Pricing.jsx';
 import Preloader from './components/Preloader.jsx';
 import './components/Preloader.css';
 
@@ -174,6 +175,7 @@ export default function App() {
         <Awards language={language} />
         <Reviews language={language} onModalChange={onGalleryModalChange} />
         <Enrollment language={language} />
+        <Pricing language={language} onSectionNavigate={navigateWithSplash} />
       </main>
     </>
   );

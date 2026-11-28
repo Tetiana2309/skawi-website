@@ -3,7 +3,7 @@ import LanguageSwitcher from './LanguageSwitcher.jsx';
 import './Header.css';
 
 const groups = [['#about','#team','#gallery'],['#services','#enrollment','#test'],['#benefits','#awards','#reviews']];
-const pending = new Set(['#test','#pricing','#contacts']);
+const pending = new Set(['#test','#contacts']);
 const headerTranslations = {
   "UA": {
     "nav": [
